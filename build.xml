@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<project name="hierophant" default="usage" basedir=".">
+  <property name="src.dir" value="${basedir}/src" />
+  <property name="proto.dir" value="${basedir}/proto" />
+  <property name="proto.src.dir" value="${src.dir}" />
+
+  <macrodef name="gen-protos">
+    <attribute name="outdir" />
+    <attribute name="dir" />
+    <attribute name="target" />
+    
+    <sequential>
+      <echo message="java outdir: @{outdir}" />
+      <echo message="protoc execdir: @{dir}" />
+      <echo message="target: @{target}.proto" />
+      
+      <exec executable="/usr/local/bin/protoc" dir="@{dir}" failonerror="true">
+        <arg line="--java_out=@{outdir} @{target}.proto" />
+      </exec>
+    </sequential>
+  </macrodef>
+  
+  <target name="usage">
+    <echo message="" />
+    <echo message="${ant.project.name} usage" />
+    <echo message="--------------------" />
+    <echo message="proto-gen           " />
+    <echo message="--------------------" />
+  </target>
+  
+  <target name="proto-gen">
+    <gen-protos dir="${proto.dir}" target="FullText" outdir="${proto.src.dir}" />
+    <gen-protos dir="${proto.dir}" target="List" outdir="${proto.src.dir}" />
+    <gen-protos dir="${proto.dir}" target="Map" outdir="${proto.src.dir}" />
+  </target>
+</project>

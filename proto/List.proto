@@ -1,0 +1,39 @@
+package temperance.protobuf;
+
+option optimize_for = SPEED;
+
+message Request {
+    message Set {
+        required string namespace = 1;
+        required string key = 2;
+        required string value = 3;
+    }
+    message Get {
+        required string namespace = 1;
+        required string key = 2;
+        
+        optional uint64 offset = 3 [default = 0];
+        optional uint64 limit = 4 [default = 1000]; 
+    }
+    message Count {
+        required string namespace = 1;
+        required string key = 2;
+    }
+}
+message Response {
+    message Set {
+        required bool succeed = 1;
+    }
+    message Get {
+        repeated string values = 1;
+    }
+    message Count {
+        required uint64 count = 1;
+    }
+}
+
+service ListService {
+    rpc set(Request.Set) returns(Response.Set);
+    rpc get(Request.Get) returns(Response.Get);
+    rpc count(Request.Count) returns(Response.Count);
+}

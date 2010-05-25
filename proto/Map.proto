@@ -1,0 +1,28 @@
+package temperance.protobuf;
+
+option optimize_for = SPEED;
+
+message Request {
+    message Set {
+        required string namespace = 1;
+        required string key = 2;
+        required string value = 3;
+    }
+    message Get {
+        required string namespace = 1;
+        required string key = 2;
+    }
+}
+message Response {
+    message Set {
+        required bool succeed = 1;
+    }
+    message Get {
+        required string value = 1;
+    }
+}
+
+service MapService {
+    rpc set(Request.Set) returns(Response.Set);
+    rpc get(Request.Get) returns(Response.Get);
+}

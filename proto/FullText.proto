@@ -1,0 +1,35 @@
+package temperance.protobuf;
+
+option optimize_for = SPEED;
+
+message Request {
+    enum Parser {
+        MECAB = 0;
+        BI_GRAM = 1;
+    }
+
+    message Set {
+        required string namespace = 1;
+        required string str = 2;
+        required string value = 3;
+        optional Parser parser = 4 [default = MECAB];
+    }
+    message Get {
+        required string namespace = 1;
+        required string str = 2;
+        optional Parser parser = 3 [default = MECAB];
+    }
+}
+message Response {
+    message Set {
+        required bool succeed = 1;
+    }
+    message Get {
+        repeated string values = 1;
+    }
+}
+
+service FullTextService {
+    rpc set(Request.Set) returns(Response.Set);
+    rpc search(Request.Get) returns(Response.Get);
+}
