@@ -2,7 +2,7 @@ package temperance.handler;
 
 import static org.codehaus.jparsec.Parsers.or;
 import static org.codehaus.jparsec.Parsers.pair;
-import static org.codehaus.jparsec.Scanners.pattern;
+import static org.codehaus.jparsec.Parsers.tuple;
 import static org.codehaus.jparsec.Scanners.string;
 
 import java.util.List;
@@ -13,17 +13,94 @@ import org.codehaus.jparsec.Scanners;
 import org.codehaus.jparsec.Terminals;
 import org.codehaus.jparsec.functors.Map;
 import org.codehaus.jparsec.functors.Pair;
-import org.codehaus.jparsec.pattern.CharPredicates;
-import org.codehaus.jparsec.pattern.Patterns;
+import org.codehaus.jparsec.functors.Tuple3;
 
 
 public class QueryHandler {
     
-    private static class KEY {
+    protected static final Map<List<String>, Key> KeyParser = new Map<List<String>, Key>() {
+        public Key map(List<String> args) {
+            if(args.size() < 3){
+                return new Key(args.get(0), args.get(1), null);
+            }
+            return new Key(args.get(0), args.get(1), args.get(2));
+        }
+    };
+    
+    protected static final Map<String, Functions> functionNameParser = new Map<String, Functions>(){
+        public Functions map(String functionName) {
+            return Functions.valueOf(functionName);
+        }
+    };
+    
+    protected static final Map<Pair<Functions, Key>, Function> FunctionParser = new Map<Pair<Functions, Key>, Function>() {
+        public Function map(Pair<Functions, Key> pair) {
+            return new Function(pair.a, pair.b);
+        }
+    };
+    
+    protected static final Map<Tuple3<Key, List<Void>, Function>, Statement> StatementParser = new Map<Tuple3<Key, List<Void>, Function>, Statement>() {
+        public Statement map(Tuple3<Key, List<Void>, Function> tuple) {
+            return new Statement(tuple.a, tuple.c);
+        }
+    };
+    
+    protected static final Terminals OPERATORS = Terminals.operators("(", ")");
+    protected static final Parser<?> TOKENIZER = or(
+        OPERATORS.tokenizer(),
+        Terminals.StringLiteral.PARSER,
+        Terminals.Identifier.TOKENIZER,
+        Terminals.DecimalLiteral.TOKENIZER
+    );
+    
+    protected static final Parser<List<Void>> WHITESPACES = Scanners.WHITESPACES.many();
+    // KEYS ::= <LETTER>+ ":" <LETTER>
+    protected static final Parser<Key> KEY = Scanners.IDENTIFIER.sepBy(string(":")).map(KeyParser);
+    // FUNCTION_NAME ::= IN | NOT
+    protected static final Parser<Functions> FUNCTION_NAME = functionNames();
+    // FUNCTON_PARAMTER ::= "(" <KEY> ")"
+    protected static final Parser<Key> FUNCTION_PARAMETER = KEY.between(string("("), string(")"));
+    // FUNCTION ::= <FUNCTION_NAME> <FUNCTION_PARAMETER>
+    protected static final Parser<Function> FUNCTION = pair(FUNCTION_NAME, FUNCTION_PARAMETER).map(FunctionParser);
+    // STATEMENT ::= <KEY> <FUNCTION>
+    protected static final Parser<Statement> STATEMENT = tuple(KEY, WHITESPACES, FUNCTION).map(StatementParser);
+    // PARSER ::= parser
+    protected static final Parser<Statement> PARSER = parser(STATEMENT);
+    
+    protected static Parser<Functions> functionNames(){
+        return string(Functions.IN.name())
+            .or(string(Functions.NOT.name()))
+            .source().map(functionNameParser);
+    }
+    
+    protected static Parser<Statement> parser(Parser<Statement> atom){
+        Parser.Reference<Statement> ref = Parser.newReference();
+        Parser<Statement> unit = ref.lazy().between(string("("), string(")")).or(atom);
+        Parser<Statement> parser = new OperatorTable<Statement>().build(unit);
+        ref.set(parser);
+        return parser;
+    }
+    
+    public static void main(String...args){
+        Statement stmt = PARSER.parse("A:B IN(C:D)");
+        System.out.println(stmt);
+        
+        /*
+        STATEMENT stmt = PARSER.parse("hoge:aa IN(hoge:foo:bar)");
+        System.out.println(stmt);
+        */
+    }
+    
+    protected static enum Functions {
+        IN,
+        NOT
+    }
+    
+    protected static class Key {
         private final String namespace;
         private final String key;
         private final String id;
-        private KEY(String namespace, String key, String id){
+        private Key(String namespace, String key, String id){
             this.namespace = namespace;
             this.key = key;
             this.id = id;
@@ -39,27 +116,27 @@ public class QueryHandler {
         }
     }
     
-    private static class FUNCTION {
-        private final String functionName;
-        private final KEY key;
-        private FUNCTION(String functionName, KEY key){
-            this.functionName = functionName;
+    protected static class Function {
+        private final Functions function;
+        private final Key key;
+        private Function(Functions function, Key key){
+            this.function = function;
             this.key = key;
         }
         @Override
         public String toString(){
             StringBuilder buf = new StringBuilder("FUNCTION{");
-            buf.append("functionName=").append(functionName).append(",");
+            buf.append("function=").append(function).append(",");
             buf.append("key=").append(key);
             buf.append("}");
             return buf.toString();
         }
     }
     
-    private static class STATEMENT {
-        private final KEY key;
-        private final FUNCTION function;
-        private STATEMENT(KEY key, FUNCTION function){
+    protected static class Statement {
+        private final Key key;
+        private final Function function;
+        private Statement(Key key, Function function){
             this.key = key;
             this.function = function;
         }
@@ -72,64 +149,6 @@ public class QueryHandler {
             return buf.toString();
         }
     }
-    
-    private static final Map<List<String>, KEY> KeyParser = new Map<List<String>, KEY>() {
-        public KEY map(List<String> args) {
-            if(args.size() < 3){
-                return new KEY(args.get(0), args.get(1), null);
-            }
-            return new KEY(args.get(0), args.get(1), args.get(2));
-        }
-    };
-    
-    private static final Map<Pair<String, KEY>, FUNCTION> FunctionParser = new Map<Pair<String, KEY>, FUNCTION>() {
-        public FUNCTION map(Pair<String, KEY> pair) {
-            return new FUNCTION(pair.a, pair.b);
-        }
-    };
-    
-    private static final Map<Pair<KEY, FUNCTION>, STATEMENT> StatementParser = new Map<Pair<KEY, FUNCTION>, STATEMENT>() {
-        public STATEMENT map(Pair<KEY, FUNCTION> pair) {
-            return new STATEMENT(pair.a, pair.b);
-        }
-    };
-    
-    private static final Terminals OPERATORS = Terminals.operators("(", ")");
-    private static final Parser<?> TOKENIZER = or(
-        OPERATORS.tokenizer(),
-        Terminals.StringLiteral.PARSER,
-        Terminals.Identifier.TOKENIZER,
-        Terminals.DecimalLiteral.TOKENIZER
-    );
-    private static final Parser<Void> IGNORED = Scanners.WHITESPACES.skipMany();
-    // LETTER ::= alpha*
-    private static final Parser<String> LETTER = pattern(Patterns.isChar(CharPredicates.IS_ALPHA_), "letter").source();
-    // KEYS ::= <LETTER>+ ":" <LETTER>
-    private static final Parser<KEY> KEY = LETTER.many().source().sepBy(string(":")).map(KeyParser);
-    // FUNCTION_NAME ::= IN | NOT
-    private static final Parser<String> FUNCTION_NAME = string("IN").or(string("NOT")).source();
-    // FUNCTON_PARAMTER ::= "(" <KEY> ")"
-    private static final Parser<KEY> FUNCTION_PARAMETER = KEY.between(string("("), string(")"));
-    // FUNCTION ::= <FUNCTION_NAME> <FUNCTION_PARAMETER>
-    private static final Parser<FUNCTION> FUNCTION = pair(FUNCTION_NAME, FUNCTION_PARAMETER).map(FunctionParser);
-    // STATEMENT ::= <KEY> <FUNCTION>
-    private static final Parser<STATEMENT> STATEMENT = pair(KEY, FUNCTION).map(StatementParser);
-    // PARSER ::= parser
-    private static final Parser<STATEMENT> PARSER = parser(STATEMENT).from(TOKENIZER, IGNORED);
-    
-    private static Parser<STATEMENT> parser(Parser<STATEMENT> atom){
-        Parser.Reference<STATEMENT> ref = Parser.newReference();
-        Parser<STATEMENT> unit = ref.lazy().between(string("("), string(")")).or(atom);
-        Parser<STATEMENT> parser = new OperatorTable<STATEMENT>().build(unit);
-        ref.set(parser);
-        return parser;
-    }
-    
-    public static void main(String...args){
-        FUNCTION func = FUNCTION.parse("IN(hoge:foo:bar)");
-        System.out.println(func);
-        //STATEMENT stmt = STATEMENT.parse("hoge:aa IN(hoge:foo:bar)");
-        //System.out.println(stmt);
-    }
+
 
 }
