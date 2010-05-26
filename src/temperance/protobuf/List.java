@@ -31,28 +31,28 @@ public final class List {
       return temperance.protobuf.List.internal_static_temperance_protobuf_Request_fieldAccessorTable;
     }
     
-    public static final class Set extends
+    public static final class Add extends
         com.google.protobuf.GeneratedMessage {
-      // Use Set.newBuilder() to construct.
-      private Set() {}
+      // Use Add.newBuilder() to construct.
+      private Add() {}
       
-      private static final Set defaultInstance = new Set();
-      public static Set getDefaultInstance() {
+      private static final Add defaultInstance = new Add();
+      public static Add getDefaultInstance() {
         return defaultInstance;
       }
       
-      public Set getDefaultInstanceForType() {
+      public Add getDefaultInstanceForType() {
         return defaultInstance;
       }
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return temperance.protobuf.List.internal_static_temperance_protobuf_Request_Set_descriptor;
+        return temperance.protobuf.List.internal_static_temperance_protobuf_Request_Add_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return temperance.protobuf.List.internal_static_temperance_protobuf_Request_Set_fieldAccessorTable;
+        return temperance.protobuf.List.internal_static_temperance_protobuf_Request_Add_fieldAccessorTable;
       }
       
       // required string namespace = 1;
@@ -120,57 +120,57 @@ public final class List {
         return size;
       }
       
-      public static temperance.protobuf.List.Request.Set parseFrom(
+      public static temperance.protobuf.List.Request.Add parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data).buildParsed();
       }
-      public static temperance.protobuf.List.Request.Set parseFrom(
+      public static temperance.protobuf.List.Request.Add parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.List.Request.Set parseFrom(byte[] data)
+      public static temperance.protobuf.List.Request.Add parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data).buildParsed();
       }
-      public static temperance.protobuf.List.Request.Set parseFrom(
+      public static temperance.protobuf.List.Request.Add parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.List.Request.Set parseFrom(java.io.InputStream input)
+      public static temperance.protobuf.List.Request.Add parseFrom(java.io.InputStream input)
           throws java.io.IOException {
         return newBuilder().mergeFrom(input).buildParsed();
       }
-      public static temperance.protobuf.List.Request.Set parseFrom(
+      public static temperance.protobuf.List.Request.Add parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return newBuilder().mergeFrom(input, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.List.Request.Set parseDelimitedFrom(java.io.InputStream input)
+      public static temperance.protobuf.List.Request.Add parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
         return newBuilder().mergeDelimitedFrom(input).buildParsed();
       }
-      public static temperance.protobuf.List.Request.Set parseDelimitedFrom(
+      public static temperance.protobuf.List.Request.Add parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return newBuilder().mergeDelimitedFrom(input, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.List.Request.Set parseFrom(
+      public static temperance.protobuf.List.Request.Add parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
         return newBuilder().mergeFrom(input).buildParsed();
       }
-      public static temperance.protobuf.List.Request.Set parseFrom(
+      public static temperance.protobuf.List.Request.Add parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -180,25 +180,25 @@ public final class List {
       
       public static Builder newBuilder() { return Builder.create(); }
       public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(temperance.protobuf.List.Request.Set prototype) {
+      public static Builder newBuilder(temperance.protobuf.List.Request.Add prototype) {
         return newBuilder().mergeFrom(prototype);
       }
       public Builder toBuilder() { return newBuilder(this); }
       
       public static final class Builder extends
           com.google.protobuf.GeneratedMessage.Builder<Builder> {
-        private temperance.protobuf.List.Request.Set result;
+        private temperance.protobuf.List.Request.Add result;
         
-        // Construct using temperance.protobuf.List.Request.Set.newBuilder()
+        // Construct using temperance.protobuf.List.Request.Add.newBuilder()
         private Builder() {}
         
         private static Builder create() {
           Builder builder = new Builder();
-          builder.result = new temperance.protobuf.List.Request.Set();
+          builder.result = new temperance.protobuf.List.Request.Add();
           return builder;
         }
         
-        protected temperance.protobuf.List.Request.Set internalGetResult() {
+        protected temperance.protobuf.List.Request.Add internalGetResult() {
           return result;
         }
         
@@ -207,7 +207,7 @@ public final class List {
             throw new IllegalStateException(
               "Cannot call clear() after build().");
           }
-          result = new temperance.protobuf.List.Request.Set();
+          result = new temperance.protobuf.List.Request.Add();
           return this;
         }
         
@@ -217,24 +217,24 @@ public final class List {
         
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return temperance.protobuf.List.Request.Set.getDescriptor();
+          return temperance.protobuf.List.Request.Add.getDescriptor();
         }
         
-        public temperance.protobuf.List.Request.Set getDefaultInstanceForType() {
-          return temperance.protobuf.List.Request.Set.getDefaultInstance();
+        public temperance.protobuf.List.Request.Add getDefaultInstanceForType() {
+          return temperance.protobuf.List.Request.Add.getDefaultInstance();
         }
         
         public boolean isInitialized() {
           return result.isInitialized();
         }
-        public temperance.protobuf.List.Request.Set build() {
+        public temperance.protobuf.List.Request.Add build() {
           if (result != null && !isInitialized()) {
             throw newUninitializedMessageException(result);
           }
           return buildPartial();
         }
         
-        private temperance.protobuf.List.Request.Set buildParsed()
+        private temperance.protobuf.List.Request.Add buildParsed()
             throws com.google.protobuf.InvalidProtocolBufferException {
           if (!isInitialized()) {
             throw newUninitializedMessageException(
@@ -243,27 +243,27 @@ public final class List {
           return buildPartial();
         }
         
-        public temperance.protobuf.List.Request.Set buildPartial() {
+        public temperance.protobuf.List.Request.Add buildPartial() {
           if (result == null) {
             throw new IllegalStateException(
               "build() has already been called on this Builder.");
           }
-          temperance.protobuf.List.Request.Set returnMe = result;
+          temperance.protobuf.List.Request.Add returnMe = result;
           result = null;
           return returnMe;
         }
         
         public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof temperance.protobuf.List.Request.Set) {
-            return mergeFrom((temperance.protobuf.List.Request.Set)other);
+          if (other instanceof temperance.protobuf.List.Request.Add) {
+            return mergeFrom((temperance.protobuf.List.Request.Add)other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
         
-        public Builder mergeFrom(temperance.protobuf.List.Request.Set other) {
-          if (other == temperance.protobuf.List.Request.Set.getDefaultInstance()) return this;
+        public Builder mergeFrom(temperance.protobuf.List.Request.Add other) {
+          if (other == temperance.protobuf.List.Request.Add.getDefaultInstance()) return this;
           if (other.hasNamespace()) {
             setNamespace(other.getNamespace());
           }
@@ -1322,28 +1322,28 @@ public final class List {
       return temperance.protobuf.List.internal_static_temperance_protobuf_Response_fieldAccessorTable;
     }
     
-    public static final class Set extends
+    public static final class Add extends
         com.google.protobuf.GeneratedMessage {
-      // Use Set.newBuilder() to construct.
-      private Set() {}
+      // Use Add.newBuilder() to construct.
+      private Add() {}
       
-      private static final Set defaultInstance = new Set();
-      public static Set getDefaultInstance() {
+      private static final Add defaultInstance = new Add();
+      public static Add getDefaultInstance() {
         return defaultInstance;
       }
       
-      public Set getDefaultInstanceForType() {
+      public Add getDefaultInstanceForType() {
         return defaultInstance;
       }
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return temperance.protobuf.List.internal_static_temperance_protobuf_Response_Set_descriptor;
+        return temperance.protobuf.List.internal_static_temperance_protobuf_Response_Add_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return temperance.protobuf.List.internal_static_temperance_protobuf_Response_Set_fieldAccessorTable;
+        return temperance.protobuf.List.internal_static_temperance_protobuf_Response_Add_fieldAccessorTable;
       }
       
       // required bool succeed = 1;
@@ -1381,57 +1381,57 @@ public final class List {
         return size;
       }
       
-      public static temperance.protobuf.List.Response.Set parseFrom(
+      public static temperance.protobuf.List.Response.Add parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data).buildParsed();
       }
-      public static temperance.protobuf.List.Response.Set parseFrom(
+      public static temperance.protobuf.List.Response.Add parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.List.Response.Set parseFrom(byte[] data)
+      public static temperance.protobuf.List.Response.Add parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data).buildParsed();
       }
-      public static temperance.protobuf.List.Response.Set parseFrom(
+      public static temperance.protobuf.List.Response.Add parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.List.Response.Set parseFrom(java.io.InputStream input)
+      public static temperance.protobuf.List.Response.Add parseFrom(java.io.InputStream input)
           throws java.io.IOException {
         return newBuilder().mergeFrom(input).buildParsed();
       }
-      public static temperance.protobuf.List.Response.Set parseFrom(
+      public static temperance.protobuf.List.Response.Add parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return newBuilder().mergeFrom(input, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.List.Response.Set parseDelimitedFrom(java.io.InputStream input)
+      public static temperance.protobuf.List.Response.Add parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
         return newBuilder().mergeDelimitedFrom(input).buildParsed();
       }
-      public static temperance.protobuf.List.Response.Set parseDelimitedFrom(
+      public static temperance.protobuf.List.Response.Add parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return newBuilder().mergeDelimitedFrom(input, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.List.Response.Set parseFrom(
+      public static temperance.protobuf.List.Response.Add parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
         return newBuilder().mergeFrom(input).buildParsed();
       }
-      public static temperance.protobuf.List.Response.Set parseFrom(
+      public static temperance.protobuf.List.Response.Add parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -1441,25 +1441,25 @@ public final class List {
       
       public static Builder newBuilder() { return Builder.create(); }
       public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(temperance.protobuf.List.Response.Set prototype) {
+      public static Builder newBuilder(temperance.protobuf.List.Response.Add prototype) {
         return newBuilder().mergeFrom(prototype);
       }
       public Builder toBuilder() { return newBuilder(this); }
       
       public static final class Builder extends
           com.google.protobuf.GeneratedMessage.Builder<Builder> {
-        private temperance.protobuf.List.Response.Set result;
+        private temperance.protobuf.List.Response.Add result;
         
-        // Construct using temperance.protobuf.List.Response.Set.newBuilder()
+        // Construct using temperance.protobuf.List.Response.Add.newBuilder()
         private Builder() {}
         
         private static Builder create() {
           Builder builder = new Builder();
-          builder.result = new temperance.protobuf.List.Response.Set();
+          builder.result = new temperance.protobuf.List.Response.Add();
           return builder;
         }
         
-        protected temperance.protobuf.List.Response.Set internalGetResult() {
+        protected temperance.protobuf.List.Response.Add internalGetResult() {
           return result;
         }
         
@@ -1468,7 +1468,7 @@ public final class List {
             throw new IllegalStateException(
               "Cannot call clear() after build().");
           }
-          result = new temperance.protobuf.List.Response.Set();
+          result = new temperance.protobuf.List.Response.Add();
           return this;
         }
         
@@ -1478,24 +1478,24 @@ public final class List {
         
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return temperance.protobuf.List.Response.Set.getDescriptor();
+          return temperance.protobuf.List.Response.Add.getDescriptor();
         }
         
-        public temperance.protobuf.List.Response.Set getDefaultInstanceForType() {
-          return temperance.protobuf.List.Response.Set.getDefaultInstance();
+        public temperance.protobuf.List.Response.Add getDefaultInstanceForType() {
+          return temperance.protobuf.List.Response.Add.getDefaultInstance();
         }
         
         public boolean isInitialized() {
           return result.isInitialized();
         }
-        public temperance.protobuf.List.Response.Set build() {
+        public temperance.protobuf.List.Response.Add build() {
           if (result != null && !isInitialized()) {
             throw newUninitializedMessageException(result);
           }
           return buildPartial();
         }
         
-        private temperance.protobuf.List.Response.Set buildParsed()
+        private temperance.protobuf.List.Response.Add buildParsed()
             throws com.google.protobuf.InvalidProtocolBufferException {
           if (!isInitialized()) {
             throw newUninitializedMessageException(
@@ -1504,27 +1504,27 @@ public final class List {
           return buildPartial();
         }
         
-        public temperance.protobuf.List.Response.Set buildPartial() {
+        public temperance.protobuf.List.Response.Add buildPartial() {
           if (result == null) {
             throw new IllegalStateException(
               "build() has already been called on this Builder.");
           }
-          temperance.protobuf.List.Response.Set returnMe = result;
+          temperance.protobuf.List.Response.Add returnMe = result;
           result = null;
           return returnMe;
         }
         
         public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof temperance.protobuf.List.Response.Set) {
-            return mergeFrom((temperance.protobuf.List.Response.Set)other);
+          if (other instanceof temperance.protobuf.List.Response.Add) {
+            return mergeFrom((temperance.protobuf.List.Response.Add)other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
         
-        public Builder mergeFrom(temperance.protobuf.List.Response.Set other) {
-          if (other == temperance.protobuf.List.Response.Set.getDefaultInstance()) return this;
+        public Builder mergeFrom(temperance.protobuf.List.Response.Add other) {
+          if (other == temperance.protobuf.List.Response.Add.getDefaultInstance()) return this;
           if (other.hasSucceed()) {
             setSucceed(other.getSucceed());
           }
@@ -2373,10 +2373,10 @@ public final class List {
     protected ListService() {}
     
     public interface Interface {
-      public abstract void set(
+      public abstract void add(
           com.google.protobuf.RpcController controller,
-          temperance.protobuf.List.Request.Set request,
-          com.google.protobuf.RpcCallback<temperance.protobuf.List.Response.Set> done);
+          temperance.protobuf.List.Request.Add request,
+          com.google.protobuf.RpcCallback<temperance.protobuf.List.Response.Add> done);
       
       public abstract void get(
           com.google.protobuf.RpcController controller,
@@ -2394,11 +2394,11 @@ public final class List {
         final Interface impl) {
       return new ListService() {
         @Override
-        public  void set(
+        public  void add(
             com.google.protobuf.RpcController controller,
-            temperance.protobuf.List.Request.Set request,
-            com.google.protobuf.RpcCallback<temperance.protobuf.List.Response.Set> done) {
-          impl.set(controller, request, done);
+            temperance.protobuf.List.Request.Add request,
+            com.google.protobuf.RpcCallback<temperance.protobuf.List.Response.Add> done) {
+          impl.add(controller, request, done);
         }
         
         @Override
@@ -2440,7 +2440,7 @@ public final class List {
           }
           switch(method.getIndex()) {
             case 0:
-              return impl.set(controller, (temperance.protobuf.List.Request.Set)request);
+              return impl.add(controller, (temperance.protobuf.List.Request.Add)request);
             case 1:
               return impl.get(controller, (temperance.protobuf.List.Request.Get)request);
             case 2:
@@ -2460,7 +2460,7 @@ public final class List {
           }
           switch(method.getIndex()) {
             case 0:
-              return temperance.protobuf.List.Request.Set.getDefaultInstance();
+              return temperance.protobuf.List.Request.Add.getDefaultInstance();
             case 1:
               return temperance.protobuf.List.Request.Get.getDefaultInstance();
             case 2:
@@ -2480,7 +2480,7 @@ public final class List {
           }
           switch(method.getIndex()) {
             case 0:
-              return temperance.protobuf.List.Response.Set.getDefaultInstance();
+              return temperance.protobuf.List.Response.Add.getDefaultInstance();
             case 1:
               return temperance.protobuf.List.Response.Get.getDefaultInstance();
             case 2:
@@ -2493,10 +2493,10 @@ public final class List {
       };
     }
     
-    public abstract void set(
+    public abstract void add(
         com.google.protobuf.RpcController controller,
-        temperance.protobuf.List.Request.Set request,
-        com.google.protobuf.RpcCallback<temperance.protobuf.List.Response.Set> done);
+        temperance.protobuf.List.Request.Add request,
+        com.google.protobuf.RpcCallback<temperance.protobuf.List.Response.Add> done);
     
     public abstract void get(
         com.google.protobuf.RpcController controller,
@@ -2531,8 +2531,8 @@ public final class List {
       }
       switch(method.getIndex()) {
         case 0:
-          this.set(controller, (temperance.protobuf.List.Request.Set)request,
-            com.google.protobuf.RpcUtil.<temperance.protobuf.List.Response.Set>specializeCallback(
+          this.add(controller, (temperance.protobuf.List.Request.Add)request,
+            com.google.protobuf.RpcUtil.<temperance.protobuf.List.Response.Add>specializeCallback(
               done));
           return;
         case 1:
@@ -2560,7 +2560,7 @@ public final class List {
       }
       switch(method.getIndex()) {
         case 0:
-          return temperance.protobuf.List.Request.Set.getDefaultInstance();
+          return temperance.protobuf.List.Request.Add.getDefaultInstance();
         case 1:
           return temperance.protobuf.List.Request.Get.getDefaultInstance();
         case 2:
@@ -2580,7 +2580,7 @@ public final class List {
       }
       switch(method.getIndex()) {
         case 0:
-          return temperance.protobuf.List.Response.Set.getDefaultInstance();
+          return temperance.protobuf.List.Response.Add.getDefaultInstance();
         case 1:
           return temperance.protobuf.List.Response.Get.getDefaultInstance();
         case 2:
@@ -2606,19 +2606,19 @@ public final class List {
         return channel;
       }
       
-      public  void set(
+      public  void add(
           com.google.protobuf.RpcController controller,
-          temperance.protobuf.List.Request.Set request,
-          com.google.protobuf.RpcCallback<temperance.protobuf.List.Response.Set> done) {
+          temperance.protobuf.List.Request.Add request,
+          com.google.protobuf.RpcCallback<temperance.protobuf.List.Response.Add> done) {
         channel.callMethod(
           getDescriptor().getMethods().get(0),
           controller,
           request,
-          temperance.protobuf.List.Response.Set.getDefaultInstance(),
+          temperance.protobuf.List.Response.Add.getDefaultInstance(),
           com.google.protobuf.RpcUtil.generalizeCallback(
             done,
-            temperance.protobuf.List.Response.Set.class,
-            temperance.protobuf.List.Response.Set.getDefaultInstance()));
+            temperance.protobuf.List.Response.Add.class,
+            temperance.protobuf.List.Response.Add.getDefaultInstance()));
       }
       
       public  void get(
@@ -2658,9 +2658,9 @@ public final class List {
     }
     
     public interface BlockingInterface {
-      public temperance.protobuf.List.Response.Set set(
+      public temperance.protobuf.List.Response.Add add(
           com.google.protobuf.RpcController controller,
-          temperance.protobuf.List.Request.Set request)
+          temperance.protobuf.List.Request.Add request)
           throws com.google.protobuf.ServiceException;
       
       public temperance.protobuf.List.Response.Get get(
@@ -2681,15 +2681,15 @@ public final class List {
       
       private final com.google.protobuf.BlockingRpcChannel channel;
       
-      public temperance.protobuf.List.Response.Set set(
+      public temperance.protobuf.List.Response.Add add(
           com.google.protobuf.RpcController controller,
-          temperance.protobuf.List.Request.Set request)
+          temperance.protobuf.List.Request.Add request)
           throws com.google.protobuf.ServiceException {
-        return (temperance.protobuf.List.Response.Set) channel.callBlockingMethod(
+        return (temperance.protobuf.List.Response.Add) channel.callBlockingMethod(
           getDescriptor().getMethods().get(0),
           controller,
           request,
-          temperance.protobuf.List.Response.Set.getDefaultInstance());
+          temperance.protobuf.List.Response.Add.getDefaultInstance());
       }
       
       
@@ -2725,10 +2725,10 @@ public final class List {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_temperance_protobuf_Request_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_temperance_protobuf_Request_Set_descriptor;
+    internal_static_temperance_protobuf_Request_Add_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_temperance_protobuf_Request_Set_fieldAccessorTable;
+      internal_static_temperance_protobuf_Request_Add_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_temperance_protobuf_Request_Get_descriptor;
   private static
@@ -2745,10 +2745,10 @@ public final class List {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_temperance_protobuf_Response_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_temperance_protobuf_Response_Set_descriptor;
+    internal_static_temperance_protobuf_Response_Add_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_temperance_protobuf_Response_Set_fieldAccessorTable;
+      internal_static_temperance_protobuf_Response_Add_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_temperance_protobuf_Response_Get_descriptor;
   private static
@@ -2769,15 +2769,15 @@ public final class List {
   static {
     java.lang.String[] descriptorData = {
       "\n\nList.proto\022\023temperance.protobuf\"\267\001\n\007Re" +
-      "quest\0324\n\003Set\022\021\n\tnamespace\030\001 \002(\t\022\013\n\003key\030\002" +
+      "quest\0324\n\003Add\022\021\n\tnamespace\030\001 \002(\t\022\013\n\003key\030\002" +
       " \002(\t\022\r\n\005value\030\003 \002(\t\032M\n\003Get\022\021\n\tnamespace\030" +
       "\001 \002(\t\022\013\n\003key\030\002 \002(\t\022\021\n\006offset\030\003 \001(\004:\0010\022\023\n" +
       "\005limit\030\004 \001(\004:\0041000\032\'\n\005Count\022\021\n\tnamespace" +
-      "\030\001 \002(\t\022\013\n\003key\030\002 \002(\t\"Q\n\010Response\032\026\n\003Set\022\017" +
+      "\030\001 \002(\t\022\013\n\003key\030\002 \002(\t\"Q\n\010Response\032\026\n\003Add\022\017" +
       "\n\007succeed\030\001 \002(\010\032\025\n\003Get\022\016\n\006values\030\001 \003(\t\032\026" +
       "\n\005Count\022\r\n\005count\030\001 \002(\0042\367\001\n\013ListService\022J" +
-      "\n\003set\022 .temperance.protobuf.Request.Set\032" +
-      "!.temperance.protobuf.Response.Set\022J\n\003ge",
+      "\n\003add\022 .temperance.protobuf.Request.Add\032" +
+      "!.temperance.protobuf.Response.Add\022J\n\003ge",
       "t\022 .temperance.protobuf.Request.Get\032!.te" +
       "mperance.protobuf.Response.Get\022P\n\005count\022" +
       "\".temperance.protobuf.Request.Count\032#.te" +
@@ -2796,14 +2796,14 @@ public final class List {
               new java.lang.String[] { },
               temperance.protobuf.List.Request.class,
               temperance.protobuf.List.Request.Builder.class);
-          internal_static_temperance_protobuf_Request_Set_descriptor =
+          internal_static_temperance_protobuf_Request_Add_descriptor =
             internal_static_temperance_protobuf_Request_descriptor.getNestedTypes().get(0);
-          internal_static_temperance_protobuf_Request_Set_fieldAccessorTable = new
+          internal_static_temperance_protobuf_Request_Add_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_temperance_protobuf_Request_Set_descriptor,
+              internal_static_temperance_protobuf_Request_Add_descriptor,
               new java.lang.String[] { "Namespace", "Key", "Value", },
-              temperance.protobuf.List.Request.Set.class,
-              temperance.protobuf.List.Request.Set.Builder.class);
+              temperance.protobuf.List.Request.Add.class,
+              temperance.protobuf.List.Request.Add.Builder.class);
           internal_static_temperance_protobuf_Request_Get_descriptor =
             internal_static_temperance_protobuf_Request_descriptor.getNestedTypes().get(1);
           internal_static_temperance_protobuf_Request_Get_fieldAccessorTable = new
@@ -2828,14 +2828,14 @@ public final class List {
               new java.lang.String[] { },
               temperance.protobuf.List.Response.class,
               temperance.protobuf.List.Response.Builder.class);
-          internal_static_temperance_protobuf_Response_Set_descriptor =
+          internal_static_temperance_protobuf_Response_Add_descriptor =
             internal_static_temperance_protobuf_Response_descriptor.getNestedTypes().get(0);
-          internal_static_temperance_protobuf_Response_Set_fieldAccessorTable = new
+          internal_static_temperance_protobuf_Response_Add_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_temperance_protobuf_Response_Set_descriptor,
+              internal_static_temperance_protobuf_Response_Add_descriptor,
               new java.lang.String[] { "Succeed", },
-              temperance.protobuf.List.Response.Set.class,
-              temperance.protobuf.List.Response.Set.Builder.class);
+              temperance.protobuf.List.Response.Add.class,
+              temperance.protobuf.List.Response.Add.Builder.class);
           internal_static_temperance_protobuf_Response_Get_descriptor =
             internal_static_temperance_protobuf_Response_descriptor.getNestedTypes().get(1);
           internal_static_temperance_protobuf_Response_Get_fieldAccessorTable = new

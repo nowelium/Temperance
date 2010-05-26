@@ -3,7 +3,7 @@ package temperance.protobuf;
 option optimize_for = SPEED;
 
 message Request {
-    message Set {
+    message Add {
         required string namespace = 1;
         required string key = 2;
         required string value = 3;
@@ -21,7 +21,7 @@ message Request {
     }
 }
 message Response {
-    message Set {
+    message Add {
         required bool succeed = 1;
     }
     message Get {
@@ -33,7 +33,7 @@ message Response {
 }
 
 service ListService {
-    rpc set(Request.Set) returns(Response.Set);
+    rpc add(Request.Add) returns(Response.Add);
     rpc get(Request.Get) returns(Response.Get);
     rpc count(Request.Count) returns(Response.Count);
 }

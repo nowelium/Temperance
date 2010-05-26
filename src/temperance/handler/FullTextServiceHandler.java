@@ -11,8 +11,8 @@ import org.chasen.mecab.wrapper.Node;
 import org.chasen.mecab.wrapper.Path;
 import org.chasen.mecab.wrapper.Tagger;
 
+import temperance.hash.Hash;
 import temperance.hash.HashFunction;
-import temperance.hash.impl.Hash;
 import temperance.protobuf.FullText.FullTextService;
 import temperance.protobuf.FullText.Request;
 import temperance.protobuf.FullText.Response;
@@ -27,6 +27,8 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
     protected final Context context;
     
     protected final HashFunction hashFunction = Hash.MD5;
+    
+    protected final Tagger tagger = Tagger.create("-r /opt/local/etc/mecabrc");
     
     public FullTextServiceHandler(Context context){
         this.context = context;
@@ -49,26 +51,28 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
         
         MemcachedList list = new MemcachedList(client, namespace);
         try {
-            if(Parser.MECAB.equals(parser)){
-                Tagger tagger = Tagger.create("-r /opt/local/etc/mecabrc");
+            switch(parser){
+            case MECAB:
                 for(MecabNode<Node, Path> node: tagger.iterator(str)){
                     long hash = hashFunction.hash(node.getSurface());
                     list.add(Long.toString(hash), value);
                 }
                 return Response.Set.newBuilder().setSucceed(true).build();
-            }
-            
-            int length = str.length();
-            for(int i = 0; i < length; ++i){
-                int limit = i + 2;
-                if(length < limit){
-                    limit = i + 1;
+            case BI_GRAM:
+                int length = str.length();
+                for(int i = 0; i < length; ++i){
+                    int limit = i + 2;
+                    if(length < limit){
+                        limit = i + 1;
+                    }
+                    long hash = hashFunction.hash(str.substring(i, limit));
+                    list.add(Long.toString(hash), value);
                 }
-                long hash = hashFunction.hash(str.substring(i, limit));
-                list.add(Long.toString(hash), value);
+                return Response.Set.newBuilder().setSucceed(true).build();
             }
-            return Response.Set.newBuilder().setSucceed(true).build();
+            return Response.Set.newBuilder().setSucceed(false).build();
         } catch(LibMemcachedException e){
+            e.printStackTrace();
             return Response.Set.newBuilder().setSucceed(false).build();
         }
     }
@@ -83,24 +87,26 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
         
         Response.Get.Builder builder = Response.Get.newBuilder();
         try {
-            if(Parser.MECAB.equals(parser)){
-                Tagger tagger = Tagger.create("-r /opt/local/etc/mecabrc");
+            switch(parser){
+            case MECAB:
                 for(MecabNode<Node, Path> node: tagger.iterator(str)){
                     long hash = hashFunction.hash(node.getSurface());
                     List<String> values = list.get(Long.toString(hash), 0, 3000);
                     builder.addAllValues(values);
                 }
                 return builder.build();
-            }
-            int length = str.length();
-            for(int i = 0; i < length; ++i){
-                int limit = i + 2;
-                if(length < limit){
-                    limit = i + 1;
+            case BI_GRAM:
+                int length = str.length();
+                for(int i = 0; i < length; ++i){
+                    int limit = i + 2;
+                    if(length < limit){
+                        limit = i + 1;
+                    }
+                    long hash = hashFunction.hash(str.substring(i, limit));
+                    List<String> values = list.get(Long.toString(hash), 0, 3000);
+                    builder.addAllValues(values);
                 }
-                long hash = hashFunction.hash(str.substring(i, limit));
-                List<String> values = list.get(Long.toString(hash), 0, 3000);
-                builder.addAllValues(values);
+                return builder.build();
             }
             return builder.build();
         } catch(LibMemcachedException e){

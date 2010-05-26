@@ -56,6 +56,7 @@ public class MapServiceHandler implements MapService.BlockingInterface {
             
             return Response.Set.newBuilder().setSucceed(true).build();
         } catch (LibMemcachedException e) {
+            e.printStackTrace();
             return Response.Set.newBuilder().setSucceed(false).build();
         }
     }

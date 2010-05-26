@@ -47,7 +47,7 @@ public class ListServiceHandler implements ListService.BlockingInterface {
         }
     }
 
-    public Response.Set set(RpcController controller, Request.Set request) throws ServiceException {
+    public Response.Add add(RpcController controller, Request.Add request) throws ServiceException {
         String namespace = request.getNamespace();
         String key = request.getKey();
         String value = request.getValue();
@@ -56,9 +56,10 @@ public class ListServiceHandler implements ListService.BlockingInterface {
         MemcachedList list = new MemcachedList(client, namespace);
         try {
             list.add(key, value);
-            return Response.Set.newBuilder().setSucceed(true).build();
+            return Response.Add.newBuilder().setSucceed(true).build();
         } catch(LibMemcachedException e){
-            return Response.Set.newBuilder().setSucceed(false).build();
+            e.printStackTrace();
+            return Response.Add.newBuilder().setSucceed(false).build();
         }
     }
 

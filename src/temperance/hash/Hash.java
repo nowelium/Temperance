@@ -1,10 +1,9 @@
-package temperance.hash.impl;
+package temperance.hash;
 
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import temperance.hash.HashFunction;
 import temperance.util.ThreadLocalMap;
 
 public enum Hash implements HashFunction {
