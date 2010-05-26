@@ -6,20 +6,19 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.Parser;
 
 import temperance.handler.Context;
-import temperance.server.FullTextServer;
-import temperance.server.ListServer;
-import temperance.server.MapServer;
-import temperance.server.Server;
 
-public class Start {
+public abstract class StartStop {
     
-    public static void main(String...args){
-        Options opts = createCliOptions();
-        GnuParser parser = new GnuParser();
+    protected void start(Options options, String...args){
+        start(options, new GnuParser(), args);
+    }
+    
+    protected void start(Options options, Parser parser, String...args){
         try {
-            CommandLine cli = parser.parse(opts, args, true);
+            CommandLine cli = parser.parse(options, args, true);
             
             String host = cli.getOptionValue("h", "localhost");
             String port = cli.getOptionValue("p", "11211");
@@ -29,19 +28,21 @@ public class Start {
             ctx.setHost(host);
             ctx.setPort(Integer.valueOf(port).intValue());
             
-            start(new FullTextServer(ctx, daemonize, 17001));
-            start(new ListServer(ctx, daemonize, 17002));
-            start(new MapServer(ctx, daemonize, 17003));
+            start(ctx, daemonize);
         } catch (ParseException e) {
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp(Start.class.getSimpleName(), opts);
+            formatter.printHelp(StartStop.class.getSimpleName(), options);
             System.exit(0);
         }
     }
     
-    protected static void start(Server s){
-        s.start();
+    protected void stop(String...args){
+        shutdown();
     }
+    
+    protected abstract void start(Context context, boolean daemonize);
+
+    protected abstract void shutdown();
     
     protected static Options createCliOptions(){
         Option host = new Option("h", "host", true, "memcached server hostname");

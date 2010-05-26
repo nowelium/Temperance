@@ -51,7 +51,6 @@ public class ListServiceHandler implements ListService.BlockingInterface {
             list.add(key, value);
             return Response.Set.newBuilder().setSucceed(true).build();
         } catch(LibMemcachedException e){
-            //throw new ServiceException(e.getMessage());
             return Response.Set.newBuilder().setSucceed(false).build();
         }
     }
