@@ -9,6 +9,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.Parser;
 
 import temperance.handler.Context;
+import temperance.server.Server;
 
 public abstract class StartStop {
     
@@ -20,15 +21,15 @@ public abstract class StartStop {
         try {
             CommandLine cli = parser.parse(options, args, true);
             
-            String host = cli.getOptionValue("h", "localhost");
-            String port = cli.getOptionValue("p", "11211");
+            String memcached = cli.getOptionValue("m");
+            String port = cli.getOptionValue("p");
             boolean daemonize = cli.hasOption("daemonize");
             
             Context ctx = new Context();
-            ctx.setHost(host);
-            ctx.setPort(Integer.valueOf(port).intValue());
+            ctx.setMemcached(memcached);
             
-            start(ctx, daemonize);
+            Server server = createServer(ctx, daemonize, Integer.parseInt(port));
+            server.start();
         } catch (ParseException e) {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp(StartStop.class.getSimpleName(), options);
@@ -36,19 +37,19 @@ public abstract class StartStop {
         }
     }
     
-    protected void stop(String...args){
-        shutdown();
+    protected void stop(){
+        Context nullobj = new Context();
+        Server server = createServer(nullobj, false, 0);
+        server.shutdown();
     }
     
-    protected abstract void start(Context context, boolean daemonize);
-
-    protected abstract void shutdown();
+    protected abstract Server createServer(Context ctx, boolean daemonize, int port);
     
     protected static Options createCliOptions(){
-        Option host = new Option("h", "host", true, "memcached server hostname");
+        Option host = new Option("m", "memcached", true, "memcached server string(ex. host01:11211,host02:11211)");
         host.setRequired(true);
 
-        Option port = new Option("p", "port", true, "memcached server port");
+        Option port = new Option("p", "port", true, "server port");
         port.setRequired(true);
         
         Option daemonize = new Option("daemonize", false, "daemonize process");

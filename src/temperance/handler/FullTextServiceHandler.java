@@ -4,6 +4,7 @@ import java.util.List;
 
 import libmemcached.exception.LibMemcachedException;
 import libmemcached.wrapper.MemcachedClient;
+import libmemcached.wrapper.MemcachedServerList;
 
 import org.chasen.mecab.wrapper.MecabNode;
 import org.chasen.mecab.wrapper.Node;
@@ -30,14 +31,21 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
     public FullTextServiceHandler(Context context){
         this.context = context;
     }
+    
+    protected MemcachedClient createMemcachedClient(){
+        MemcachedClient client = new MemcachedClient();
+        MemcachedServerList servers = client.getServerList();
+        servers.parse(context.getMemcached());
+        servers.push();
+        return client;
+    }
 
     public Response.Set set(RpcController controller, Request.Set request) throws ServiceException {
         String namespace = request.getNamespace();
         String str = request.getStr();
         String value = request.getValue();
         Parser parser = request.getParser();
-        MemcachedClient client = new MemcachedClient();
-        client.addServer(context.getHost(), context.getPort());
+        MemcachedClient client = createMemcachedClient();
         
         MemcachedList list = new MemcachedList(client, namespace);
         try {
@@ -69,8 +77,7 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
         String namespace = request.getNamespace();
         String str = request.getStr();
         Parser parser = request.getParser();
-        MemcachedClient client = new MemcachedClient();
-        client.addServer(context.getHost(), context.getPort());
+        MemcachedClient client = createMemcachedClient();
         
         MemcachedList list = new MemcachedList(client, namespace);
         

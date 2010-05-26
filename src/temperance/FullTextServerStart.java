@@ -9,14 +9,8 @@ public class FullTextServerStart {
     public static void main(String...args){
         StartStop st = new StartStop(){
             @Override
-            protected void shutdown() {
-                // nop
-            }
-
-            @Override
-            protected void start(Context context, boolean daemonize) {
-                Server server = new FullTextServer(null, false, 17001);
-                server.start();
+            protected Server createServer(Context ctx, boolean daemonize, int port) {
+                return new FullTextServer(ctx, daemonize, port);
             }
         };
         st.start(StartStop.createCliOptions(), args);

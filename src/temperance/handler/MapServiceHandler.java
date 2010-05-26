@@ -2,6 +2,7 @@ package temperance.handler;
 
 import libmemcached.exception.LibMemcachedException;
 import libmemcached.wrapper.MemcachedClient;
+import libmemcached.wrapper.MemcachedServerList;
 import temperance.protobuf.Map.MapService;
 import temperance.protobuf.Map.Request;
 import temperance.protobuf.Map.Response;
@@ -17,12 +18,19 @@ public class MapServiceHandler implements MapService.BlockingInterface {
     public MapServiceHandler(Context context){
         this.context = context;
     }
+    
+    protected MemcachedClient createMemcachedClient(){
+        MemcachedClient client = new MemcachedClient();
+        MemcachedServerList servers = client.getServerList();
+        servers.parse(context.getMemcached());
+        servers.push();
+        return client;
+    }
 
     public Response.Get get(RpcController controller, Request.Get request) throws ServiceException {
         String namespace = request.getNamespace();
         String key = request.getKey();
-        MemcachedClient client = new MemcachedClient();
-        client.addServer(context.getHost(), context.getPort());
+        MemcachedClient client = createMemcachedClient();
         
         MemcachedMap map = new MemcachedMap(client, namespace);
         try {
@@ -40,8 +48,7 @@ public class MapServiceHandler implements MapService.BlockingInterface {
         String namespace = request.getNamespace();
         String key = request.getKey();
         String value = request.getValue();
-        MemcachedClient client = new MemcachedClient();
-        client.addServer(context.getHost(), context.getPort());
+        MemcachedClient client = createMemcachedClient();
         
         MemcachedMap map = new MemcachedMap(client, namespace);
         try {

@@ -9,14 +9,8 @@ public class ListServerStart {
     public static void main(String...args){
         StartStop st = new StartStop(){
             @Override
-            protected void shutdown() {
-                // nop
-            }
-
-            @Override
-            protected void start(Context context, boolean daemonize) {
-                Server server = new ListServer(null, false, 17002);
-                server.start();
+            protected Server createServer(Context ctx, boolean daemonize, int port) {
+                return new ListServer(ctx, daemonize, port);
             }
         };
         st.start(StartStop.createCliOptions(), args);

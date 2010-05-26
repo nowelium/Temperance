@@ -16,13 +16,17 @@ import com.sun.akuma.Daemon;
 
 public abstract class AbstractDaemon implements Server {
     
-    protected static final String VAR_RUN = "/var/run/";
+    protected static final String PID_DIR;
     
     protected static final String PID_FILE_SUFFIX = ".pid";
     
     protected static final String ERR_FILE_SUFFIX = ".err";
     
     protected static final int SIGTERM = 15;
+    
+    static {
+        PID_DIR = System.getProperty("temperance.pid.dir", "/tmp");
+    }
     
     /**
      * :INT (中断:interrupt) C-c
@@ -51,8 +55,8 @@ public abstract class AbstractDaemon implements Server {
     protected AbstractDaemon(final String name, boolean daemonize){
         this.name = name;
         this.daemonize = daemonize;
-        this.pidFile = new File(VAR_RUN + name + PID_FILE_SUFFIX);
-        this.errFile = new File(VAR_RUN + name + ERR_FILE_SUFFIX);
+        this.pidFile = new File(PID_DIR + "/" + name + PID_FILE_SUFFIX);
+        this.errFile = new File(PID_DIR + "/" + name + ERR_FILE_SUFFIX);
     }
     
     protected void logError(Throwable t){

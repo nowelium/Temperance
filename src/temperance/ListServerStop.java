@@ -1,7 +1,7 @@
 package temperance;
 
 import temperance.handler.Context;
-import temperance.server.FullTextServer;
+import temperance.server.ListServer;
 import temperance.server.Server;
 
 public class ListServerStop {
@@ -9,14 +9,8 @@ public class ListServerStop {
     public static void main(String...args){
         StartStop st = new StartStop(){
             @Override
-            protected void shutdown() {
-                Server server = new FullTextServer(null, false, 17002);
-                server.shutdown();
-            }
-
-            @Override
-            protected void start(Context context, boolean daemonize) {
-                // nop
+            protected Server createServer(Context ctx, boolean daemonize, int port) {
+                return new ListServer(ctx, daemonize, port);
             }
         };
         st.stop();

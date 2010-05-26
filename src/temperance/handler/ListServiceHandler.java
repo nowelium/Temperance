@@ -4,6 +4,7 @@ import java.util.List;
 
 import libmemcached.exception.LibMemcachedException;
 import libmemcached.wrapper.MemcachedClient;
+import libmemcached.wrapper.MemcachedServerList;
 import temperance.protobuf.List.ListService;
 import temperance.protobuf.List.Request;
 import temperance.protobuf.List.Response;
@@ -19,14 +20,21 @@ public class ListServiceHandler implements ListService.BlockingInterface {
     public ListServiceHandler(Context context){
         this.context = context;
     }
+    
+    protected MemcachedClient createMemcachedClient(){
+        MemcachedClient client = new MemcachedClient();
+        MemcachedServerList servers = client.getServerList();
+        servers.parse(context.getMemcached());
+        servers.push();
+        return client;
+    }
 
     public Response.Get get(RpcController controller, Request.Get request) throws ServiceException {
         String namespace = request.getNamespace();
         String key = request.getKey();
         long offset = request.getOffset();
         long limit = request.getLimit();
-        MemcachedClient client = new MemcachedClient();
-        client.addServer(context.getHost(), context.getPort());
+        MemcachedClient client = createMemcachedClient();
         
         MemcachedList list = new MemcachedList(client, namespace);
         try {
@@ -43,8 +51,7 @@ public class ListServiceHandler implements ListService.BlockingInterface {
         String namespace = request.getNamespace();
         String key = request.getKey();
         String value = request.getValue();
-        MemcachedClient client = new MemcachedClient();
-        client.addServer(context.getHost(), context.getPort());
+        MemcachedClient client = createMemcachedClient();
         
         MemcachedList list = new MemcachedList(client, namespace);
         try {
@@ -58,9 +65,7 @@ public class ListServiceHandler implements ListService.BlockingInterface {
     public Response.Count count(RpcController controller, Request.Count request) throws ServiceException {
         String namespace = request.getNamespace();
         String key = request.getKey();
-        
-        MemcachedClient client = new MemcachedClient();
-        client.addServer(context.getHost(), context.getPort());
+        MemcachedClient client = createMemcachedClient();
         
         MemcachedList list = new MemcachedList(client, namespace);
         try {

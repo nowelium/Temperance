@@ -2,24 +2,14 @@ package temperance.handler;
 
 public class Context {
     
-    protected String host;
+    private String memcached;
     
-    protected int port;
-    
-    public String getHost(){
-        return host;
+    public String getMemcached(){
+        return memcached;
     }
     
-    public void setHost(String host){
-        this.host = host;
-    }
-    
-    public int getPort(){
-        return port;
-    }
-    
-    public void setPort(int port){
-        this.port = port;
+    public void setMemcached(String memcached){
+        this.memcached = memcached;
     }
 
 }
