@@ -17,8 +17,6 @@ import temperance.storage.MemcachedFullTextList;
 
 public class MecabFunction implements InternalFunction {
     
-    protected final Tagger tagger = Tagger.create("-r /opt/local/etc/mecabrc");
-    
     protected final FunctionContext context;
     
     public MecabFunction(FunctionContext context){
@@ -27,6 +25,7 @@ public class MecabFunction implements InternalFunction {
 
     public List<String> in(String key, List<String> args) {
         HashFunction hashFunction = context.getHashFunction();
+        Tagger tagger = context.getTagger();
         String str = args.get(0);
         
         try {
