@@ -22,7 +22,7 @@ import temperance.ql.mapper.FunctionParameterMapper;
 import temperance.ql.mapper.KeyMapper;
 import temperance.ql.mapper.SetFunctionNameMapper;
 import temperance.ql.mapper.SetStatementMapper;
-import temperance.ql.mapper.SingleQuoteStringMapper;
+import temperance.ql.mapper.QuoteStringMapper;
 import temperance.ql.mapper.StatementMapper;
 import temperance.ql.node.ArgumentsNode;
 import temperance.ql.node.FromNode;
@@ -46,8 +46,8 @@ public class QueryParser {
     protected static final Parser<List<Void>> WHITESPACES = Scanners.WHITESPACES.many();
     // LETTER ::= <identifier>
     protected static final Parser<String> LETTER = Scanners.IDENTIFIER;
-    // QUOTE_STRING ::= single_quote_string
-    protected static final Parser<String> QUOTE_STRING = Scanners.SINGLE_QUOTE_STRING.map(new SingleQuoteStringMapper());
+    // QUOTE_STRING ::= single_quote_string | double_quote_string
+    protected static final Parser<String> QUOTE_STRING = quoteString();
     // KEY ::= <LETTER>+ ":" <LETTER>
     protected static final Parser<KeyNode> KEY = LETTER.map(new KeyMapper());
     // FROM ::= "from" <KEY>
@@ -72,6 +72,11 @@ public class QueryParser {
     protected static final Parser<Statement> STATEMENT = tuple(FROM, SET, FUNCTION).map(new StatementMapper());
     // PARSER ::= parser
     protected static final Parser<Statement> PARSER = parser(STATEMENT);
+    
+    protected static Parser<String> quoteString(){
+        return Scanners.SINGLE_QUOTE_STRING.map(new QuoteStringMapper('\''))
+            .or(Scanners.DOUBLE_QUOTE_STRING.map(new QuoteStringMapper('"')));
+    }
     
     protected static Parser<SetFunction> setFunctions(){
         return string(SetFunction.IN.name())
