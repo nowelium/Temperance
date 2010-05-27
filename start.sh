@@ -28,5 +28,6 @@ LIB=$LIB:"$DIR/lib/jna.jar"
 LIB=$LIB:"$DIR/lib/commons-cli-1.0.jar"
 LIB=$LIB:"$DIR/lib/protobuf-java-2.2.0.jar"
 LIB=$LIB:"$DIR/lib/protobuf-socket-rpc.jar"
+LIB=$LIB:"$DIR/lib/jparsec-2.0.jar"
 
 $JAVA_HOME/bin/java -cp $LIB temperance.Start -m $MEMCACHED -p 17001 -daemonize

@@ -14,6 +14,8 @@ import libmemcached.wrapper.type.ReturnType;
 
 public class MemcachedList {
     
+    protected static final String INCREMENT_SUFFIX = ".increment";
+    
     protected static final String KEY_SEPARATOR = ":";
     
     protected static final int expiration = 0;
@@ -24,34 +26,24 @@ public class MemcachedList {
     
     protected final MemcachedStorage storage;
 
-    protected final String namespace;
-    
-    public MemcachedList(MemcachedClient client, String namespace){
+    public MemcachedList(MemcachedClient client){
         this.client = client;
         this.storage = client.getStorage();
-        this.namespace = namespace;
         client.getBehavior().set(BehaviorType.SUPPORT_CAS, 1);
     }
     
     public String add(String key, String value) throws LibMemcachedException {
         long nextId = generateId(key);
-        client.getStorage().set(valueKey(key, nextId), value, 0, 0);
+        client.getStorage().set(indexKey(key, nextId), value, 0, 0);
         return Long.toString(nextId);
     }
     
     public List<String> get(String key, long offset, long limit) throws LibMemcachedException {
         List<String> keys = new ArrayList<String>();
         for(long i = offset, j = 0; i < (offset + limit); ++i, ++j){
-            keys.add(valueKey(key, i));
+            keys.add(indexKey(key, i));
         }
-        
-        final List<String> returnValue = new ArrayList<String>();
-        storage.getMulti(new Fetcher(){
-            public void fetch(SimpleResult result) {
-                returnValue.add(result.getValue());
-            }
-        }, keys.toArray(new String[keys.size()]));
-        return returnValue;
+        return get(keys);
     }
     
     public long count(String key) throws LibMemcachedException {
@@ -60,6 +52,36 @@ public class MemcachedList {
             return 0L;
         }
         return Long.valueOf(result).longValue();
+    }
+    
+    public List<String> includeIndex(String key, List<String> indexes) throws LibMemcachedException {
+        List<String> keys = new ArrayList<String>();
+        for(String index: indexes){
+            keys.add(indexKey(key, Long.valueOf(index).longValue()));
+        }
+        return get(keys);
+    }
+    
+    public List<String> excludeIndex(String key, List<String> indexes) throws LibMemcachedException {
+        long count = count(key);
+        List<String> keys = new ArrayList<String>();
+        for(long i = 0; i < count; ++i){
+            if(indexes.contains(Long.toString(i))){
+                continue;
+            }
+            keys.add(indexKey(key, i));
+        }
+        return get(keys);
+    }
+    
+    protected List<String> get(List<String> keys) throws LibMemcachedException {
+        final List<String> returnValue = new ArrayList<String>();
+        storage.getMulti(new Fetcher(){
+            public void fetch(SimpleResult result) {
+                returnValue.add(result.getValue());
+            }
+        }, keys.toArray(new String[keys.size()]));
+        return returnValue;
     }
     
     private long generateId(String key) throws LibMemcachedException {
@@ -82,18 +104,11 @@ public class MemcachedList {
     }
     
     protected String incrementKey(String key){
-        return new StringBuilder(namespace)
-            .append(KEY_SEPARATOR)
-            .append(key)
-            .append(".increment").toString();
+        return new StringBuilder(key).append(INCREMENT_SUFFIX).toString();
     }
     
-    protected String valueKey(String key, long index){
-        return new StringBuilder(namespace)
-            .append(KEY_SEPARATOR)
-            .append(key)
-            .append(KEY_SEPARATOR)
-            .append(index).toString();
+    protected String indexKey(String key, long index){
+        return new StringBuilder(key).append(KEY_SEPARATOR).append(index).toString();
     }
     
 }

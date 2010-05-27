@@ -2,9 +2,8 @@
 
 class Temperance_List_Request_Add extends PhpBuf_Message_Abstract {
     public function __construct(){
-        $this->setField('namespace', PhpBuf_Type::STRING, PhpBuf_Rule::REQUIRED, 1);
-        $this->setField('key', PhpBuf_Type::STRING, PhpBuf_Rule::REQUIRED, 2);
-        $this->setField('value', PhpBuf_Type::STRING, PhpBuf_Rule::REQUIRED, 3);
+        $this->setField('key', PhpBuf_Type::STRING, PhpBuf_Rule::REQUIRED, 1);
+        $this->setField('value', PhpBuf_Type::STRING, PhpBuf_Rule::REQUIRED, 2);
     }
     public static function name(){
         return __CLASS__;
@@ -13,9 +12,8 @@ class Temperance_List_Request_Add extends PhpBuf_Message_Abstract {
 
 class Temperance_List_Request_Get extends PhpBuf_Message_Abstract {
     public function __construct(){
-        $this->setField('namespace', PhpBuf_Type::STRING, PhpBuf_Rule::REQUIRED, 1);
-        $this->setField('key', PhpBuf_Type::STRING, PhpBuf_Rule::REQUIRED, 2);
-        $this->setField('offset', PhpBuf_Type::INT, PhpBuf_Rule::OPTIONAL, 3, 0);
+        $this->setField('key', PhpBuf_Type::STRING, PhpBuf_Rule::REQUIRED, 1);
+        $this->setField('offset', PhpBuf_Type::INT, PhpBuf_Rule::OPTIONAL, 2, 0);
         $this->setField('limit', PhpBuf_Type::INT, PhpBuf_Rule::OPTIONAL, 3, 1000);
     }
     public static function name(){
@@ -24,8 +22,7 @@ class Temperance_List_Request_Get extends PhpBuf_Message_Abstract {
 }
 class Temperance_List_Request_Count extends PhpBuf_Message_Abstract {
     public function __construct(){
-        $this->setField('namespace', PhpBuf_Type::STRING, PhpBuf_Rule::REQUIRED, 1);
-        $this->setField('key', PhpBuf_Type::STRING, PhpBuf_Rule::REQUIRED, 2);
+        $this->setField('key', PhpBuf_Type::STRING, PhpBuf_Rule::REQUIRED, 1);
     }
     public static function name(){
         return __CLASS__;

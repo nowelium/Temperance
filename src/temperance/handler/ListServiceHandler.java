@@ -30,13 +30,12 @@ public class ListServiceHandler implements ListService.BlockingInterface {
     }
 
     public Response.Get get(RpcController controller, Request.Get request) throws ServiceException {
-        String namespace = request.getNamespace();
         String key = request.getKey();
         long offset = request.getOffset();
         long limit = request.getLimit();
         MemcachedClient client = createMemcachedClient();
         
-        MemcachedList list = new MemcachedList(client, namespace);
+        MemcachedList list = new MemcachedList(client);
         try {
             Response.Get.Builder builder = Response.Get.newBuilder();
             List<String> values = list.get(key, offset, limit);
@@ -48,12 +47,11 @@ public class ListServiceHandler implements ListService.BlockingInterface {
     }
 
     public Response.Add add(RpcController controller, Request.Add request) throws ServiceException {
-        String namespace = request.getNamespace();
         String key = request.getKey();
         String value = request.getValue();
         MemcachedClient client = createMemcachedClient();
         
-        MemcachedList list = new MemcachedList(client, namespace);
+        MemcachedList list = new MemcachedList(client);
         try {
             list.add(key, value);
             return Response.Add.newBuilder().setSucceed(true).build();
@@ -64,11 +62,10 @@ public class ListServiceHandler implements ListService.BlockingInterface {
     }
 
     public Response.Count count(RpcController controller, Request.Count request) throws ServiceException {
-        String namespace = request.getNamespace();
         String key = request.getKey();
         MemcachedClient client = createMemcachedClient();
         
-        MemcachedList list = new MemcachedList(client, namespace);
+        MemcachedList list = new MemcachedList(client);
         try {
             long count = list.count(key);
             return Response.Count.newBuilder().setCount(count).build();

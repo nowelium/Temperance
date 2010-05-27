@@ -17,7 +17,7 @@ import temperance.protobuf.FullText.FullTextService;
 import temperance.protobuf.FullText.Request;
 import temperance.protobuf.FullText.Response;
 import temperance.protobuf.FullText.Request.Parser;
-import temperance.storage.MemcachedList;
+import temperance.storage.MemcachedFullTextList;
 
 import com.google.protobuf.RpcController;
 import com.google.protobuf.ServiceException;
@@ -43,13 +43,13 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
     }
 
     public Response.Set set(RpcController controller, Request.Set request) throws ServiceException {
-        String namespace = request.getNamespace();
+        String key = request.getKey();
         String str = request.getStr();
         String value = request.getValue();
         Parser parser = request.getParser();
         MemcachedClient client = createMemcachedClient();
         
-        MemcachedList list = new MemcachedList(client, namespace);
+        MemcachedFullTextList list = new MemcachedFullTextList(client, key);
         try {
             switch(parser){
             case MECAB:
@@ -78,12 +78,12 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
     }
     
     public Response.Get search(RpcController controller, Request.Get request) throws ServiceException {
-        String namespace = request.getNamespace();
+        String key = request.getKey();
         String str = request.getStr();
         Parser parser = request.getParser();
         MemcachedClient client = createMemcachedClient();
         
-        MemcachedList list = new MemcachedList(client, namespace);
+        MemcachedFullTextList list = new MemcachedFullTextList(client, key);
         
         Response.Get.Builder builder = Response.Get.newBuilder();
         try {

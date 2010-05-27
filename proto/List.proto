@@ -4,20 +4,17 @@ option optimize_for = SPEED;
 
 message Request {
     message Add {
-        required string namespace = 1;
-        required string key = 2;
-        required string value = 3;
+        required string key = 1;
+        required string value = 2;
     }
     message Get {
-        required string namespace = 1;
-        required string key = 2;
+        required string key = 1;
         
-        optional uint64 offset = 3 [default = 0];
-        optional uint64 limit = 4 [default = 1000]; 
+        optional uint64 offset = 2 [default = 0];
+        optional uint64 limit = 3 [default = 1000]; 
     }
     message Count {
-        required string namespace = 1;
-        required string key = 2;
+        required string key = 1;
     }
 }
 message Response {

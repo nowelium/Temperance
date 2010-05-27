@@ -1,0 +1,18 @@
+package temperance.protobuf;
+
+option optimize_for = SPEED;
+
+message Request {
+    message Get {
+        required string query = 1;
+    }
+}
+message Response {
+    message Get {
+        repeated string values = 1;
+    }
+}
+
+service QueryService {
+    rpc get(Request.Get) returns(Response.Get);
+}

@@ -32,5 +32,6 @@
     <gen-protos dir="${proto.dir}" target="FullText" outdir="${proto.src.dir}" />
     <gen-protos dir="${proto.dir}" target="List" outdir="${proto.src.dir}" />
     <gen-protos dir="${proto.dir}" target="Map" outdir="${proto.src.dir}" />
+    <gen-protos dir="${proto.dir}" target="Query" outdir="${proto.src.dir}" />
   </target>
 </project>

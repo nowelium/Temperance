@@ -28,11 +28,10 @@ public class MapServiceHandler implements MapService.BlockingInterface {
     }
 
     public Response.Get get(RpcController controller, Request.Get request) throws ServiceException {
-        String namespace = request.getNamespace();
         String key = request.getKey();
         MemcachedClient client = createMemcachedClient();
         
-        MemcachedMap map = new MemcachedMap(client, namespace);
+        MemcachedMap map = new MemcachedMap(client);
         try {
             String result = map.get(key);
             Response.Get.Builder builder = Response.Get.newBuilder();
@@ -45,12 +44,11 @@ public class MapServiceHandler implements MapService.BlockingInterface {
     }
 
     public Response.Set set(RpcController controller, Request.Set request) throws ServiceException {
-        String namespace = request.getNamespace();
         String key = request.getKey();
         String value = request.getValue();
         MemcachedClient client = createMemcachedClient();
         
-        MemcachedMap map = new MemcachedMap(client, namespace);
+        MemcachedMap map = new MemcachedMap(client);
         try {
             map.set(key, value);
             

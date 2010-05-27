@@ -55,29 +55,21 @@ public final class Map {
         return temperance.protobuf.Map.internal_static_temperance_protobuf_Request_Set_fieldAccessorTable;
       }
       
-      // required string namespace = 1;
-      public static final int NAMESPACE_FIELD_NUMBER = 1;
-      private boolean hasNamespace;
-      private java.lang.String namespace_ = "";
-      public boolean hasNamespace() { return hasNamespace; }
-      public java.lang.String getNamespace() { return namespace_; }
-      
-      // required string key = 2;
-      public static final int KEY_FIELD_NUMBER = 2;
+      // required string key = 1;
+      public static final int KEY_FIELD_NUMBER = 1;
       private boolean hasKey;
       private java.lang.String key_ = "";
       public boolean hasKey() { return hasKey; }
       public java.lang.String getKey() { return key_; }
       
-      // required string value = 3;
-      public static final int VALUE_FIELD_NUMBER = 3;
+      // required string value = 2;
+      public static final int VALUE_FIELD_NUMBER = 2;
       private boolean hasValue;
       private java.lang.String value_ = "";
       public boolean hasValue() { return hasValue; }
       public java.lang.String getValue() { return value_; }
       
       public final boolean isInitialized() {
-        if (!hasNamespace) return false;
         if (!hasKey) return false;
         if (!hasValue) return false;
         return true;
@@ -85,14 +77,11 @@ public final class Map {
       
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (hasNamespace()) {
-          output.writeString(1, getNamespace());
-        }
         if (hasKey()) {
-          output.writeString(2, getKey());
+          output.writeString(1, getKey());
         }
         if (hasValue()) {
-          output.writeString(3, getValue());
+          output.writeString(2, getValue());
         }
         getUnknownFields().writeTo(output);
       }
@@ -103,17 +92,13 @@ public final class Map {
         if (size != -1) return size;
       
         size = 0;
-        if (hasNamespace()) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeStringSize(1, getNamespace());
-        }
         if (hasKey()) {
           size += com.google.protobuf.CodedOutputStream
-            .computeStringSize(2, getKey());
+            .computeStringSize(1, getKey());
         }
         if (hasValue()) {
           size += com.google.protobuf.CodedOutputStream
-            .computeStringSize(3, getValue());
+            .computeStringSize(2, getValue());
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -264,9 +249,6 @@ public final class Map {
         
         public Builder mergeFrom(temperance.protobuf.Map.Request.Set other) {
           if (other == temperance.protobuf.Map.Request.Set.getDefaultInstance()) return this;
-          if (other.hasNamespace()) {
-            setNamespace(other.getNamespace());
-          }
           if (other.hasKey()) {
             setKey(other.getKey());
           }
@@ -299,14 +281,10 @@ public final class Map {
                 break;
               }
               case 10: {
-                setNamespace(input.readString());
-                break;
-              }
-              case 18: {
                 setKey(input.readString());
                 break;
               }
-              case 26: {
+              case 18: {
                 setValue(input.readString());
                 break;
               }
@@ -315,28 +293,7 @@ public final class Map {
         }
         
         
-        // required string namespace = 1;
-        public boolean hasNamespace() {
-          return result.hasNamespace();
-        }
-        public java.lang.String getNamespace() {
-          return result.getNamespace();
-        }
-        public Builder setNamespace(java.lang.String value) {
-          if (value == null) {
-    throw new NullPointerException();
-  }
-  result.hasNamespace = true;
-          result.namespace_ = value;
-          return this;
-        }
-        public Builder clearNamespace() {
-          result.hasNamespace = false;
-          result.namespace_ = getDefaultInstance().getNamespace();
-          return this;
-        }
-        
-        // required string key = 2;
+        // required string key = 1;
         public boolean hasKey() {
           return result.hasKey();
         }
@@ -357,7 +314,7 @@ public final class Map {
           return this;
         }
         
-        // required string value = 3;
+        // required string value = 2;
         public boolean hasValue() {
           return result.hasValue();
         }
@@ -412,33 +369,22 @@ public final class Map {
         return temperance.protobuf.Map.internal_static_temperance_protobuf_Request_Get_fieldAccessorTable;
       }
       
-      // required string namespace = 1;
-      public static final int NAMESPACE_FIELD_NUMBER = 1;
-      private boolean hasNamespace;
-      private java.lang.String namespace_ = "";
-      public boolean hasNamespace() { return hasNamespace; }
-      public java.lang.String getNamespace() { return namespace_; }
-      
-      // required string key = 2;
-      public static final int KEY_FIELD_NUMBER = 2;
+      // required string key = 1;
+      public static final int KEY_FIELD_NUMBER = 1;
       private boolean hasKey;
       private java.lang.String key_ = "";
       public boolean hasKey() { return hasKey; }
       public java.lang.String getKey() { return key_; }
       
       public final boolean isInitialized() {
-        if (!hasNamespace) return false;
         if (!hasKey) return false;
         return true;
       }
       
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (hasNamespace()) {
-          output.writeString(1, getNamespace());
-        }
         if (hasKey()) {
-          output.writeString(2, getKey());
+          output.writeString(1, getKey());
         }
         getUnknownFields().writeTo(output);
       }
@@ -449,13 +395,9 @@ public final class Map {
         if (size != -1) return size;
       
         size = 0;
-        if (hasNamespace()) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeStringSize(1, getNamespace());
-        }
         if (hasKey()) {
           size += com.google.protobuf.CodedOutputStream
-            .computeStringSize(2, getKey());
+            .computeStringSize(1, getKey());
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -606,9 +548,6 @@ public final class Map {
         
         public Builder mergeFrom(temperance.protobuf.Map.Request.Get other) {
           if (other == temperance.protobuf.Map.Request.Get.getDefaultInstance()) return this;
-          if (other.hasNamespace()) {
-            setNamespace(other.getNamespace());
-          }
           if (other.hasKey()) {
             setKey(other.getKey());
           }
@@ -638,10 +577,6 @@ public final class Map {
                 break;
               }
               case 10: {
-                setNamespace(input.readString());
-                break;
-              }
-              case 18: {
                 setKey(input.readString());
                 break;
               }
@@ -650,28 +585,7 @@ public final class Map {
         }
         
         
-        // required string namespace = 1;
-        public boolean hasNamespace() {
-          return result.hasNamespace();
-        }
-        public java.lang.String getNamespace() {
-          return result.getNamespace();
-        }
-        public Builder setNamespace(java.lang.String value) {
-          if (value == null) {
-    throw new NullPointerException();
-  }
-  result.hasNamespace = true;
-          result.namespace_ = value;
-          return this;
-        }
-        public Builder clearNamespace() {
-          result.hasNamespace = false;
-          result.namespace_ = getDefaultInstance().getNamespace();
-          return this;
-        }
-        
-        // required string key = 2;
+        // required string key = 1;
         public boolean hasKey() {
           return result.hasKey();
         }
@@ -1998,16 +1912,15 @@ public final class Map {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\tMap.proto\022\023temperance.protobuf\"f\n\007Requ" +
-      "est\0324\n\003Set\022\021\n\tnamespace\030\001 \002(\t\022\013\n\003key\030\002 \002" +
-      "(\t\022\r\n\005value\030\003 \002(\t\032%\n\003Get\022\021\n\tnamespace\030\001 " +
-      "\002(\t\022\013\n\003key\030\002 \002(\t\"8\n\010Response\032\026\n\003Set\022\017\n\007s" +
-      "ucceed\030\001 \002(\010\032\024\n\003Get\022\r\n\005value\030\001 \002(\t2\244\001\n\nM" +
-      "apService\022J\n\003set\022 .temperance.protobuf.R" +
-      "equest.Set\032!.temperance.protobuf.Respons" +
-      "e.Set\022J\n\003get\022 .temperance.protobuf.Reque" +
-      "st.Get\032!.temperance.protobuf.Response.Ge" +
-      "tB\002H\001"
+      "\n\tMap.proto\022\023temperance.protobuf\"@\n\007Requ" +
+      "est\032!\n\003Set\022\013\n\003key\030\001 \002(\t\022\r\n\005value\030\002 \002(\t\032\022" +
+      "\n\003Get\022\013\n\003key\030\001 \002(\t\"8\n\010Response\032\026\n\003Set\022\017\n" +
+      "\007succeed\030\001 \002(\010\032\024\n\003Get\022\r\n\005value\030\001 \002(\t2\244\001\n" +
+      "\nMapService\022J\n\003set\022 .temperance.protobuf" +
+      ".Request.Set\032!.temperance.protobuf.Respo" +
+      "nse.Set\022J\n\003get\022 .temperance.protobuf.Req" +
+      "uest.Get\032!.temperance.protobuf.Response." +
+      "GetB\002H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -2027,7 +1940,7 @@ public final class Map {
           internal_static_temperance_protobuf_Request_Set_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_temperance_protobuf_Request_Set_descriptor,
-              new java.lang.String[] { "Namespace", "Key", "Value", },
+              new java.lang.String[] { "Key", "Value", },
               temperance.protobuf.Map.Request.Set.class,
               temperance.protobuf.Map.Request.Set.Builder.class);
           internal_static_temperance_protobuf_Request_Get_descriptor =
@@ -2035,7 +1948,7 @@ public final class Map {
           internal_static_temperance_protobuf_Request_Get_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_temperance_protobuf_Request_Get_descriptor,
-              new java.lang.String[] { "Namespace", "Key", },
+              new java.lang.String[] { "Key", },
               temperance.protobuf.Map.Request.Get.class,
               temperance.protobuf.Map.Request.Get.Builder.class);
           internal_static_temperance_protobuf_Response_descriptor =

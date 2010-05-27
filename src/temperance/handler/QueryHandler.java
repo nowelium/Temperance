@@ -1,258 +1,186 @@
 package temperance.handler;
 
-import static org.codehaus.jparsec.Parsers.between;
-import static org.codehaus.jparsec.Parsers.or;
-import static org.codehaus.jparsec.Parsers.sequence;
-import static org.codehaus.jparsec.Parsers.tuple;
-import static org.codehaus.jparsec.Scanners.string;
-import static org.codehaus.jparsec.Scanners.stringCaseInsensitive;
-
 import java.util.List;
 
-import org.codehaus.jparsec.OperatorTable;
-import org.codehaus.jparsec.Parser;
-import org.codehaus.jparsec.Scanners;
-import org.codehaus.jparsec.Terminals;
-import org.codehaus.jparsec.functors.Map;
-import org.codehaus.jparsec.functors.Pair;
-import org.codehaus.jparsec.functors.Tuple3;
+import libmemcached.wrapper.MemcachedClient;
+import libmemcached.wrapper.MemcachedServerList;
 
-public class QueryHandler {
+import org.chasen.mecab.wrapper.Tagger;
+
+import temperance.handler.function.DataFunction;
+import temperance.handler.function.FunctionContext;
+import temperance.handler.function.GeoPointFunction;
+import temperance.handler.function.GramFunction;
+import temperance.handler.function.MecabFunction;
+import temperance.handler.function.ValueFunction;
+import temperance.hash.Hash;
+import temperance.hash.HashFunction;
+import temperance.protobuf.Query.QueryService;
+import temperance.protobuf.Query.Request;
+import temperance.protobuf.Query.Response;
+import temperance.ql.InternalFunction;
+import temperance.ql.QueryFunction;
+import temperance.ql.QueryParser;
+import temperance.ql.SetFunction;
+import temperance.ql.Visitor;
+import temperance.ql.exception.ParseException;
+import temperance.ql.node.ArgumentsNode;
+import temperance.ql.node.FromNode;
+import temperance.ql.node.FunctionNode;
+import temperance.ql.node.KeyNode;
+import temperance.ql.node.ParameterNode;
+import temperance.ql.node.SetNode;
+import temperance.ql.node.Statement;
+
+import com.google.protobuf.RpcController;
+import com.google.protobuf.ServiceException;
+
+public class QueryHandler implements QueryService.BlockingInterface {
+
+    protected final Context context;
     
-    protected static final Map<String, Key> KeyParser = new Map<String, Key>() {
-        public Key map(String args) {
-            int sep = args.indexOf(':');
-            return new Key(args.substring(0, sep), args.substring(sep + 1, args.length()));
-        }
-    };
+    protected final HashFunction hashFunction = Hash.MD5;
     
-    protected static final Map<Key, FromStatement> FromStatementParser = new Map<Key, FromStatement>() {
-        public FromStatement map(Key key){
-            return new FromStatement(key);
-        }
-    };
+    protected final Tagger tagger = Tagger.create("-r /opt/local/etc/mecabrc");
     
-    protected static final Map<String, SetFunction> SetFunctionNameParser = new Map<String, SetFunction>(){
-        public SetFunction map(String functionName) {
-            return SetFunction.valueOf(functionName);
-        }
-    };
-    
-    protected static final Map<Tuple3<List<Void>, SetFunction, List<Void>>, SetStatement> SetStatementParser = new Map<Tuple3<List<Void>, SetFunction, List<Void>>, SetStatement> (){
-        public SetStatement map(Tuple3<List<Void>, SetFunction, List<Void>> tuple) {
-            return new SetStatement(tuple.b);
-        }
-    };
-    
-    protected static final Map<List<String>, ArgumentsStatement> ArgumentsParser = new Map<List<String>, ArgumentsStatement>(){
-        public ArgumentsStatement map(List<String> args){
-            return new ArgumentsStatement(args);
-        }
-    };
-    
-    protected static final Map<Tuple3<List<Void>, ArgumentsStatement, List<Void>>, ParameterStatement> FunctionParameterParser = new Map<Tuple3<List<Void>, ArgumentsStatement, List<Void>>, ParameterStatement> (){
-        public ParameterStatement map(Tuple3<List<Void>, ArgumentsStatement, List<Void>> tuple) {
-            return new ParameterStatement(tuple.b);
-        }
-    };
-    
-    protected static final Map<Pair<String, ParameterStatement>, FunctionStatement> FunctionParser = new Map<Pair<String, ParameterStatement>, FunctionStatement>(){
-        public FunctionStatement map(Pair<String, ParameterStatement> pair) {
-            return new FunctionStatement(pair.a, pair.b);
-        }
-    };
-    
-    protected static final Map<Tuple3<FromStatement, SetStatement, FunctionStatement>, Statement> StatementParser = new Map<Tuple3<FromStatement, SetStatement, FunctionStatement>, Statement>(){
-        public Statement map(Tuple3<FromStatement, SetStatement, FunctionStatement> tuple) {
-            return new Statement(tuple.a, tuple.b, tuple.c);
-        }
-    };
-    
-    protected static final Terminals OPERATORS = Terminals.operators("(", ")");
-    protected static final Parser<?> TOKENIZER = or(
-        OPERATORS.tokenizer(),
-        Terminals.StringLiteral.PARSER,
-        Terminals.Identifier.TOKENIZER,
-        Terminals.DecimalLiteral.TOKENIZER
-    );
-    
-    protected static final Parser<List<Void>> WHITESPACES = Scanners.WHITESPACES.many();
-    // LETTER ::= <identifier>
-    protected static final Parser<String> LETTER = Scanners.IDENTIFIER;
-    // KEY ::= <LETTER>+ ":" <LETTER>
-    protected static final Parser<Key> KEY = between(LETTER, string(":"), LETTER).source().map(KeyParser);
-    // FROM ::= "from" <KEY>
-    protected static final Parser<FromStatement> FROM = sequence(stringCaseInsensitive("FROM"), WHITESPACES, KEY).map(FromStatementParser);
-    // SET ::= <FROM> (IN | NOT)
-    protected static final Parser<SetStatement> SET = tuple(WHITESPACES, setFunctions(), WHITESPACES).map(SetStatementParser);
-    // PARAMETER ::= <KEY> | <single_quote_str> | <LETTER> | <decimal>
-    protected static final Parser<String> PARAMETER = KEY.source().or(Scanners.SINGLE_QUOTE_STRING).or(LETTER).or(Scanners.DECIMAL);
-    // skip(PARAMETER_DELIMTER) ::= <WHITESPACE>? "," <WHITESPACE>
-    protected static final Parser<List<Void>> PARAMETER_DELIMTER = sequence(WHITESPACES.optional(), string(","), WHITESPACES);
-    // FUNCTION_ARGS ::= <PARAMETER> | <PARAMETER>, <PARAMETER>
-    protected static final Parser<ArgumentsStatement> FUNCTION_ARGS = PARAMETER.sepBy(PARAMETER_DELIMTER).map(ArgumentsParser);
-    // ARGS_OPEN ::= <WHITESPACE>? "(" <WHITESPACE>
-    protected static final Parser<List<Void>> ARGS_OPEN = sequence(WHITESPACES.optional(), string("("), WHITESPACES);
-    // ARGS_CLOE ::= <WHITESPACE>? ")" <WHITESPACE>
-    protected static final Parser<List<Void>> ARGS_CLOSE = sequence(WHITESPACES.optional(), string(")"), WHITESPACES);
-    // FUNCTION_PARAMETER ::= "(" <FUNCTION_ARGS> ")"
-    protected static final Parser<ParameterStatement> FUNCTION_PARAMTER = tuple(ARGS_OPEN, FUNCTION_ARGS, ARGS_CLOSE).map(FunctionParameterParser);
-    // FUNCTION ::= <FUNCTION_NAME> "(" <FUNCTION_PARAMTER> ")"
-    protected static final Parser<FunctionStatement> FUNCTION = tuple(LETTER, FUNCTION_PARAMTER).map(FunctionParser);
-    // STATEMENT ::= <FROM> <SET> <FUNCTION>
-    protected static final Parser<Statement> STATEMENT = tuple(FROM, SET, FUNCTION).map(StatementParser);
-    // PARSER ::= parser
-    protected static final Parser<Statement> PARSER = parser(STATEMENT);
-    
-    protected static Parser<SetFunction> setFunctions(){
-        return string(SetFunction.IN.name())
-            .or(string(SetFunction.NOT.name()))
-            .source().map(SetFunctionNameParser);
+    public QueryHandler(Context context){
+        this.context = context;
     }
     
-    protected static Parser<Statement> parser(Parser<Statement> atom){
-        Parser.Reference<Statement> ref = Parser.newReference();
-        Parser<Statement> unit = ref.lazy().between(string("("), string(")")).or(atom);
-        Parser<Statement> parser = new OperatorTable<Statement>().build(unit);
-        ref.set(parser);
-        return parser;
+    protected MemcachedClient createMemcachedClient(){
+        MemcachedClient client = new MemcachedClient();
+        MemcachedServerList servers = client.getServerList();
+        servers.parse(context.getMemcached());
+        servers.push();
+        return client;
     }
     
-    public static void main(String...args){
-        System.out.println(KEY.parse("A:B"));
-        System.out.println(FROM.parse("from A:B"));
-        System.out.println(FUNCTION_ARGS.parse("aaa"));
-        System.out.println(FUNCTION_ARGS.parse("123,456"));
-        System.out.println(FUNCTION_ARGS.parse("A:B,C:D"));
-        System.out.println(FUNCTION_ARGS.parse("A:B, C:D"));
-        System.out.println(FUNCTION_ARGS.parse("A:B , C:D"));
-        System.out.println(FUNCTION_PARAMTER.parse("(1,2)"));
-        System.out.println(FUNCTION_PARAMTER.parse("(1, 2, 3)"));
-        System.out.println(FUNCTION.parse("hoge(1, 2, 3)"));
-        System.out.println(FUNCTION.parse("FOO (a, b, c)"));
-        System.out.println(FUNCTION.parse("helloWorld (A:B, C:D, E:F)"));
+    public Response.Get get(RpcController controller, Request.Get request) throws ServiceException {
+        String query = request.getQuery();
+        QueryParser parser = new QueryParser();
+        try {
+            FunctionContext ctx = new FunctionContext();
+            ctx.setClient(createMemcachedClient());
+            ctx.setHashFunction(hashFunction);
+            ctx.setTagger(tagger);
+            FunctionFactoryFactory factory = new FunctionFactoryFactory(ctx);
+            
+            NodeVisitor visitor = new NodeVisitor();
+            Statement stmt = parser.parse(query);
+            List<String> results = stmt.accept(visitor, factory);
+            
+            return Response.Get.newBuilder().addAllValues(results).build();
+        } catch(ParseException e){
+            throw new ServiceException(e.getMessage());
+        }
+    }
+    
+    protected static class FunctionFactoryFactory {
         
-        System.out.println(PARSER.parse("FROM A:B IN DATA(C:D)"));
-        System.out.println(PARSER.parse("FROM A:B IN VALUES(1, 2, 3)"));
-        System.out.println(PARSER.parse("FROM A:B IN GEOPOINT(1.123, 2.234)"));
-        System.out.println(PARSER.parse("FROM A:B IN GEOPOINT(1.123, 2.234, 5)"));
-        System.out.println(PARSER.parse("FROM A:B IN MECAB('hello world')"));
-        System.out.println(PARSER.parse("FROM A:B IN BIGRAM('hello world')"));
-        System.out.println(PARSER.parse("FROM A:B IN GRAM('hello world', 2)"));
-    }
-    
-    protected static enum SetFunction {
-        IN,
-        NOT
-    }
-    
-    protected static class Key {
-        private final String namespace;
-        private final String key;
-        private Key(String namespace, String key){
-            this.namespace = namespace;
-            this.key = key;
+        private final FunctionContext context;
+        
+        private FunctionFactoryFactory(FunctionContext context){
+            this.context = context;
         }
-        @Override
-        public String toString(){
-            StringBuilder buf = new StringBuilder("Key{");
-            buf.append("namespace=").append(namespace).append(",");
-            buf.append("key=").append(key);
-            buf.append("}");
-            return buf.toString();
+        
+        public FunctionFactory create(){
+            return new FunctionFactory(context);
         }
     }
     
-    protected static class FromStatement {
-        private final Key key;
-        private FromStatement(Key key){
-            this.key = key;
+    protected static class NodeVisitor implements Visitor<List<String>, FunctionFactoryFactory> {
+        
+        private String key;
+        
+        private List<String> argsValue;
+        
+        private InternalFunction function;
+        
+        public List<String> visit(ArgumentsNode node, FunctionFactoryFactory data) {
+            this.argsValue = node.getValues();
+            return null;
         }
-        @Override
-        public String toString(){
-            StringBuilder buf = new StringBuilder("FromStatement{");
-            buf.append("key=").append(key);
-            buf.append("}");
-            return buf.toString();
-        }
-    }
 
-    protected static class SetStatement {
-        private final SetFunction set;
-        private SetStatement(SetFunction set){
-            this.set = set;
+        public List<String> visit(FunctionNode node, FunctionFactoryFactory data) {
+            QueryFunction queryFunc = QueryFunction.valueOf(node.getFunctionName());
+            this.function = queryFunc.create(data.create());
+            return node.getParameter().accept(this, data);
         }
-        @Override
-        public String toString(){
-            StringBuilder buf = new StringBuilder("SetStatement{");
-            buf.append("set=").append(set);
-            buf.append("}");
-            return buf.toString();
+
+        public List<String> visit(ParameterNode node, FunctionFactoryFactory data) {
+            return node.getArgs().accept(this, data);
+        }
+
+        public List<String> visit(SetNode node, FunctionFactoryFactory data) {
+            return node.getSet().each(new Switch(function, key, argsValue));
+        }
+
+        public List<String> visit(KeyNode node, FunctionFactoryFactory data) {
+            this.key = node.getKey();
+            return null;
+        }
+        
+        public List<String> visit(FromNode node, FunctionFactoryFactory data) {
+            return node.getKey().accept(this, data);
+        }
+
+        public List<String> visit(Statement node, FunctionFactoryFactory data) {
+            node.getFrom().accept(this, data);
+            node.getFunction().accept(this, data);
+            return node.getSet().accept(this, data);
         }
     }
     
-    protected static class ArgumentsStatement {
-        private final List<String> values;
-        private ArgumentsStatement(List<String> values){
-            this.values = values;
+    protected static class FunctionFactory implements QueryFunction.Factory {
+
+        private final FunctionContext context;
+        
+        private FunctionFactory(FunctionContext context){
+            this.context = context;
         }
-        @Override
-        public String toString(){
-            StringBuilder buf = new StringBuilder("ArgumentsStatement{");
-            buf.append("values=").append(values);
-            buf.append("}");
-            return buf.toString();
+        public InternalFunction createBigram() {
+            return new GramFunction(context, 2);
+        }
+        
+        public InternalFunction createGram() {
+            return new GramFunction(context);
+        }
+
+        public InternalFunction createData() {
+            return new DataFunction(context);
+        }
+
+        public InternalFunction createGeoPoint() {
+            return new GeoPointFunction(context);
+        }
+
+        public InternalFunction createMecab() {
+            return new MecabFunction(context);
+        }
+
+        public InternalFunction createValue() {
+            return new ValueFunction(context);
         }
     }
     
-    protected static class ParameterStatement {
-        private final ArgumentsStatement args;
-        private ParameterStatement(ArgumentsStatement args){
+    protected static class Switch implements SetFunction.Switch<List<String>> {
+        
+        private final InternalFunction function;
+        
+        private final String key;
+        
+        private final List<String> args;
+        
+        public Switch(InternalFunction function, String key, List<String> args){
+            this.function = function;
+            this.key = key;
             this.args = args;
         }
-        @Override
-        public String toString(){
-            StringBuilder buf = new StringBuilder("FunctionParameter{");
-            buf.append("args=").append(args);
-            buf.append("}");
-            return buf.toString();
+        public List<String> caseIn() {
+            return function.in(key, args);
+        }
+        public List<String> caseNot() {
+            return function.not(key, args);
         }
     }
-    
-    protected static class FunctionStatement {
-        private final String functionName;
-        private final ParameterStatement parameter;
-        private FunctionStatement(String functionName, ParameterStatement parameter){
-            this.functionName = functionName;
-            this.parameter = parameter;
-        }
-        @Override
-        public String toString(){
-            StringBuilder buf = new StringBuilder("FunctionStatement{");
-            buf.append("functionName=").append(functionName).append(",");
-            buf.append("parameter=").append(parameter);
-            buf.append("}");
-            return buf.toString();
-        }
-    }
-    
-    protected static class Statement {
-        private final FromStatement from;
-        private final SetStatement set;
-        private final FunctionStatement function;
-        private Statement(FromStatement from, SetStatement set, FunctionStatement function){
-            this.from = from;
-            this.set = set;
-            this.function = function;
-        }
-        public String toString(){
-            StringBuilder buf = new StringBuilder("Statement{");
-            buf.append("from=").append(from).append(",");
-            buf.append("set=").append(set).append(",");
-            buf.append("function=").append(function);
-            buf.append("}");
-            return buf.toString();
-        }
-    }
-    
 }

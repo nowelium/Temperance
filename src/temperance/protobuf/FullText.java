@@ -120,12 +120,12 @@ public final class FullText {
         return temperance.protobuf.FullText.internal_static_temperance_protobuf_Request_Set_fieldAccessorTable;
       }
       
-      // required string namespace = 1;
-      public static final int NAMESPACE_FIELD_NUMBER = 1;
-      private boolean hasNamespace;
-      private java.lang.String namespace_ = "";
-      public boolean hasNamespace() { return hasNamespace; }
-      public java.lang.String getNamespace() { return namespace_; }
+      // required string key = 1;
+      public static final int KEY_FIELD_NUMBER = 1;
+      private boolean hasKey;
+      private java.lang.String key_ = "";
+      public boolean hasKey() { return hasKey; }
+      public java.lang.String getKey() { return key_; }
       
       // required string str = 2;
       public static final int STR_FIELD_NUMBER = 2;
@@ -149,7 +149,7 @@ public final class FullText {
       public temperance.protobuf.FullText.Request.Parser getParser() { return parser_; }
       
       public final boolean isInitialized() {
-        if (!hasNamespace) return false;
+        if (!hasKey) return false;
         if (!hasStr) return false;
         if (!hasValue) return false;
         return true;
@@ -157,8 +157,8 @@ public final class FullText {
       
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (hasNamespace()) {
-          output.writeString(1, getNamespace());
+        if (hasKey()) {
+          output.writeString(1, getKey());
         }
         if (hasStr()) {
           output.writeString(2, getStr());
@@ -178,9 +178,9 @@ public final class FullText {
         if (size != -1) return size;
       
         size = 0;
-        if (hasNamespace()) {
+        if (hasKey()) {
           size += com.google.protobuf.CodedOutputStream
-            .computeStringSize(1, getNamespace());
+            .computeStringSize(1, getKey());
         }
         if (hasStr()) {
           size += com.google.protobuf.CodedOutputStream
@@ -343,8 +343,8 @@ public final class FullText {
         
         public Builder mergeFrom(temperance.protobuf.FullText.Request.Set other) {
           if (other == temperance.protobuf.FullText.Request.Set.getDefaultInstance()) return this;
-          if (other.hasNamespace()) {
-            setNamespace(other.getNamespace());
+          if (other.hasKey()) {
+            setKey(other.getKey());
           }
           if (other.hasStr()) {
             setStr(other.getStr());
@@ -381,7 +381,7 @@ public final class FullText {
                 break;
               }
               case 10: {
-                setNamespace(input.readString());
+                setKey(input.readString());
                 break;
               }
               case 18: {
@@ -407,24 +407,24 @@ public final class FullText {
         }
         
         
-        // required string namespace = 1;
-        public boolean hasNamespace() {
-          return result.hasNamespace();
+        // required string key = 1;
+        public boolean hasKey() {
+          return result.hasKey();
         }
-        public java.lang.String getNamespace() {
-          return result.getNamespace();
+        public java.lang.String getKey() {
+          return result.getKey();
         }
-        public Builder setNamespace(java.lang.String value) {
+        public Builder setKey(java.lang.String value) {
           if (value == null) {
     throw new NullPointerException();
   }
-  result.hasNamespace = true;
-          result.namespace_ = value;
+  result.hasKey = true;
+          result.key_ = value;
           return this;
         }
-        public Builder clearNamespace() {
-          result.hasNamespace = false;
-          result.namespace_ = getDefaultInstance().getNamespace();
+        public Builder clearKey() {
+          result.hasKey = false;
+          result.key_ = getDefaultInstance().getKey();
           return this;
         }
         
@@ -525,12 +525,12 @@ public final class FullText {
         return temperance.protobuf.FullText.internal_static_temperance_protobuf_Request_Get_fieldAccessorTable;
       }
       
-      // required string namespace = 1;
-      public static final int NAMESPACE_FIELD_NUMBER = 1;
-      private boolean hasNamespace;
-      private java.lang.String namespace_ = "";
-      public boolean hasNamespace() { return hasNamespace; }
-      public java.lang.String getNamespace() { return namespace_; }
+      // required string key = 1;
+      public static final int KEY_FIELD_NUMBER = 1;
+      private boolean hasKey;
+      private java.lang.String key_ = "";
+      public boolean hasKey() { return hasKey; }
+      public java.lang.String getKey() { return key_; }
       
       // required string str = 2;
       public static final int STR_FIELD_NUMBER = 2;
@@ -547,15 +547,15 @@ public final class FullText {
       public temperance.protobuf.FullText.Request.Parser getParser() { return parser_; }
       
       public final boolean isInitialized() {
-        if (!hasNamespace) return false;
+        if (!hasKey) return false;
         if (!hasStr) return false;
         return true;
       }
       
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (hasNamespace()) {
-          output.writeString(1, getNamespace());
+        if (hasKey()) {
+          output.writeString(1, getKey());
         }
         if (hasStr()) {
           output.writeString(2, getStr());
@@ -572,9 +572,9 @@ public final class FullText {
         if (size != -1) return size;
       
         size = 0;
-        if (hasNamespace()) {
+        if (hasKey()) {
           size += com.google.protobuf.CodedOutputStream
-            .computeStringSize(1, getNamespace());
+            .computeStringSize(1, getKey());
         }
         if (hasStr()) {
           size += com.google.protobuf.CodedOutputStream
@@ -733,8 +733,8 @@ public final class FullText {
         
         public Builder mergeFrom(temperance.protobuf.FullText.Request.Get other) {
           if (other == temperance.protobuf.FullText.Request.Get.getDefaultInstance()) return this;
-          if (other.hasNamespace()) {
-            setNamespace(other.getNamespace());
+          if (other.hasKey()) {
+            setKey(other.getKey());
           }
           if (other.hasStr()) {
             setStr(other.getStr());
@@ -768,7 +768,7 @@ public final class FullText {
                 break;
               }
               case 10: {
-                setNamespace(input.readString());
+                setKey(input.readString());
                 break;
               }
               case 18: {
@@ -790,24 +790,24 @@ public final class FullText {
         }
         
         
-        // required string namespace = 1;
-        public boolean hasNamespace() {
-          return result.hasNamespace();
+        // required string key = 1;
+        public boolean hasKey() {
+          return result.hasKey();
         }
-        public java.lang.String getNamespace() {
-          return result.getNamespace();
+        public java.lang.String getKey() {
+          return result.getKey();
         }
-        public Builder setNamespace(java.lang.String value) {
+        public Builder setKey(java.lang.String value) {
           if (value == null) {
     throw new NullPointerException();
   }
-  result.hasNamespace = true;
-          result.namespace_ = value;
+  result.hasKey = true;
+          result.key_ = value;
           return this;
         }
-        public Builder clearNamespace() {
-          result.hasNamespace = false;
-          result.namespace_ = getDefaultInstance().getNamespace();
+        public Builder clearKey() {
+          result.hasKey = false;
+          result.key_ = getDefaultInstance().getKey();
           return this;
         }
         
@@ -2194,20 +2194,20 @@ public final class FullText {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\016FullText.proto\022\023temperance.protobuf\"\200\002" +
-      "\n\007Request\032p\n\003Set\022\021\n\tnamespace\030\001 \002(\t\022\013\n\003s" +
-      "tr\030\002 \002(\t\022\r\n\005value\030\003 \002(\t\022:\n\006parser\030\004 \001(\0162" +
-      "#.temperance.protobuf.Request.Parser:\005ME" +
-      "CAB\032a\n\003Get\022\021\n\tnamespace\030\001 \002(\t\022\013\n\003str\030\002 \002" +
-      "(\t\022:\n\006parser\030\003 \001(\0162#.temperance.protobuf" +
-      ".Request.Parser:\005MECAB\" \n\006Parser\022\t\n\005MECA" +
-      "B\020\000\022\013\n\007BI_GRAM\020\001\"9\n\010Response\032\026\n\003Set\022\017\n\007s" +
-      "ucceed\030\001 \002(\010\032\025\n\003Get\022\016\n\006values\030\001 \003(\t2\254\001\n\017" +
-      "FullTextService\022J\n\003set\022 .temperance.prot",
-      "obuf.Request.Set\032!.temperance.protobuf.R" +
-      "esponse.Set\022M\n\006search\022 .temperance.proto" +
-      "buf.Request.Get\032!.temperance.protobuf.Re" +
-      "sponse.GetB\002H\001"
+      "\n\016FullText.proto\022\023temperance.protobuf\"\364\001" +
+      "\n\007Request\032j\n\003Set\022\013\n\003key\030\001 \002(\t\022\013\n\003str\030\002 \002" +
+      "(\t\022\r\n\005value\030\003 \002(\t\022:\n\006parser\030\004 \001(\0162#.temp" +
+      "erance.protobuf.Request.Parser:\005MECAB\032[\n" +
+      "\003Get\022\013\n\003key\030\001 \002(\t\022\013\n\003str\030\002 \002(\t\022:\n\006parser" +
+      "\030\003 \001(\0162#.temperance.protobuf.Request.Par" +
+      "ser:\005MECAB\" \n\006Parser\022\t\n\005MECAB\020\000\022\013\n\007BI_GR" +
+      "AM\020\001\"9\n\010Response\032\026\n\003Set\022\017\n\007succeed\030\001 \002(\010" +
+      "\032\025\n\003Get\022\016\n\006values\030\001 \003(\t2\254\001\n\017FullTextServ" +
+      "ice\022J\n\003set\022 .temperance.protobuf.Request",
+      ".Set\032!.temperance.protobuf.Response.Set\022" +
+      "M\n\006search\022 .temperance.protobuf.Request." +
+      "Get\032!.temperance.protobuf.Response.GetB\002" +
+      "H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -2227,7 +2227,7 @@ public final class FullText {
           internal_static_temperance_protobuf_Request_Set_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_temperance_protobuf_Request_Set_descriptor,
-              new java.lang.String[] { "Namespace", "Str", "Value", "Parser", },
+              new java.lang.String[] { "Key", "Str", "Value", "Parser", },
               temperance.protobuf.FullText.Request.Set.class,
               temperance.protobuf.FullText.Request.Set.Builder.class);
           internal_static_temperance_protobuf_Request_Get_descriptor =
@@ -2235,7 +2235,7 @@ public final class FullText {
           internal_static_temperance_protobuf_Request_Get_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_temperance_protobuf_Request_Get_descriptor,
-              new java.lang.String[] { "Namespace", "Str", "Parser", },
+              new java.lang.String[] { "Key", "Str", "Parser", },
               temperance.protobuf.FullText.Request.Get.class,
               temperance.protobuf.FullText.Request.Get.Builder.class);
           internal_static_temperance_protobuf_Response_descriptor =

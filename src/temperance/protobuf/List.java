@@ -55,29 +55,21 @@ public final class List {
         return temperance.protobuf.List.internal_static_temperance_protobuf_Request_Add_fieldAccessorTable;
       }
       
-      // required string namespace = 1;
-      public static final int NAMESPACE_FIELD_NUMBER = 1;
-      private boolean hasNamespace;
-      private java.lang.String namespace_ = "";
-      public boolean hasNamespace() { return hasNamespace; }
-      public java.lang.String getNamespace() { return namespace_; }
-      
-      // required string key = 2;
-      public static final int KEY_FIELD_NUMBER = 2;
+      // required string key = 1;
+      public static final int KEY_FIELD_NUMBER = 1;
       private boolean hasKey;
       private java.lang.String key_ = "";
       public boolean hasKey() { return hasKey; }
       public java.lang.String getKey() { return key_; }
       
-      // required string value = 3;
-      public static final int VALUE_FIELD_NUMBER = 3;
+      // required string value = 2;
+      public static final int VALUE_FIELD_NUMBER = 2;
       private boolean hasValue;
       private java.lang.String value_ = "";
       public boolean hasValue() { return hasValue; }
       public java.lang.String getValue() { return value_; }
       
       public final boolean isInitialized() {
-        if (!hasNamespace) return false;
         if (!hasKey) return false;
         if (!hasValue) return false;
         return true;
@@ -85,14 +77,11 @@ public final class List {
       
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (hasNamespace()) {
-          output.writeString(1, getNamespace());
-        }
         if (hasKey()) {
-          output.writeString(2, getKey());
+          output.writeString(1, getKey());
         }
         if (hasValue()) {
-          output.writeString(3, getValue());
+          output.writeString(2, getValue());
         }
         getUnknownFields().writeTo(output);
       }
@@ -103,17 +92,13 @@ public final class List {
         if (size != -1) return size;
       
         size = 0;
-        if (hasNamespace()) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeStringSize(1, getNamespace());
-        }
         if (hasKey()) {
           size += com.google.protobuf.CodedOutputStream
-            .computeStringSize(2, getKey());
+            .computeStringSize(1, getKey());
         }
         if (hasValue()) {
           size += com.google.protobuf.CodedOutputStream
-            .computeStringSize(3, getValue());
+            .computeStringSize(2, getValue());
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -264,9 +249,6 @@ public final class List {
         
         public Builder mergeFrom(temperance.protobuf.List.Request.Add other) {
           if (other == temperance.protobuf.List.Request.Add.getDefaultInstance()) return this;
-          if (other.hasNamespace()) {
-            setNamespace(other.getNamespace());
-          }
           if (other.hasKey()) {
             setKey(other.getKey());
           }
@@ -299,14 +281,10 @@ public final class List {
                 break;
               }
               case 10: {
-                setNamespace(input.readString());
-                break;
-              }
-              case 18: {
                 setKey(input.readString());
                 break;
               }
-              case 26: {
+              case 18: {
                 setValue(input.readString());
                 break;
               }
@@ -315,28 +293,7 @@ public final class List {
         }
         
         
-        // required string namespace = 1;
-        public boolean hasNamespace() {
-          return result.hasNamespace();
-        }
-        public java.lang.String getNamespace() {
-          return result.getNamespace();
-        }
-        public Builder setNamespace(java.lang.String value) {
-          if (value == null) {
-    throw new NullPointerException();
-  }
-  result.hasNamespace = true;
-          result.namespace_ = value;
-          return this;
-        }
-        public Builder clearNamespace() {
-          result.hasNamespace = false;
-          result.namespace_ = getDefaultInstance().getNamespace();
-          return this;
-        }
-        
-        // required string key = 2;
+        // required string key = 1;
         public boolean hasKey() {
           return result.hasKey();
         }
@@ -357,7 +314,7 @@ public final class List {
           return this;
         }
         
-        // required string value = 3;
+        // required string value = 2;
         public boolean hasValue() {
           return result.hasValue();
         }
@@ -412,53 +369,42 @@ public final class List {
         return temperance.protobuf.List.internal_static_temperance_protobuf_Request_Get_fieldAccessorTable;
       }
       
-      // required string namespace = 1;
-      public static final int NAMESPACE_FIELD_NUMBER = 1;
-      private boolean hasNamespace;
-      private java.lang.String namespace_ = "";
-      public boolean hasNamespace() { return hasNamespace; }
-      public java.lang.String getNamespace() { return namespace_; }
-      
-      // required string key = 2;
-      public static final int KEY_FIELD_NUMBER = 2;
+      // required string key = 1;
+      public static final int KEY_FIELD_NUMBER = 1;
       private boolean hasKey;
       private java.lang.String key_ = "";
       public boolean hasKey() { return hasKey; }
       public java.lang.String getKey() { return key_; }
       
-      // optional uint64 offset = 3 [default = 0];
-      public static final int OFFSET_FIELD_NUMBER = 3;
+      // optional uint64 offset = 2 [default = 0];
+      public static final int OFFSET_FIELD_NUMBER = 2;
       private boolean hasOffset;
       private long offset_ = 0L;
       public boolean hasOffset() { return hasOffset; }
       public long getOffset() { return offset_; }
       
-      // optional uint64 limit = 4 [default = 1000];
-      public static final int LIMIT_FIELD_NUMBER = 4;
+      // optional uint64 limit = 3 [default = 1000];
+      public static final int LIMIT_FIELD_NUMBER = 3;
       private boolean hasLimit;
       private long limit_ = 1000L;
       public boolean hasLimit() { return hasLimit; }
       public long getLimit() { return limit_; }
       
       public final boolean isInitialized() {
-        if (!hasNamespace) return false;
         if (!hasKey) return false;
         return true;
       }
       
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (hasNamespace()) {
-          output.writeString(1, getNamespace());
-        }
         if (hasKey()) {
-          output.writeString(2, getKey());
+          output.writeString(1, getKey());
         }
         if (hasOffset()) {
-          output.writeUInt64(3, getOffset());
+          output.writeUInt64(2, getOffset());
         }
         if (hasLimit()) {
-          output.writeUInt64(4, getLimit());
+          output.writeUInt64(3, getLimit());
         }
         getUnknownFields().writeTo(output);
       }
@@ -469,21 +415,17 @@ public final class List {
         if (size != -1) return size;
       
         size = 0;
-        if (hasNamespace()) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeStringSize(1, getNamespace());
-        }
         if (hasKey()) {
           size += com.google.protobuf.CodedOutputStream
-            .computeStringSize(2, getKey());
+            .computeStringSize(1, getKey());
         }
         if (hasOffset()) {
           size += com.google.protobuf.CodedOutputStream
-            .computeUInt64Size(3, getOffset());
+            .computeUInt64Size(2, getOffset());
         }
         if (hasLimit()) {
           size += com.google.protobuf.CodedOutputStream
-            .computeUInt64Size(4, getLimit());
+            .computeUInt64Size(3, getLimit());
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -634,9 +576,6 @@ public final class List {
         
         public Builder mergeFrom(temperance.protobuf.List.Request.Get other) {
           if (other == temperance.protobuf.List.Request.Get.getDefaultInstance()) return this;
-          if (other.hasNamespace()) {
-            setNamespace(other.getNamespace());
-          }
           if (other.hasKey()) {
             setKey(other.getKey());
           }
@@ -672,18 +611,14 @@ public final class List {
                 break;
               }
               case 10: {
-                setNamespace(input.readString());
-                break;
-              }
-              case 18: {
                 setKey(input.readString());
                 break;
               }
-              case 24: {
+              case 16: {
                 setOffset(input.readUInt64());
                 break;
               }
-              case 32: {
+              case 24: {
                 setLimit(input.readUInt64());
                 break;
               }
@@ -692,28 +627,7 @@ public final class List {
         }
         
         
-        // required string namespace = 1;
-        public boolean hasNamespace() {
-          return result.hasNamespace();
-        }
-        public java.lang.String getNamespace() {
-          return result.getNamespace();
-        }
-        public Builder setNamespace(java.lang.String value) {
-          if (value == null) {
-    throw new NullPointerException();
-  }
-  result.hasNamespace = true;
-          result.namespace_ = value;
-          return this;
-        }
-        public Builder clearNamespace() {
-          result.hasNamespace = false;
-          result.namespace_ = getDefaultInstance().getNamespace();
-          return this;
-        }
-        
-        // required string key = 2;
+        // required string key = 1;
         public boolean hasKey() {
           return result.hasKey();
         }
@@ -734,7 +648,7 @@ public final class List {
           return this;
         }
         
-        // optional uint64 offset = 3 [default = 0];
+        // optional uint64 offset = 2 [default = 0];
         public boolean hasOffset() {
           return result.hasOffset();
         }
@@ -752,7 +666,7 @@ public final class List {
           return this;
         }
         
-        // optional uint64 limit = 4 [default = 1000];
+        // optional uint64 limit = 3 [default = 1000];
         public boolean hasLimit() {
           return result.hasLimit();
         }
@@ -804,33 +718,22 @@ public final class List {
         return temperance.protobuf.List.internal_static_temperance_protobuf_Request_Count_fieldAccessorTable;
       }
       
-      // required string namespace = 1;
-      public static final int NAMESPACE_FIELD_NUMBER = 1;
-      private boolean hasNamespace;
-      private java.lang.String namespace_ = "";
-      public boolean hasNamespace() { return hasNamespace; }
-      public java.lang.String getNamespace() { return namespace_; }
-      
-      // required string key = 2;
-      public static final int KEY_FIELD_NUMBER = 2;
+      // required string key = 1;
+      public static final int KEY_FIELD_NUMBER = 1;
       private boolean hasKey;
       private java.lang.String key_ = "";
       public boolean hasKey() { return hasKey; }
       public java.lang.String getKey() { return key_; }
       
       public final boolean isInitialized() {
-        if (!hasNamespace) return false;
         if (!hasKey) return false;
         return true;
       }
       
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (hasNamespace()) {
-          output.writeString(1, getNamespace());
-        }
         if (hasKey()) {
-          output.writeString(2, getKey());
+          output.writeString(1, getKey());
         }
         getUnknownFields().writeTo(output);
       }
@@ -841,13 +744,9 @@ public final class List {
         if (size != -1) return size;
       
         size = 0;
-        if (hasNamespace()) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeStringSize(1, getNamespace());
-        }
         if (hasKey()) {
           size += com.google.protobuf.CodedOutputStream
-            .computeStringSize(2, getKey());
+            .computeStringSize(1, getKey());
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -998,9 +897,6 @@ public final class List {
         
         public Builder mergeFrom(temperance.protobuf.List.Request.Count other) {
           if (other == temperance.protobuf.List.Request.Count.getDefaultInstance()) return this;
-          if (other.hasNamespace()) {
-            setNamespace(other.getNamespace());
-          }
           if (other.hasKey()) {
             setKey(other.getKey());
           }
@@ -1030,10 +926,6 @@ public final class List {
                 break;
               }
               case 10: {
-                setNamespace(input.readString());
-                break;
-              }
-              case 18: {
                 setKey(input.readString());
                 break;
               }
@@ -1042,28 +934,7 @@ public final class List {
         }
         
         
-        // required string namespace = 1;
-        public boolean hasNamespace() {
-          return result.hasNamespace();
-        }
-        public java.lang.String getNamespace() {
-          return result.getNamespace();
-        }
-        public Builder setNamespace(java.lang.String value) {
-          if (value == null) {
-    throw new NullPointerException();
-  }
-  result.hasNamespace = true;
-          result.namespace_ = value;
-          return this;
-        }
-        public Builder clearNamespace() {
-          result.hasNamespace = false;
-          result.namespace_ = getDefaultInstance().getNamespace();
-          return this;
-        }
-        
-        // required string key = 2;
+        // required string key = 1;
         public boolean hasKey() {
           return result.hasKey();
         }
@@ -2768,20 +2639,19 @@ public final class List {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\nList.proto\022\023temperance.protobuf\"\267\001\n\007Re" +
-      "quest\0324\n\003Add\022\021\n\tnamespace\030\001 \002(\t\022\013\n\003key\030\002" +
-      " \002(\t\022\r\n\005value\030\003 \002(\t\032M\n\003Get\022\021\n\tnamespace\030" +
-      "\001 \002(\t\022\013\n\003key\030\002 \002(\t\022\021\n\006offset\030\003 \001(\004:\0010\022\023\n" +
-      "\005limit\030\004 \001(\004:\0041000\032\'\n\005Count\022\021\n\tnamespace" +
-      "\030\001 \002(\t\022\013\n\003key\030\002 \002(\t\"Q\n\010Response\032\026\n\003Add\022\017" +
-      "\n\007succeed\030\001 \002(\010\032\025\n\003Get\022\016\n\006values\030\001 \003(\t\032\026" +
-      "\n\005Count\022\r\n\005count\030\001 \002(\0042\367\001\n\013ListService\022J" +
-      "\n\003add\022 .temperance.protobuf.Request.Add\032" +
-      "!.temperance.protobuf.Response.Add\022J\n\003ge",
-      "t\022 .temperance.protobuf.Request.Get\032!.te" +
-      "mperance.protobuf.Response.Get\022P\n\005count\022" +
-      "\".temperance.protobuf.Request.Count\032#.te" +
-      "mperance.protobuf.Response.CountB\002H\001"
+      "\n\nList.proto\022\023temperance.protobuf\"~\n\007Req" +
+      "uest\032!\n\003Add\022\013\n\003key\030\001 \002(\t\022\r\n\005value\030\002 \002(\t\032" +
+      ":\n\003Get\022\013\n\003key\030\001 \002(\t\022\021\n\006offset\030\002 \001(\004:\0010\022\023" +
+      "\n\005limit\030\003 \001(\004:\0041000\032\024\n\005Count\022\013\n\003key\030\001 \002(" +
+      "\t\"Q\n\010Response\032\026\n\003Add\022\017\n\007succeed\030\001 \002(\010\032\025\n" +
+      "\003Get\022\016\n\006values\030\001 \003(\t\032\026\n\005Count\022\r\n\005count\030\001" +
+      " \002(\0042\367\001\n\013ListService\022J\n\003add\022 .temperance" +
+      ".protobuf.Request.Add\032!.temperance.proto" +
+      "buf.Response.Add\022J\n\003get\022 .temperance.pro" +
+      "tobuf.Request.Get\032!.temperance.protobuf.",
+      "Response.Get\022P\n\005count\022\".temperance.proto" +
+      "buf.Request.Count\032#.temperance.protobuf." +
+      "Response.CountB\002H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -2801,7 +2671,7 @@ public final class List {
           internal_static_temperance_protobuf_Request_Add_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_temperance_protobuf_Request_Add_descriptor,
-              new java.lang.String[] { "Namespace", "Key", "Value", },
+              new java.lang.String[] { "Key", "Value", },
               temperance.protobuf.List.Request.Add.class,
               temperance.protobuf.List.Request.Add.Builder.class);
           internal_static_temperance_protobuf_Request_Get_descriptor =
@@ -2809,7 +2679,7 @@ public final class List {
           internal_static_temperance_protobuf_Request_Get_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_temperance_protobuf_Request_Get_descriptor,
-              new java.lang.String[] { "Namespace", "Key", "Offset", "Limit", },
+              new java.lang.String[] { "Key", "Offset", "Limit", },
               temperance.protobuf.List.Request.Get.class,
               temperance.protobuf.List.Request.Get.Builder.class);
           internal_static_temperance_protobuf_Request_Count_descriptor =
@@ -2817,7 +2687,7 @@ public final class List {
           internal_static_temperance_protobuf_Request_Count_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_temperance_protobuf_Request_Count_descriptor,
-              new java.lang.String[] { "Namespace", "Key", },
+              new java.lang.String[] { "Key", },
               temperance.protobuf.List.Request.Count.class,
               temperance.protobuf.List.Request.Count.Builder.class);
           internal_static_temperance_protobuf_Response_descriptor =

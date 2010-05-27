@@ -9,13 +9,13 @@ message Request {
     }
 
     message Set {
-        required string namespace = 1;
+        required string key = 1;
         required string str = 2;
         required string value = 3;
         optional Parser parser = 4 [default = MECAB];
     }
     message Get {
-        required string namespace = 1;
+        required string key = 1;
         required string str = 2;
         optional Parser parser = 3 [default = MECAB];
     }
