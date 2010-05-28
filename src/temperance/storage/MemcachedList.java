@@ -54,26 +54,6 @@ public class MemcachedList {
         return Long.valueOf(result).longValue();
     }
     
-    public List<String> includeIndex(String key, List<String> indexes) throws LibMemcachedException {
-        List<String> keys = new ArrayList<String>();
-        for(String index: indexes){
-            keys.add(indexKey(key, Long.valueOf(index).longValue()));
-        }
-        return get(keys);
-    }
-    
-    public List<String> excludeIndex(String key, List<String> indexes) throws LibMemcachedException {
-        long count = count(key);
-        List<String> keys = new ArrayList<String>();
-        for(long i = 0; i < count; ++i){
-            if(indexes.contains(Long.toString(i))){
-                continue;
-            }
-            keys.add(indexKey(key, i));
-        }
-        return get(keys);
-    }
-    
     protected List<String> get(List<String> keys) throws LibMemcachedException {
         final List<String> returnValue = new ArrayList<String>();
         storage.getMulti(new Fetcher(){

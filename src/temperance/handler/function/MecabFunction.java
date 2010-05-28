@@ -6,16 +6,16 @@ import java.util.List;
 
 import libmemcached.exception.LibMemcachedException;
 
-import org.chasen.mecab.wrapper.MecabNode;
-import org.chasen.mecab.wrapper.Node;
-import org.chasen.mecab.wrapper.Path;
 import org.chasen.mecab.wrapper.Tagger;
 
 import temperance.hash.HashFunction;
 import temperance.ql.InternalFunction;
 import temperance.storage.MemcachedFullTextList;
+import temperance.util.FullTextUtil;
 
 public class MecabFunction implements InternalFunction {
+    
+    protected static final int SPLIT = 3000;
     
     protected final FunctionContext context;
     
@@ -31,10 +31,13 @@ public class MecabFunction implements InternalFunction {
         try {
             MemcachedFullTextList list = new MemcachedFullTextList(context.getClient(), key);
             List<String> returnValue = new ArrayList<String>();
-            for(MecabNode<Node, Path> node: tagger.iterator(str)){
-                long hash = hashFunction.hash(node.getSurface());
-                List<String> values = list.get(Long.toString(hash), 0, 3000);
-                returnValue.addAll(values);
+            List<Long> hashes = FullTextUtil.mecab(hashFunction, tagger, str);
+            for(Long hash: hashes){
+                String hashString = Long.toString(hash);
+                long count = list.count(hashString);
+                for(long i = 0; i < count; i += SPLIT){
+                    returnValue.addAll(list.get(hashString, i, SPLIT));
+                }
             }
             return returnValue;
         } catch(LibMemcachedException e){

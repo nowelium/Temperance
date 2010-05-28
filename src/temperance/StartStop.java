@@ -4,14 +4,17 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.Parser;
 
 import temperance.handler.Context;
+import temperance.hash.Hash;
 import temperance.server.Server;
+import temperance.server.TemperanceServer;
 
-public abstract class StartStop {
+public class StartStop {
     
     protected void start(Options options, String...args){
         start(options, new GnuParser(), args);
@@ -21,12 +24,20 @@ public abstract class StartStop {
         try {
             CommandLine cli = parser.parse(options, args, true);
             
-            String memcached = cli.getOptionValue("m");
-            String port = cli.getOptionValue("p");
+            String memcached = cli.getOptionValue("memc");
+            String mecabrc = cli.getOptionValue("mecabrc", "/opt/local/etc/mecabrc");
+            String fullTextHashFunction = Hash.MD5.name();
+            if(cli.hasOption("ft_hash_sha1")){
+                fullTextHashFunction = Hash.SHA1.name();
+            }
+            
+            String port = cli.getOptionValue("p", "17001");
             boolean daemonize = cli.hasOption("daemonize");
             
             Context ctx = new Context();
             ctx.setMemcached(memcached);
+            ctx.setMecabrc(mecabrc);
+            ctx.setFullTextHashFunction(fullTextHashFunction);
             
             Server server = createServer(ctx, daemonize, Integer.parseInt(port));
             server.start();
@@ -43,19 +54,32 @@ public abstract class StartStop {
         server.shutdown();
     }
     
-    protected abstract Server createServer(Context ctx, boolean daemonize, int port);
+    protected Server createServer(Context ctx, boolean daemonize, int port) {
+        return new TemperanceServer(ctx, daemonize, port);
+    }
     
     protected static Options createCliOptions(){
-        Option host = new Option("m", "memcached", true, "memcached server string(ex. host01:11211,host02:11211)");
-        host.setRequired(true);
+        Option memcached = new Option("memc", "memcached", true, "memcached server string(ex. host01:11211,host02:11211)");
+        memcached.setRequired(true);
+        
+        Option mecabrc = new Option("mecabrc", "mecabrc", true, "mecabrc path(ex. /etc/mecabrc)");
+        mecabrc.setRequired(false);
+        
+        OptionGroup hashFunction = new OptionGroup();
+        hashFunction.addOption(new Option("ft_hash_md5", false, "fulltext hash function MD5"));
+        hashFunction.addOption(new Option("ft_hash_sha1", false, "fulltext hash function SHA1"));
+        hashFunction.setRequired(false);
 
         Option port = new Option("p", "port", true, "server port");
         port.setRequired(true);
         
         Option daemonize = new Option("daemonize", false, "daemonize process");
+        daemonize.setRequired(false);
         
         Options options = new Options();
-        options.addOption(host);
+        options.addOption(memcached);
+        options.addOption(mecabrc);
+        options.addOptionGroup(hashFunction);
         options.addOption(port);
         options.addOption(daemonize);
         return options;
