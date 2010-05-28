@@ -30,4 +30,4 @@ LIB=$LIB:"$DIR/lib/protobuf-java-2.2.0.jar"
 LIB=$LIB:"$DIR/lib/protobuf-socket-rpc.jar"
 LIB=$LIB:"$DIR/lib/jparsec-2.0.jar"
 
-$JAVA_HOME/bin/java -cp $LIB temperance.Start -m $MEMCACHED -p 17001 -daemonize
+$JAVA_HOME/bin/java -cp $LIB temperance.Start -memc $MEMCACHED -p 17001 -daemonize
