@@ -7,6 +7,7 @@ import libmemcached.wrapper.MemcachedServerList;
 
 import org.chasen.mecab.wrapper.Tagger;
 
+import temperance.handler.function.Behavior;
 import temperance.handler.function.DataFunction;
 import temperance.handler.function.FunctionContext;
 import temperance.handler.function.GeoPointFunction;
@@ -35,7 +36,7 @@ import temperance.ql.node.Statement;
 import com.google.protobuf.RpcController;
 import com.google.protobuf.ServiceException;
 
-public class QueryHandler implements QueryService.BlockingInterface {
+public class QueryServiceHandler implements QueryService.BlockingInterface {
 
     protected final Context context;
     
@@ -43,7 +44,7 @@ public class QueryHandler implements QueryService.BlockingInterface {
     
     protected final Tagger tagger = Tagger.create("-r /opt/local/etc/mecabrc");
     
-    public QueryHandler(Context context){
+    public QueryServiceHandler(Context context){
         this.context = context;
     }
     
@@ -65,7 +66,7 @@ public class QueryHandler implements QueryService.BlockingInterface {
             ctx.setTagger(tagger);
             FunctionFactoryFactory factory = new FunctionFactoryFactory(ctx);
             
-            NodeVisitor visitor = new NodeVisitor();
+            NodeVisitor visitor = new NodeVisitor(Behavior.Select);
             Statement stmt = parser.parse(query);
             List<String> results = stmt.accept(visitor, factory);
             
@@ -73,6 +74,10 @@ public class QueryHandler implements QueryService.BlockingInterface {
         } catch(ParseException e){
             throw new ServiceException(e.getMessage());
         }
+    }
+    
+    public Response.Delete delete(RpcController controller, Request.Delete request) throws ServiceException {
+        return null;
     }
     
     protected static class FunctionFactoryFactory {
@@ -90,11 +95,17 @@ public class QueryHandler implements QueryService.BlockingInterface {
     
     protected static class NodeVisitor implements Visitor<List<String>, FunctionFactoryFactory> {
         
+        private final Behavior behavior;
+        
         private String key;
         
         private List<String> argsValue;
         
         private InternalFunction function;
+        
+        private NodeVisitor(Behavior behavior){
+            this.behavior = behavior;
+        }
         
         public List<String> visit(ArgumentsNode node, FunctionFactoryFactory data) {
             this.argsValue = node.getValues();
@@ -112,7 +123,7 @@ public class QueryHandler implements QueryService.BlockingInterface {
         }
 
         public List<String> visit(SetNode node, FunctionFactoryFactory data) {
-            return node.getSet().each(new Switch(function, key, argsValue));
+            return node.getSet().each(new Switch(behavior, function, key, argsValue));
         }
 
         public List<String> visit(KeyNode node, FunctionFactoryFactory data) {
@@ -165,22 +176,31 @@ public class QueryHandler implements QueryService.BlockingInterface {
     
     protected static class Switch implements SetFunction.Switch<List<String>> {
         
+        private final Behavior behavior;
+        
         private final InternalFunction function;
         
         private final String key;
         
         private final List<String> args;
         
-        public Switch(InternalFunction function, String key, List<String> args){
+        public Switch(Behavior behavior, InternalFunction function, String key, List<String> args){
+            this.behavior = behavior;
             this.function = function;
             this.key = key;
             this.args = args;
         }
         public List<String> caseIn() {
-            return function.in(key, args);
+            if(Behavior.Delete.equals(behavior)){
+                return function.deleteIn(key, args);
+            }
+            return function.selectIn(key, args);
         }
         public List<String> caseNot() {
-            return function.not(key, args);
+            if(Behavior.Delete.equals(behavior)){
+                return function.deleteNot(key, args);
+            }
+            return function.selectNot(key, args);
         }
     }
 }

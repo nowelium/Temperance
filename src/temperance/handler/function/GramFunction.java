@@ -19,11 +19,19 @@ public class GramFunction implements InternalFunction {
         this.initialSeparator = separatorValue;
     }
 
-    public List<String> in(String key, List<String> args) {
+    public List<String> deleteIn(String key, List<String> args) {
         return null;
     }
 
-    public List<String> not(String key, List<String> args) {
+    public List<String> deleteNot(String key, List<String> args) {
+        return null;
+    }
+
+    public List<String> selectIn(String key, List<String> args) {
+        return null;
+    }
+
+    public List<String> selectNot(String key, List<String> args) {
         return null;
     }
 

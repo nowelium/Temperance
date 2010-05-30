@@ -302,6 +302,277 @@ public final class Query {
       }
     }
     
+    public static final class Delete extends
+        com.google.protobuf.GeneratedMessage {
+      // Use Delete.newBuilder() to construct.
+      private Delete() {}
+      
+      private static final Delete defaultInstance = new Delete();
+      public static Delete getDefaultInstance() {
+        return defaultInstance;
+      }
+      
+      public Delete getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+      
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return temperance.protobuf.Query.internal_static_temperance_protobuf_Request_Delete_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return temperance.protobuf.Query.internal_static_temperance_protobuf_Request_Delete_fieldAccessorTable;
+      }
+      
+      // required string query = 1;
+      public static final int QUERY_FIELD_NUMBER = 1;
+      private boolean hasQuery;
+      private java.lang.String query_ = "";
+      public boolean hasQuery() { return hasQuery; }
+      public java.lang.String getQuery() { return query_; }
+      
+      public final boolean isInitialized() {
+        if (!hasQuery) return false;
+        return true;
+      }
+      
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (hasQuery()) {
+          output.writeString(1, getQuery());
+        }
+        getUnknownFields().writeTo(output);
+      }
+      
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+      
+        size = 0;
+        if (hasQuery()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeStringSize(1, getQuery());
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+      
+      public static temperance.protobuf.Query.Request.Delete parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.Query.Request.Delete parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.Query.Request.Delete parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.Query.Request.Delete parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.Query.Request.Delete parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.Query.Request.Delete parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.Query.Request.Delete parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.Query.Request.Delete parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.Query.Request.Delete parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.Query.Request.Delete parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(temperance.protobuf.Query.Request.Delete prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+      
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder> {
+        private temperance.protobuf.Query.Request.Delete result;
+        
+        // Construct using temperance.protobuf.Query.Request.Delete.newBuilder()
+        private Builder() {}
+        
+        private static Builder create() {
+          Builder builder = new Builder();
+          builder.result = new temperance.protobuf.Query.Request.Delete();
+          return builder;
+        }
+        
+        protected temperance.protobuf.Query.Request.Delete internalGetResult() {
+          return result;
+        }
+        
+        public Builder clear() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "Cannot call clear() after build().");
+          }
+          result = new temperance.protobuf.Query.Request.Delete();
+          return this;
+        }
+        
+        public Builder clone() {
+          return create().mergeFrom(result);
+        }
+        
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return temperance.protobuf.Query.Request.Delete.getDescriptor();
+        }
+        
+        public temperance.protobuf.Query.Request.Delete getDefaultInstanceForType() {
+          return temperance.protobuf.Query.Request.Delete.getDefaultInstance();
+        }
+        
+        public boolean isInitialized() {
+          return result.isInitialized();
+        }
+        public temperance.protobuf.Query.Request.Delete build() {
+          if (result != null && !isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return buildPartial();
+        }
+        
+        private temperance.protobuf.Query.Request.Delete buildParsed()
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          if (!isInitialized()) {
+            throw newUninitializedMessageException(
+              result).asInvalidProtocolBufferException();
+          }
+          return buildPartial();
+        }
+        
+        public temperance.protobuf.Query.Request.Delete buildPartial() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "build() has already been called on this Builder.");
+          }
+          temperance.protobuf.Query.Request.Delete returnMe = result;
+          result = null;
+          return returnMe;
+        }
+        
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof temperance.protobuf.Query.Request.Delete) {
+            return mergeFrom((temperance.protobuf.Query.Request.Delete)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+        
+        public Builder mergeFrom(temperance.protobuf.Query.Request.Delete other) {
+          if (other == temperance.protobuf.Query.Request.Delete.getDefaultInstance()) return this;
+          if (other.hasQuery()) {
+            setQuery(other.getQuery());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+        
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder(
+              this.getUnknownFields());
+          while (true) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                this.setUnknownFields(unknownFields.build());
+                return this;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  this.setUnknownFields(unknownFields.build());
+                  return this;
+                }
+                break;
+              }
+              case 10: {
+                setQuery(input.readString());
+                break;
+              }
+            }
+          }
+        }
+        
+        
+        // required string query = 1;
+        public boolean hasQuery() {
+          return result.hasQuery();
+        }
+        public java.lang.String getQuery() {
+          return result.getQuery();
+        }
+        public Builder setQuery(java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  result.hasQuery = true;
+          result.query_ = value;
+          return this;
+        }
+        public Builder clearQuery() {
+          result.hasQuery = false;
+          result.query_ = getDefaultInstance().getQuery();
+          return this;
+        }
+      }
+      
+      static {
+        temperance.protobuf.Query.getDescriptor();
+      }
+      
+      static {
+        temperance.protobuf.Query.internalForceInit();
+      }
+    }
+    
     public final boolean isInitialized() {
       return true;
     }
@@ -836,6 +1107,312 @@ public final class Query {
       }
     }
     
+    public static final class Delete extends
+        com.google.protobuf.GeneratedMessage {
+      // Use Delete.newBuilder() to construct.
+      private Delete() {}
+      
+      private static final Delete defaultInstance = new Delete();
+      public static Delete getDefaultInstance() {
+        return defaultInstance;
+      }
+      
+      public Delete getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+      
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return temperance.protobuf.Query.internal_static_temperance_protobuf_Response_Delete_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return temperance.protobuf.Query.internal_static_temperance_protobuf_Response_Delete_fieldAccessorTable;
+      }
+      
+      // repeated string values = 1;
+      public static final int VALUES_FIELD_NUMBER = 1;
+      private java.util.List<java.lang.String> values_ =
+        java.util.Collections.emptyList();
+      public java.util.List<java.lang.String> getValuesList() {
+        return values_;
+      }
+      public int getValuesCount() { return values_.size(); }
+      public java.lang.String getValues(int index) {
+        return values_.get(index);
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        for (java.lang.String element : getValuesList()) {
+          output.writeString(1, element);
+        }
+        getUnknownFields().writeTo(output);
+      }
+      
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+      
+        size = 0;
+        {
+          int dataSize = 0;
+          for (java.lang.String element : getValuesList()) {
+            dataSize += com.google.protobuf.CodedOutputStream
+              .computeStringSizeNoTag(element);
+          }
+          size += dataSize;
+          size += 1 * getValuesList().size();
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+      
+      public static temperance.protobuf.Query.Response.Delete parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.Query.Response.Delete parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.Query.Response.Delete parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.Query.Response.Delete parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.Query.Response.Delete parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.Query.Response.Delete parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.Query.Response.Delete parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.Query.Response.Delete parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.Query.Response.Delete parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.Query.Response.Delete parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(temperance.protobuf.Query.Response.Delete prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+      
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder> {
+        private temperance.protobuf.Query.Response.Delete result;
+        
+        // Construct using temperance.protobuf.Query.Response.Delete.newBuilder()
+        private Builder() {}
+        
+        private static Builder create() {
+          Builder builder = new Builder();
+          builder.result = new temperance.protobuf.Query.Response.Delete();
+          return builder;
+        }
+        
+        protected temperance.protobuf.Query.Response.Delete internalGetResult() {
+          return result;
+        }
+        
+        public Builder clear() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "Cannot call clear() after build().");
+          }
+          result = new temperance.protobuf.Query.Response.Delete();
+          return this;
+        }
+        
+        public Builder clone() {
+          return create().mergeFrom(result);
+        }
+        
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return temperance.protobuf.Query.Response.Delete.getDescriptor();
+        }
+        
+        public temperance.protobuf.Query.Response.Delete getDefaultInstanceForType() {
+          return temperance.protobuf.Query.Response.Delete.getDefaultInstance();
+        }
+        
+        public boolean isInitialized() {
+          return result.isInitialized();
+        }
+        public temperance.protobuf.Query.Response.Delete build() {
+          if (result != null && !isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return buildPartial();
+        }
+        
+        private temperance.protobuf.Query.Response.Delete buildParsed()
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          if (!isInitialized()) {
+            throw newUninitializedMessageException(
+              result).asInvalidProtocolBufferException();
+          }
+          return buildPartial();
+        }
+        
+        public temperance.protobuf.Query.Response.Delete buildPartial() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "build() has already been called on this Builder.");
+          }
+          if (result.values_ != java.util.Collections.EMPTY_LIST) {
+            result.values_ =
+              java.util.Collections.unmodifiableList(result.values_);
+          }
+          temperance.protobuf.Query.Response.Delete returnMe = result;
+          result = null;
+          return returnMe;
+        }
+        
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof temperance.protobuf.Query.Response.Delete) {
+            return mergeFrom((temperance.protobuf.Query.Response.Delete)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+        
+        public Builder mergeFrom(temperance.protobuf.Query.Response.Delete other) {
+          if (other == temperance.protobuf.Query.Response.Delete.getDefaultInstance()) return this;
+          if (!other.values_.isEmpty()) {
+            if (result.values_.isEmpty()) {
+              result.values_ = new java.util.ArrayList<java.lang.String>();
+            }
+            result.values_.addAll(other.values_);
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+        
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder(
+              this.getUnknownFields());
+          while (true) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                this.setUnknownFields(unknownFields.build());
+                return this;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  this.setUnknownFields(unknownFields.build());
+                  return this;
+                }
+                break;
+              }
+              case 10: {
+                addValues(input.readString());
+                break;
+              }
+            }
+          }
+        }
+        
+        
+        // repeated string values = 1;
+        public java.util.List<java.lang.String> getValuesList() {
+          return java.util.Collections.unmodifiableList(result.values_);
+        }
+        public int getValuesCount() {
+          return result.getValuesCount();
+        }
+        public java.lang.String getValues(int index) {
+          return result.getValues(index);
+        }
+        public Builder setValues(int index, java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  result.values_.set(index, value);
+          return this;
+        }
+        public Builder addValues(java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  if (result.values_.isEmpty()) {
+            result.values_ = new java.util.ArrayList<java.lang.String>();
+          }
+          result.values_.add(value);
+          return this;
+        }
+        public Builder addAllValues(
+            java.lang.Iterable<? extends java.lang.String> values) {
+          if (result.values_.isEmpty()) {
+            result.values_ = new java.util.ArrayList<java.lang.String>();
+          }
+          super.addAll(values, result.values_);
+          return this;
+        }
+        public Builder clearValues() {
+          result.values_ = java.util.Collections.emptyList();
+          return this;
+        }
+      }
+      
+      static {
+        temperance.protobuf.Query.getDescriptor();
+      }
+      
+      static {
+        temperance.protobuf.Query.internalForceInit();
+      }
+    }
+    
     public final boolean isInitialized() {
       return true;
     }
@@ -1050,6 +1627,11 @@ public final class Query {
           temperance.protobuf.Query.Request.Get request,
           com.google.protobuf.RpcCallback<temperance.protobuf.Query.Response.Get> done);
       
+      public abstract void delete(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.Query.Request.Delete request,
+          com.google.protobuf.RpcCallback<temperance.protobuf.Query.Response.Delete> done);
+      
     }
     
     public static com.google.protobuf.Service newReflectiveService(
@@ -1061,6 +1643,14 @@ public final class Query {
             temperance.protobuf.Query.Request.Get request,
             com.google.protobuf.RpcCallback<temperance.protobuf.Query.Response.Get> done) {
           impl.get(controller, request, done);
+        }
+        
+        @Override
+        public  void delete(
+            com.google.protobuf.RpcController controller,
+            temperance.protobuf.Query.Request.Delete request,
+            com.google.protobuf.RpcCallback<temperance.protobuf.Query.Response.Delete> done) {
+          impl.delete(controller, request, done);
         }
         
       };
@@ -1087,6 +1677,8 @@ public final class Query {
           switch(method.getIndex()) {
             case 0:
               return impl.get(controller, (temperance.protobuf.Query.Request.Get)request);
+            case 1:
+              return impl.delete(controller, (temperance.protobuf.Query.Request.Delete)request);
             default:
               throw new java.lang.AssertionError("Can't get here.");
           }
@@ -1103,6 +1695,8 @@ public final class Query {
           switch(method.getIndex()) {
             case 0:
               return temperance.protobuf.Query.Request.Get.getDefaultInstance();
+            case 1:
+              return temperance.protobuf.Query.Request.Delete.getDefaultInstance();
             default:
               throw new java.lang.AssertionError("Can't get here.");
           }
@@ -1119,6 +1713,8 @@ public final class Query {
           switch(method.getIndex()) {
             case 0:
               return temperance.protobuf.Query.Response.Get.getDefaultInstance();
+            case 1:
+              return temperance.protobuf.Query.Response.Delete.getDefaultInstance();
             default:
               throw new java.lang.AssertionError("Can't get here.");
           }
@@ -1131,6 +1727,11 @@ public final class Query {
         com.google.protobuf.RpcController controller,
         temperance.protobuf.Query.Request.Get request,
         com.google.protobuf.RpcCallback<temperance.protobuf.Query.Response.Get> done);
+    
+    public abstract void delete(
+        com.google.protobuf.RpcController controller,
+        temperance.protobuf.Query.Request.Delete request,
+        com.google.protobuf.RpcCallback<temperance.protobuf.Query.Response.Delete> done);
     
     public static final
         com.google.protobuf.Descriptors.ServiceDescriptor
@@ -1159,6 +1760,11 @@ public final class Query {
             com.google.protobuf.RpcUtil.<temperance.protobuf.Query.Response.Get>specializeCallback(
               done));
           return;
+        case 1:
+          this.delete(controller, (temperance.protobuf.Query.Request.Delete)request,
+            com.google.protobuf.RpcUtil.<temperance.protobuf.Query.Response.Delete>specializeCallback(
+              done));
+          return;
         default:
           throw new java.lang.AssertionError("Can't get here.");
       }
@@ -1175,6 +1781,8 @@ public final class Query {
       switch(method.getIndex()) {
         case 0:
           return temperance.protobuf.Query.Request.Get.getDefaultInstance();
+        case 1:
+          return temperance.protobuf.Query.Request.Delete.getDefaultInstance();
         default:
           throw new java.lang.AssertionError("Can't get here.");
       }
@@ -1191,6 +1799,8 @@ public final class Query {
       switch(method.getIndex()) {
         case 0:
           return temperance.protobuf.Query.Response.Get.getDefaultInstance();
+        case 1:
+          return temperance.protobuf.Query.Response.Delete.getDefaultInstance();
         default:
           throw new java.lang.AssertionError("Can't get here.");
       }
@@ -1226,6 +1836,21 @@ public final class Query {
             temperance.protobuf.Query.Response.Get.class,
             temperance.protobuf.Query.Response.Get.getDefaultInstance()));
       }
+      
+      public  void delete(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.Query.Request.Delete request,
+          com.google.protobuf.RpcCallback<temperance.protobuf.Query.Response.Delete> done) {
+        channel.callMethod(
+          getDescriptor().getMethods().get(1),
+          controller,
+          request,
+          temperance.protobuf.Query.Response.Delete.getDefaultInstance(),
+          com.google.protobuf.RpcUtil.generalizeCallback(
+            done,
+            temperance.protobuf.Query.Response.Delete.class,
+            temperance.protobuf.Query.Response.Delete.getDefaultInstance()));
+      }
     }
     
     public static BlockingInterface newBlockingStub(
@@ -1237,6 +1862,11 @@ public final class Query {
       public temperance.protobuf.Query.Response.Get get(
           com.google.protobuf.RpcController controller,
           temperance.protobuf.Query.Request.Get request)
+          throws com.google.protobuf.ServiceException;
+      
+      public temperance.protobuf.Query.Response.Delete delete(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.Query.Request.Delete request)
           throws com.google.protobuf.ServiceException;
     }
     
@@ -1258,6 +1888,18 @@ public final class Query {
           temperance.protobuf.Query.Response.Get.getDefaultInstance());
       }
       
+      
+      public temperance.protobuf.Query.Response.Delete delete(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.Query.Request.Delete request)
+          throws com.google.protobuf.ServiceException {
+        return (temperance.protobuf.Query.Response.Delete) channel.callBlockingMethod(
+          getDescriptor().getMethods().get(1),
+          controller,
+          request,
+          temperance.protobuf.Query.Response.Delete.getDefaultInstance());
+      }
+      
     }
   }
   
@@ -1272,6 +1914,11 @@ public final class Query {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_temperance_protobuf_Request_Get_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_temperance_protobuf_Request_Delete_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_temperance_protobuf_Request_Delete_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_temperance_protobuf_Response_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -1281,6 +1928,11 @@ public final class Query {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_temperance_protobuf_Response_Get_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_temperance_protobuf_Response_Delete_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_temperance_protobuf_Response_Delete_fieldAccessorTable;
   
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1290,11 +1942,15 @@ public final class Query {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\013Query.proto\022\023temperance.protobuf\"\037\n\007Re" +
-      "quest\032\024\n\003Get\022\r\n\005query\030\001 \002(\t\"!\n\010Response\032" +
-      "\025\n\003Get\022\016\n\006values\030\001 \003(\t2Z\n\014QueryService\022J" +
-      "\n\003get\022 .temperance.protobuf.Request.Get\032" +
-      "!.temperance.protobuf.Response.GetB\002H\001"
+      "\n\013Query.proto\022\023temperance.protobuf\"8\n\007Re" +
+      "quest\032\024\n\003Get\022\r\n\005query\030\001 \002(\t\032\027\n\006Delete\022\r\n" +
+      "\005query\030\001 \002(\t\";\n\010Response\032\025\n\003Get\022\016\n\006value" +
+      "s\030\001 \003(\t\032\030\n\006Delete\022\016\n\006values\030\001 \003(\t2\257\001\n\014Qu" +
+      "eryService\022J\n\003get\022 .temperance.protobuf." +
+      "Request.Get\032!.temperance.protobuf.Respon" +
+      "se.Get\022S\n\006delete\022#.temperance.protobuf.R" +
+      "equest.Delete\032$.temperance.protobuf.Resp" +
+      "onse.DeleteB\002H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1317,6 +1973,14 @@ public final class Query {
               new java.lang.String[] { "Query", },
               temperance.protobuf.Query.Request.Get.class,
               temperance.protobuf.Query.Request.Get.Builder.class);
+          internal_static_temperance_protobuf_Request_Delete_descriptor =
+            internal_static_temperance_protobuf_Request_descriptor.getNestedTypes().get(1);
+          internal_static_temperance_protobuf_Request_Delete_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_temperance_protobuf_Request_Delete_descriptor,
+              new java.lang.String[] { "Query", },
+              temperance.protobuf.Query.Request.Delete.class,
+              temperance.protobuf.Query.Request.Delete.Builder.class);
           internal_static_temperance_protobuf_Response_descriptor =
             getDescriptor().getMessageTypes().get(1);
           internal_static_temperance_protobuf_Response_fieldAccessorTable = new
@@ -1333,6 +1997,14 @@ public final class Query {
               new java.lang.String[] { "Values", },
               temperance.protobuf.Query.Response.Get.class,
               temperance.protobuf.Query.Response.Get.Builder.class);
+          internal_static_temperance_protobuf_Response_Delete_descriptor =
+            internal_static_temperance_protobuf_Response_descriptor.getNestedTypes().get(1);
+          internal_static_temperance_protobuf_Response_Delete_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_temperance_protobuf_Response_Delete_descriptor,
+              new java.lang.String[] { "Values", },
+              temperance.protobuf.Query.Response.Delete.class,
+              temperance.protobuf.Query.Response.Delete.Builder.class);
           return null;
         }
       };

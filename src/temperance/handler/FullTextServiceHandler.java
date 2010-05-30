@@ -52,20 +52,20 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
         Parser parser = request.getParser();
         MemcachedClient client = createMemcachedClient();
         
-        MemcachedFullTextList list = new MemcachedFullTextList(client, key);
+        MemcachedFullTextList list = new MemcachedFullTextList(client);
         try {
             switch(parser){
                 case MECAB: {
                     List<Long> hashes = FullTextUtil.mecab(hashFunction, tagger, str);
                     for(Long hash: hashes){
-                        list.add(Long.toString(hash), value);
+                        list.add(key, hash, value);
                     }
                     return Response.Set.newBuilder().setSucceed(true).build();
                 }
                 case BI_GRAM: {
                     List<Long> hashes = FullTextUtil.gram(hashFunction, str);
                     for(Long hash: hashes){
-                        list.add(Long.toString(hash), value);
+                        list.add(key, hash, value);
                     }
                     return Response.Set.newBuilder().setSucceed(true).build();
                 }
@@ -83,7 +83,7 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
         Parser parser = request.getParser();
         MemcachedClient client = createMemcachedClient();
         
-        MemcachedFullTextList list = new MemcachedFullTextList(client, key);
+        MemcachedFullTextList list = new MemcachedFullTextList(client);
         
         Response.Get.Builder builder = Response.Get.newBuilder();
         try {
@@ -91,14 +91,14 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
                 case MECAB:{
                     List<Long> hashes = FullTextUtil.mecab(hashFunction, tagger, str);
                     for(Long hash: hashes){
-                        builder.addAllValues(getAll(list, hash));
+                        builder.addAllValues(getAll(list, key, hash));
                     }
                     return builder.build();
                 }
                 case BI_GRAM:{
                     List<Long> hashes = FullTextUtil.gram(hashFunction, str, 2);
                     for(Long hash: hashes){
-                        builder.addAllValues(getAll(list, hash));
+                        builder.addAllValues(getAll(list, key, hash));
                     }
                     return builder.build();
                 }
@@ -109,13 +109,11 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
         }
     }
     
-    protected List<String> getAll(MemcachedFullTextList list, long hash) throws LibMemcachedException {
-        String hashString = Long.toString(hash);
-        
+    protected List<String> getAll(MemcachedFullTextList list, String key, Long hash) throws LibMemcachedException {
         List<String> results = new ArrayList<String>();
-        long count = list.count(hashString);
+        long count = list.count(key, hash);
         for(long i = 0; i < count; i += SPLIT){
-            results.addAll(list.get(hashString, i, SPLIT));
+            results.addAll(list.get(key, hash, i, SPLIT));
         }
         return results;
     }

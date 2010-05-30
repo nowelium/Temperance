@@ -6,13 +6,20 @@ message Request {
     message Get {
         required string query = 1;
     }
+    message Delete {
+        required string query = 1;
+    }
 }
 message Response {
     message Get {
+        repeated string values = 1;
+    }
+    message Delete {
         repeated string values = 1;
     }
 }
 
 service QueryService {
     rpc get(Request.Get) returns(Response.Get);
+    rpc delete(Request.Delete) returns(Response.Delete);
 }

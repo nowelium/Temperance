@@ -8,7 +8,7 @@ import temperance.handler.Context;
 import temperance.handler.FullTextServiceHandler;
 import temperance.handler.ListServiceHandler;
 import temperance.handler.MapServiceHandler;
-import temperance.handler.QueryHandler;
+import temperance.handler.QueryServiceHandler;
 import temperance.protobuf.FullText.FullTextService;
 import temperance.protobuf.List.ListService;
 import temperance.protobuf.Map.MapService;
@@ -60,7 +60,7 @@ public class TemperanceServer extends AbstractDaemon {
             FullTextService.newReflectiveBlockingService(new FullTextServiceHandler(context)),
             ListService.newReflectiveBlockingService(new ListServiceHandler(context)),
             MapService.newReflectiveBlockingService(new MapServiceHandler(context)),
-            QueryService.newReflectiveBlockingService(new QueryHandler(context))
+            QueryService.newReflectiveBlockingService(new QueryServiceHandler(context))
         );
     }
 }
