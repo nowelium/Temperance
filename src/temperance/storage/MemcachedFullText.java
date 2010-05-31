@@ -5,17 +5,17 @@ import java.util.List;
 import libmemcached.exception.LibMemcachedException;
 import libmemcached.wrapper.MemcachedClient;
 
-public class MemcachedFullTextList {
+public class MemcachedFullText {
     
     protected final MemcachedList list;
 
-    public MemcachedFullTextList(MemcachedClient client) {
+    public MemcachedFullText(MemcachedClient client) {
         this.list = new MemcachedList(client);
     }
     
-    public String add(String key, Long hash, String value) throws LibMemcachedException {
-        list.add(key, hash.toString());
-        return list.add(genKey(key, hash), value);
+    public String add(String key, Long hash, String value, int expire) throws LibMemcachedException {
+        list.add(key, hash.toString(), expire);
+        return list.add(genKey(key, hash), value, expire);
     }
     
     public List<String> get(String key, long offset, long limit) throws LibMemcachedException {

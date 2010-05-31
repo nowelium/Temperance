@@ -4,6 +4,7 @@ import libmemcached.wrapper.MemcachedClient;
 
 import org.chasen.mecab.wrapper.Tagger;
 
+import temperance.ft.MecabNodeFilter;
 import temperance.hash.HashFunction;
 
 public class FunctionContext {
@@ -13,6 +14,8 @@ public class FunctionContext {
     private Tagger tagger;
     
     private HashFunction hashFunction;
+    
+    private MecabNodeFilter nodeFilter;
     
     public void setClient(MemcachedClient client){
         this.client = client;
@@ -36,6 +39,14 @@ public class FunctionContext {
     
     public HashFunction getHashFunction(){
         return hashFunction;
+    }
+
+    public MecabNodeFilter getNodeFilter() {
+        return nodeFilter;
+    }
+
+    public void setNodeFilter(MecabNodeFilter nodeFilter) {
+        this.nodeFilter = nodeFilter;
     }
 
 }

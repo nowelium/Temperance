@@ -34,9 +34,15 @@ public enum QueryFunction {
     
     GRAM {
         public InternalFunction create(Factory factory){
-            return factory.createGeoPoint();
+            return factory.createGram();
         }
     },
+    
+    LevenshteinDistance {
+        public InternalFunction create(Factory factory){
+            return null;
+        }
+    }
     ;
     
     public interface Factory {

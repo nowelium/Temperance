@@ -34,7 +34,8 @@ public final class FullText {
     public enum Parser
         implements com.google.protobuf.ProtocolMessageEnum {
       MECAB(0, 0),
-      BI_GRAM(1, 1),
+      BIGRAM(1, 1),
+      PREFIX(2, 2),
       ;
       
       
@@ -43,7 +44,8 @@ public final class FullText {
       public static Parser valueOf(int value) {
         switch (value) {
           case 0: return MECAB;
-          case 1: return BI_GRAM;
+          case 1: return BIGRAM;
+          case 2: return PREFIX;
           default: return null;
         }
       }
@@ -74,7 +76,7 @@ public final class FullText {
       }
       
       private static final Parser[] VALUES = {
-        MECAB, BI_GRAM, 
+        MECAB, BIGRAM, PREFIX, 
       };
       public static Parser valueOf(
           com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
@@ -141,8 +143,15 @@ public final class FullText {
       public boolean hasValue() { return hasValue; }
       public java.lang.String getValue() { return value_; }
       
-      // optional .temperance.protobuf.Request.Parser parser = 4 [default = MECAB];
-      public static final int PARSER_FIELD_NUMBER = 4;
+      // optional uint32 expire = 4 [default = 86400];
+      public static final int EXPIRE_FIELD_NUMBER = 4;
+      private boolean hasExpire;
+      private int expire_ = 86400;
+      public boolean hasExpire() { return hasExpire; }
+      public int getExpire() { return expire_; }
+      
+      // optional .temperance.protobuf.Request.Parser parser = 5 [default = MECAB];
+      public static final int PARSER_FIELD_NUMBER = 5;
       private boolean hasParser;
       private temperance.protobuf.FullText.Request.Parser parser_ = temperance.protobuf.FullText.Request.Parser.MECAB;
       public boolean hasParser() { return hasParser; }
@@ -166,8 +175,11 @@ public final class FullText {
         if (hasValue()) {
           output.writeString(3, getValue());
         }
+        if (hasExpire()) {
+          output.writeUInt32(4, getExpire());
+        }
         if (hasParser()) {
-          output.writeEnum(4, getParser().getNumber());
+          output.writeEnum(5, getParser().getNumber());
         }
         getUnknownFields().writeTo(output);
       }
@@ -190,9 +202,13 @@ public final class FullText {
           size += com.google.protobuf.CodedOutputStream
             .computeStringSize(3, getValue());
         }
+        if (hasExpire()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeUInt32Size(4, getExpire());
+        }
         if (hasParser()) {
           size += com.google.protobuf.CodedOutputStream
-            .computeEnumSize(4, getParser().getNumber());
+            .computeEnumSize(5, getParser().getNumber());
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -352,6 +368,9 @@ public final class FullText {
           if (other.hasValue()) {
             setValue(other.getValue());
           }
+          if (other.hasExpire()) {
+            setExpire(other.getExpire());
+          }
           if (other.hasParser()) {
             setParser(other.getParser());
           }
@@ -393,10 +412,14 @@ public final class FullText {
                 break;
               }
               case 32: {
+                setExpire(input.readUInt32());
+                break;
+              }
+              case 40: {
                 int rawValue = input.readEnum();
                 temperance.protobuf.FullText.Request.Parser value = temperance.protobuf.FullText.Request.Parser.valueOf(rawValue);
                 if (value == null) {
-                  unknownFields.mergeVarintField(4, rawValue);
+                  unknownFields.mergeVarintField(5, rawValue);
                 } else {
                   setParser(value);
                 }
@@ -470,7 +493,25 @@ public final class FullText {
           return this;
         }
         
-        // optional .temperance.protobuf.Request.Parser parser = 4 [default = MECAB];
+        // optional uint32 expire = 4 [default = 86400];
+        public boolean hasExpire() {
+          return result.hasExpire();
+        }
+        public int getExpire() {
+          return result.getExpire();
+        }
+        public Builder setExpire(int value) {
+          result.hasExpire = true;
+          result.expire_ = value;
+          return this;
+        }
+        public Builder clearExpire() {
+          result.hasExpire = false;
+          result.expire_ = 86400;
+          return this;
+        }
+        
+        // optional .temperance.protobuf.Request.Parser parser = 5 [default = MECAB];
         public boolean hasParser() {
           return result.hasParser();
         }
@@ -2194,20 +2235,20 @@ public final class FullText {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\016FullText.proto\022\023temperance.protobuf\"\364\001" +
-      "\n\007Request\032j\n\003Set\022\013\n\003key\030\001 \002(\t\022\013\n\003str\030\002 \002" +
-      "(\t\022\r\n\005value\030\003 \002(\t\022:\n\006parser\030\004 \001(\0162#.temp" +
-      "erance.protobuf.Request.Parser:\005MECAB\032[\n" +
-      "\003Get\022\013\n\003key\030\001 \002(\t\022\013\n\003str\030\002 \002(\t\022:\n\006parser" +
-      "\030\003 \001(\0162#.temperance.protobuf.Request.Par" +
-      "ser:\005MECAB\" \n\006Parser\022\t\n\005MECAB\020\000\022\013\n\007BI_GR" +
-      "AM\020\001\"9\n\010Response\032\026\n\003Set\022\017\n\007succeed\030\001 \002(\010" +
-      "\032\025\n\003Get\022\016\n\006values\030\001 \003(\t2\254\001\n\017FullTextServ" +
-      "ice\022J\n\003set\022 .temperance.protobuf.Request",
-      ".Set\032!.temperance.protobuf.Response.Set\022" +
-      "M\n\006search\022 .temperance.protobuf.Request." +
-      "Get\032!.temperance.protobuf.Response.GetB\002" +
-      "H\001"
+      "\n\016FullText.proto\022\023temperance.protobuf\"\227\002" +
+      "\n\007Request\032\201\001\n\003Set\022\013\n\003key\030\001 \002(\t\022\013\n\003str\030\002 " +
+      "\002(\t\022\r\n\005value\030\003 \002(\t\022\025\n\006expire\030\004 \001(\r:\0058640" +
+      "0\022:\n\006parser\030\005 \001(\0162#.temperance.protobuf." +
+      "Request.Parser:\005MECAB\032[\n\003Get\022\013\n\003key\030\001 \002(" +
+      "\t\022\013\n\003str\030\002 \002(\t\022:\n\006parser\030\003 \001(\0162#.tempera" +
+      "nce.protobuf.Request.Parser:\005MECAB\"+\n\006Pa" +
+      "rser\022\t\n\005MECAB\020\000\022\n\n\006BIGRAM\020\001\022\n\n\006PREFIX\020\002\"" +
+      "9\n\010Response\032\026\n\003Set\022\017\n\007succeed\030\001 \002(\010\032\025\n\003G" +
+      "et\022\016\n\006values\030\001 \003(\t2\254\001\n\017FullTextService\022J",
+      "\n\003set\022 .temperance.protobuf.Request.Set\032" +
+      "!.temperance.protobuf.Response.Set\022M\n\006se" +
+      "arch\022 .temperance.protobuf.Request.Get\032!" +
+      ".temperance.protobuf.Response.GetB\002H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -2227,7 +2268,7 @@ public final class FullText {
           internal_static_temperance_protobuf_Request_Set_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_temperance_protobuf_Request_Set_descriptor,
-              new java.lang.String[] { "Key", "Str", "Value", "Parser", },
+              new java.lang.String[] { "Key", "Str", "Value", "Expire", "Parser", },
               temperance.protobuf.FullText.Request.Set.class,
               temperance.protobuf.FullText.Request.Set.Builder.class);
           internal_static_temperance_protobuf_Request_Get_descriptor =

@@ -1,10 +1,10 @@
 package temperance.handler.function;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import libmemcached.exception.LibMemcachedException;
+import temperance.handler.function.exception.ExecutionException;
 import temperance.ql.InternalFunction;
 import temperance.storage.MemcachedList;
 
@@ -17,11 +17,19 @@ public class ValueFunction implements InternalFunction {
     public ValueFunction(FunctionContext context){
         this.context = context;
     }
+    
+    public List<String> deleteIn(String key, List<String> args) throws ExecutionException {
+        throw new ExecutionException("not yet implemented");
+    }
+
+    public List<String> deleteNot(String key, List<String> args) throws ExecutionException {
+        throw new ExecutionException("not yet implemented");
+    }
 
     /**
      * [1, 2, 3, 4, 5] in arg(1, 2) => results(1, 2)
      */
-    public List<String> selectIn(String key, List<String> args) {
+    public List<String> selectIn(String key, List<String> args) throws ExecutionException {
         try {
             MemcachedList list = new MemcachedList(context.getClient());
             List<String> returnValue = new ArrayList<String>();
@@ -40,15 +48,14 @@ public class ValueFunction implements InternalFunction {
             }
             return returnValue;
         } catch(LibMemcachedException e){
-            e.printStackTrace();
-            return Collections.emptyList();
+            throw new ExecutionException(e);
         }
     }
 
     /**
      * [1, 2, 3, 4, 5] not arg(1, 2) => results(3, 4, 5)
      */
-    public List<String> selectNot(String key, List<String> args) {
+    public List<String> selectNot(String key, List<String> args) throws ExecutionException {
         try {
             MemcachedList list = new MemcachedList(context.getClient());
             List<String> returnValue = new ArrayList<String>();
@@ -67,19 +74,10 @@ public class ValueFunction implements InternalFunction {
             }
             return returnValue;
         } catch(LibMemcachedException e){
-            e.printStackTrace();
-            return Collections.emptyList();
+            throw new ExecutionException(e);
         }
     }
 
-    public List<String> deleteIn(String key, List<String> args) {
-        return null;
-    }
-
-    public List<String> deleteNot(String key, List<String> args) {
-        return null;
-    }
-    
     protected static interface Condition {
         public boolean reject(String value);
     }

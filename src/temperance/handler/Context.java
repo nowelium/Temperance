@@ -1,12 +1,17 @@
 package temperance.handler;
 
+import temperance.ft.MecabNodeFilter;
+import temperance.hash.HashFunction;
+
 public class Context {
     
     private String memcached;
     
     private String mecabrc;
     
-    private String fullTextHashFunction;
+    private HashFunction fullTextHashFunction;
+    
+    private MecabNodeFilter nodeFilter;
     
     public String getMemcached(){
         return memcached;
@@ -24,12 +29,20 @@ public class Context {
         this.mecabrc = mecabrc;
     }
     
-    public String getFullTextHashFunction(){
+    public HashFunction getFullTextHashFunction(){
         return fullTextHashFunction;
     }
     
-    public void setFullTextHashFunction(String fullTextHashFunction){
+    public void setFullTextHashFunction(HashFunction fullTextHashFunction){
         this.fullTextHashFunction = fullTextHashFunction;
+    }
+
+    public MecabNodeFilter getNodeFilter() {
+        return nodeFilter;
+    }
+
+    public void setNodeFilter(MecabNodeFilter nodeFilter) {
+        this.nodeFilter = nodeFilter;
     }
 
 }

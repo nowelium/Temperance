@@ -69,6 +69,13 @@ public final class List {
       public boolean hasValue() { return hasValue; }
       public java.lang.String getValue() { return value_; }
       
+      // optional uint32 expire = 3 [default = 86400];
+      public static final int EXPIRE_FIELD_NUMBER = 3;
+      private boolean hasExpire;
+      private int expire_ = 86400;
+      public boolean hasExpire() { return hasExpire; }
+      public int getExpire() { return expire_; }
+      
       public final boolean isInitialized() {
         if (!hasKey) return false;
         if (!hasValue) return false;
@@ -82,6 +89,9 @@ public final class List {
         }
         if (hasValue()) {
           output.writeString(2, getValue());
+        }
+        if (hasExpire()) {
+          output.writeUInt32(3, getExpire());
         }
         getUnknownFields().writeTo(output);
       }
@@ -99,6 +109,10 @@ public final class List {
         if (hasValue()) {
           size += com.google.protobuf.CodedOutputStream
             .computeStringSize(2, getValue());
+        }
+        if (hasExpire()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeUInt32Size(3, getExpire());
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -255,6 +269,9 @@ public final class List {
           if (other.hasValue()) {
             setValue(other.getValue());
           }
+          if (other.hasExpire()) {
+            setExpire(other.getExpire());
+          }
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
         }
@@ -286,6 +303,10 @@ public final class List {
               }
               case 18: {
                 setValue(input.readString());
+                break;
+              }
+              case 24: {
+                setExpire(input.readUInt32());
                 break;
               }
             }
@@ -332,6 +353,24 @@ public final class List {
         public Builder clearValue() {
           result.hasValue = false;
           result.value_ = getDefaultInstance().getValue();
+          return this;
+        }
+        
+        // optional uint32 expire = 3 [default = 86400];
+        public boolean hasExpire() {
+          return result.hasExpire();
+        }
+        public int getExpire() {
+          return result.getExpire();
+        }
+        public Builder setExpire(int value) {
+          result.hasExpire = true;
+          result.expire_ = value;
+          return this;
+        }
+        public Builder clearExpire() {
+          result.hasExpire = false;
+          result.expire_ = 86400;
           return this;
         }
       }
@@ -2639,19 +2678,20 @@ public final class List {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\nList.proto\022\023temperance.protobuf\"~\n\007Req" +
-      "uest\032!\n\003Add\022\013\n\003key\030\001 \002(\t\022\r\n\005value\030\002 \002(\t\032" +
-      ":\n\003Get\022\013\n\003key\030\001 \002(\t\022\021\n\006offset\030\002 \001(\004:\0010\022\023" +
-      "\n\005limit\030\003 \001(\004:\0041000\032\024\n\005Count\022\013\n\003key\030\001 \002(" +
-      "\t\"Q\n\010Response\032\026\n\003Add\022\017\n\007succeed\030\001 \002(\010\032\025\n" +
-      "\003Get\022\016\n\006values\030\001 \003(\t\032\026\n\005Count\022\r\n\005count\030\001" +
-      " \002(\0042\367\001\n\013ListService\022J\n\003add\022 .temperance" +
-      ".protobuf.Request.Add\032!.temperance.proto" +
-      "buf.Response.Add\022J\n\003get\022 .temperance.pro" +
-      "tobuf.Request.Get\032!.temperance.protobuf.",
-      "Response.Get\022P\n\005count\022\".temperance.proto" +
-      "buf.Request.Count\032#.temperance.protobuf." +
-      "Response.CountB\002H\001"
+      "\n\nList.proto\022\023temperance.protobuf\"\225\001\n\007Re" +
+      "quest\0328\n\003Add\022\013\n\003key\030\001 \002(\t\022\r\n\005value\030\002 \002(\t" +
+      "\022\025\n\006expire\030\003 \001(\r:\00586400\032:\n\003Get\022\013\n\003key\030\001 " +
+      "\002(\t\022\021\n\006offset\030\002 \001(\004:\0010\022\023\n\005limit\030\003 \001(\004:\0041" +
+      "000\032\024\n\005Count\022\013\n\003key\030\001 \002(\t\"Q\n\010Response\032\026\n" +
+      "\003Add\022\017\n\007succeed\030\001 \002(\010\032\025\n\003Get\022\016\n\006values\030\001" +
+      " \003(\t\032\026\n\005Count\022\r\n\005count\030\001 \002(\0042\367\001\n\013ListSer" +
+      "vice\022J\n\003add\022 .temperance.protobuf.Reques" +
+      "t.Add\032!.temperance.protobuf.Response.Add" +
+      "\022J\n\003get\022 .temperance.protobuf.Request.Ge",
+      "t\032!.temperance.protobuf.Response.Get\022P\n\005" +
+      "count\022\".temperance.protobuf.Request.Coun" +
+      "t\032#.temperance.protobuf.Response.CountB\002" +
+      "H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -2671,7 +2711,7 @@ public final class List {
           internal_static_temperance_protobuf_Request_Add_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_temperance_protobuf_Request_Add_descriptor,
-              new java.lang.String[] { "Key", "Value", },
+              new java.lang.String[] { "Key", "Value", "Expire", },
               temperance.protobuf.List.Request.Add.class,
               temperance.protobuf.List.Request.Add.Builder.class);
           internal_static_temperance_protobuf_Request_Get_descriptor =

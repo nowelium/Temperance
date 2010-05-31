@@ -4,6 +4,7 @@ class Temperance_List_Request_Add extends PhpBuf_Message_Abstract {
     public function __construct(){
         $this->setField('key', PhpBuf_Type::STRING, PhpBuf_Rule::REQUIRED, 1);
         $this->setField('value', PhpBuf_Type::STRING, PhpBuf_Rule::REQUIRED, 2);
+        $this->setField('expire', PhpBuf_Type::INT, PhpBuf_Rule::OPTIONAL, 3, 86400);
     }
     public static function name(){
         return __CLASS__;

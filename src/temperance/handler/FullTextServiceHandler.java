@@ -9,14 +9,17 @@ import libmemcached.wrapper.MemcachedServerList;
 
 import org.chasen.mecab.wrapper.Tagger;
 
-import temperance.hash.Hash;
+import temperance.ft.Gram;
+import temperance.ft.Hashing;
+import temperance.ft.Mecab;
+import temperance.ft.MecabNodeFilter;
+import temperance.ft.Prefix;
 import temperance.hash.HashFunction;
 import temperance.protobuf.FullText.FullTextService;
 import temperance.protobuf.FullText.Request;
 import temperance.protobuf.FullText.Response;
 import temperance.protobuf.FullText.Request.Parser;
-import temperance.storage.MemcachedFullTextList;
-import temperance.util.FullTextUtil;
+import temperance.storage.MemcachedFullText;
 
 import com.google.protobuf.RpcController;
 import com.google.protobuf.ServiceException;
@@ -29,11 +32,14 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
     
     protected final HashFunction hashFunction;
     
+    protected final MecabNodeFilter nodeFilter;
+
     protected final Tagger tagger;
     
     public FullTextServiceHandler(Context context){
         this.context = context;
-        this.hashFunction = Hash.valueOf(context.getFullTextHashFunction());
+        this.hashFunction = context.getFullTextHashFunction();
+        this.nodeFilter = context.getNodeFilter();
         this.tagger = Tagger.create("-r", context.getMecabrc());
     }
     
@@ -45,32 +51,32 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
         return client;
     }
     
+    protected Hashing createHashing(Parser parser){
+        if(Parser.BIGRAM.equals(parser)){
+            return new Gram(hashFunction);
+        }
+        if(Parser.PREFIX.equals(parser)){
+            return new Prefix(hashFunction);
+        }
+        return new Mecab(hashFunction, tagger, nodeFilter);
+    }
+    
     public Response.Set set(RpcController controller, Request.Set request) throws ServiceException {
-        String key = request.getKey();
-        String str = request.getStr();
-        String value = request.getValue();
-        Parser parser = request.getParser();
+        final String key = request.getKey();
+        final String str = request.getStr();
+        final String value = request.getValue();
+        final int expire = request.getExpire();
+        final Parser parser = request.getParser();
         MemcachedClient client = createMemcachedClient();
         
-        MemcachedFullTextList list = new MemcachedFullTextList(client);
+        MemcachedFullText list = new MemcachedFullText(client);
         try {
-            switch(parser){
-                case MECAB: {
-                    List<Long> hashes = FullTextUtil.mecab(hashFunction, tagger, str);
-                    for(Long hash: hashes){
-                        list.add(key, hash, value);
-                    }
-                    return Response.Set.newBuilder().setSucceed(true).build();
-                }
-                case BI_GRAM: {
-                    List<Long> hashes = FullTextUtil.gram(hashFunction, str);
-                    for(Long hash: hashes){
-                        list.add(key, hash, value);
-                    }
-                    return Response.Set.newBuilder().setSucceed(true).build();
-                }
+            Hashing hashing = createHashing(parser);
+            List<Long> hashes = hashing.parse(str);
+            for(Long hash: hashes){
+                list.add(key, hash, value, expire);
             }
-            return Response.Set.newBuilder().setSucceed(false).build();
+            return Response.Set.newBuilder().setSucceed(true).build();
         } catch(LibMemcachedException e){
             e.printStackTrace();
             return Response.Set.newBuilder().setSucceed(false).build();
@@ -78,30 +84,19 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
     }
     
     public Response.Get search(RpcController controller, Request.Get request) throws ServiceException {
-        String key = request.getKey();
-        String str = request.getStr();
-        Parser parser = request.getParser();
+        final String key = request.getKey();
+        final String str = request.getStr();
+        final Parser parser = request.getParser();
         MemcachedClient client = createMemcachedClient();
         
-        MemcachedFullTextList list = new MemcachedFullTextList(client);
+        MemcachedFullText list = new MemcachedFullText(client);
         
         Response.Get.Builder builder = Response.Get.newBuilder();
         try {
-            switch(parser){
-                case MECAB:{
-                    List<Long> hashes = FullTextUtil.mecab(hashFunction, tagger, str);
-                    for(Long hash: hashes){
-                        builder.addAllValues(getAll(list, key, hash));
-                    }
-                    return builder.build();
-                }
-                case BI_GRAM:{
-                    List<Long> hashes = FullTextUtil.gram(hashFunction, str, 2);
-                    for(Long hash: hashes){
-                        builder.addAllValues(getAll(list, key, hash));
-                    }
-                    return builder.build();
-                }
+            Hashing hashing = createHashing(parser);
+            List<Long> hashes = hashing.parse(str);
+            for(Long hash: hashes){
+                builder.addAllValues(getAll(list, key, hash));
             }
             return builder.build();
         } catch(LibMemcachedException e){
@@ -109,7 +104,7 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
         }
     }
     
-    protected List<String> getAll(MemcachedFullTextList list, String key, Long hash) throws LibMemcachedException {
+    protected List<String> getAll(MemcachedFullText list, String key, Long hash) throws LibMemcachedException {
         List<String> results = new ArrayList<String>();
         long count = list.count(key, hash);
         for(long i = 0; i < count; i += SPLIT){

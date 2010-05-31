@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import temperance.ql.node.FromNode;
 import temperance.ql.node.FunctionNode;
+import temperance.ql.node.Statement;
 
 public class QueryParserTest {
     
@@ -51,6 +52,20 @@ public class QueryParserTest {
             FunctionNode function = QueryParser.FUNCTION.parse("MECAB('hello world こんにちは')");
             Assert.assertEquals(function.getFunctionName(), "MECAB");
             Assert.assertEquals(function.getParameter().getArgs().getValues().get(0), "hello world こんにちは");
+        }
+        {
+            FunctionNode function = QueryParser.FUNCTION.parse("GRAM('ほげ')");
+            Assert.assertEquals(function.getFunctionName(), "GRAM");
+            Assert.assertEquals(function.getParameter().getArgs().getValues().get(0), "ほげ");
+        }
+    }
+    
+    @Test
+    public void query(){
+        {
+            Statement statement = QueryParser.PARSER.parse("FROM hoge IN GRAM('ほげ')");
+            Assert.assertEquals(statement.getFrom().getKey().getKey(), "hoge");
+            Assert.assertEquals(statement.getFunction().getFunctionName(), "GRAM");
         }
     }
 

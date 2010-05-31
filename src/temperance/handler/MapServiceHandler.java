@@ -28,7 +28,7 @@ public class MapServiceHandler implements MapService.BlockingInterface {
     }
 
     public Response.Get get(RpcController controller, Request.Get request) throws ServiceException {
-        String key = request.getKey();
+        final String key = request.getKey();
         MemcachedClient client = createMemcachedClient();
         
         MemcachedMap map = new MemcachedMap(client);
@@ -44,13 +44,14 @@ public class MapServiceHandler implements MapService.BlockingInterface {
     }
 
     public Response.Set set(RpcController controller, Request.Set request) throws ServiceException {
-        String key = request.getKey();
-        String value = request.getValue();
+        final String key = request.getKey();
+        final String value = request.getValue();
+        final int expire = request.getExpire();
         MemcachedClient client = createMemcachedClient();
         
         MemcachedMap map = new MemcachedMap(client);
         try {
-            map.set(key, value);
+            map.set(key, value, expire);
             
             return Response.Set.newBuilder().setSucceed(true).build();
         } catch (LibMemcachedException e) {

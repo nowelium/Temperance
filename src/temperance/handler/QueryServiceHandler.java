@@ -1,5 +1,6 @@
 package temperance.handler;
 
+import java.util.Collections;
 import java.util.List;
 
 import libmemcached.wrapper.MemcachedClient;
@@ -7,6 +8,7 @@ import libmemcached.wrapper.MemcachedServerList;
 
 import org.chasen.mecab.wrapper.Tagger;
 
+import temperance.ft.MecabNodeFilter;
 import temperance.handler.function.Behavior;
 import temperance.handler.function.DataFunction;
 import temperance.handler.function.FunctionContext;
@@ -14,7 +16,7 @@ import temperance.handler.function.GeoPointFunction;
 import temperance.handler.function.GramFunction;
 import temperance.handler.function.MecabFunction;
 import temperance.handler.function.ValueFunction;
-import temperance.hash.Hash;
+import temperance.handler.function.exception.ExecutionException;
 import temperance.hash.HashFunction;
 import temperance.protobuf.Query.QueryService;
 import temperance.protobuf.Query.Request;
@@ -38,14 +40,19 @@ import com.google.protobuf.ServiceException;
 
 public class QueryServiceHandler implements QueryService.BlockingInterface {
 
-    protected final Context context;
+protected final Context context;
     
-    protected final HashFunction hashFunction = Hash.MD5;
+    protected final HashFunction hashFunction;
     
-    protected final Tagger tagger = Tagger.create("-r /opt/local/etc/mecabrc");
+    protected final MecabNodeFilter nodeFilter;
+
+    protected final Tagger tagger;
     
     public QueryServiceHandler(Context context){
         this.context = context;
+        this.hashFunction = context.getFullTextHashFunction();
+        this.nodeFilter = context.getNodeFilter();
+        this.tagger = Tagger.create("-r", context.getMecabrc());
     }
     
     protected MemcachedClient createMemcachedClient(){
@@ -57,13 +64,14 @@ public class QueryServiceHandler implements QueryService.BlockingInterface {
     }
     
     public Response.Get get(RpcController controller, Request.Get request) throws ServiceException {
-        String query = request.getQuery();
-        QueryParser parser = new QueryParser();
+        final String query = request.getQuery();
+        final QueryParser parser = new QueryParser();
         try {
             FunctionContext ctx = new FunctionContext();
             ctx.setClient(createMemcachedClient());
             ctx.setHashFunction(hashFunction);
             ctx.setTagger(tagger);
+            ctx.setNodeFilter(nodeFilter);
             FunctionFactoryFactory factory = new FunctionFactoryFactory(ctx);
             
             NodeVisitor visitor = new NodeVisitor(Behavior.Select);
@@ -191,16 +199,26 @@ public class QueryServiceHandler implements QueryService.BlockingInterface {
             this.args = args;
         }
         public List<String> caseIn() {
-            if(Behavior.Delete.equals(behavior)){
-                return function.deleteIn(key, args);
+            try {
+                if(Behavior.Delete.equals(behavior)){
+                    return function.deleteIn(key, args);
+                }
+                return function.selectIn(key, args);
+            } catch(ExecutionException e){
+                e.printStackTrace();
+                return Collections.emptyList();
             }
-            return function.selectIn(key, args);
         }
         public List<String> caseNot() {
-            if(Behavior.Delete.equals(behavior)){
-                return function.deleteNot(key, args);
+            try {
+                if(Behavior.Delete.equals(behavior)){
+                    return function.deleteNot(key, args);
+                }
+                return function.selectNot(key, args);
+            } catch(ExecutionException e){
+                e.printStackTrace();
+                return Collections.emptyList();
             }
-            return function.selectNot(key, args);
         }
     }
 }

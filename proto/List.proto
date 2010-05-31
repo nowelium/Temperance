@@ -6,6 +6,7 @@ message Request {
     message Add {
         required string key = 1;
         required string value = 2;
+        optional uint32 expire = 3 [default = 86400];
     }
     message Get {
         required string key = 1;

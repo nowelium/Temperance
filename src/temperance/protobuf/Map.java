@@ -69,6 +69,13 @@ public final class Map {
       public boolean hasValue() { return hasValue; }
       public java.lang.String getValue() { return value_; }
       
+      // optional uint32 expire = 3 [default = 86400];
+      public static final int EXPIRE_FIELD_NUMBER = 3;
+      private boolean hasExpire;
+      private int expire_ = 86400;
+      public boolean hasExpire() { return hasExpire; }
+      public int getExpire() { return expire_; }
+      
       public final boolean isInitialized() {
         if (!hasKey) return false;
         if (!hasValue) return false;
@@ -82,6 +89,9 @@ public final class Map {
         }
         if (hasValue()) {
           output.writeString(2, getValue());
+        }
+        if (hasExpire()) {
+          output.writeUInt32(3, getExpire());
         }
         getUnknownFields().writeTo(output);
       }
@@ -99,6 +109,10 @@ public final class Map {
         if (hasValue()) {
           size += com.google.protobuf.CodedOutputStream
             .computeStringSize(2, getValue());
+        }
+        if (hasExpire()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeUInt32Size(3, getExpire());
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -255,6 +269,9 @@ public final class Map {
           if (other.hasValue()) {
             setValue(other.getValue());
           }
+          if (other.hasExpire()) {
+            setExpire(other.getExpire());
+          }
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
         }
@@ -286,6 +303,10 @@ public final class Map {
               }
               case 18: {
                 setValue(input.readString());
+                break;
+              }
+              case 24: {
+                setExpire(input.readUInt32());
                 break;
               }
             }
@@ -332,6 +353,24 @@ public final class Map {
         public Builder clearValue() {
           result.hasValue = false;
           result.value_ = getDefaultInstance().getValue();
+          return this;
+        }
+        
+        // optional uint32 expire = 3 [default = 86400];
+        public boolean hasExpire() {
+          return result.hasExpire();
+        }
+        public int getExpire() {
+          return result.getExpire();
+        }
+        public Builder setExpire(int value) {
+          result.hasExpire = true;
+          result.expire_ = value;
+          return this;
+        }
+        public Builder clearExpire() {
+          result.hasExpire = false;
+          result.expire_ = 86400;
           return this;
         }
       }
@@ -1912,15 +1951,15 @@ public final class Map {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\tMap.proto\022\023temperance.protobuf\"@\n\007Requ" +
-      "est\032!\n\003Set\022\013\n\003key\030\001 \002(\t\022\r\n\005value\030\002 \002(\t\032\022" +
-      "\n\003Get\022\013\n\003key\030\001 \002(\t\"8\n\010Response\032\026\n\003Set\022\017\n" +
-      "\007succeed\030\001 \002(\010\032\024\n\003Get\022\r\n\005value\030\001 \002(\t2\244\001\n" +
-      "\nMapService\022J\n\003set\022 .temperance.protobuf" +
-      ".Request.Set\032!.temperance.protobuf.Respo" +
-      "nse.Set\022J\n\003get\022 .temperance.protobuf.Req" +
-      "uest.Get\032!.temperance.protobuf.Response." +
-      "GetB\002H\001"
+      "\n\tMap.proto\022\023temperance.protobuf\"W\n\007Requ" +
+      "est\0328\n\003Set\022\013\n\003key\030\001 \002(\t\022\r\n\005value\030\002 \002(\t\022\025" +
+      "\n\006expire\030\003 \001(\r:\00586400\032\022\n\003Get\022\013\n\003key\030\001 \002(" +
+      "\t\"8\n\010Response\032\026\n\003Set\022\017\n\007succeed\030\001 \002(\010\032\024\n" +
+      "\003Get\022\r\n\005value\030\001 \002(\t2\244\001\n\nMapService\022J\n\003se" +
+      "t\022 .temperance.protobuf.Request.Set\032!.te" +
+      "mperance.protobuf.Response.Set\022J\n\003get\022 ." +
+      "temperance.protobuf.Request.Get\032!.temper" +
+      "ance.protobuf.Response.GetB\002H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1940,7 +1979,7 @@ public final class Map {
           internal_static_temperance_protobuf_Request_Set_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_temperance_protobuf_Request_Set_descriptor,
-              new java.lang.String[] { "Key", "Value", },
+              new java.lang.String[] { "Key", "Value", "Expire", },
               temperance.protobuf.Map.Request.Set.class,
               temperance.protobuf.Map.Request.Set.Builder.class);
           internal_static_temperance_protobuf_Request_Get_descriptor =

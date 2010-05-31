@@ -18,8 +18,6 @@ public class MemcachedList {
     
     protected static final String KEY_SEPARATOR = ":";
     
-    protected static final int expiration = 0;
-    
     protected static final int flag = 0;
 
     protected final MemcachedClient client;
@@ -32,9 +30,9 @@ public class MemcachedList {
         client.getBehavior().set(BehaviorType.SUPPORT_CAS, 1);
     }
     
-    public String add(String key, String value) throws LibMemcachedException {
+    public String add(String key, String value, int expire) throws LibMemcachedException {
         long nextId = generateId(key);
-        client.getStorage().set(indexKey(key, nextId), value, 0, 0);
+        client.getStorage().set(indexKey(key, nextId), value, expire, 0);
         return Long.toString(nextId);
     }
     
@@ -69,13 +67,13 @@ public class MemcachedList {
         while(true){
             MemcachedResult result = storage.gets(incrementKey);
             if(null == result){
-                storage.set(incrementKey, "1", expiration, flag);
+                storage.set(incrementKey, "1", 0, flag);
                 return 1L;
             }
             
             long increment = Long.valueOf(result.getValue()).longValue() + 1L;
             String incrementValue = Long.toString(increment);
-            ReturnType rt = storage.cas(incrementKey, incrementValue, expiration, flag, result.getCAS());
+            ReturnType rt = storage.cas(incrementKey, incrementValue, 0, flag, result.getCAS());
             if(!ReturnType.SUCCESS.equals(rt)){
                 continue;
             }

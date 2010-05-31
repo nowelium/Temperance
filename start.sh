@@ -11,6 +11,7 @@
 
 JAVA_OPTIONS="-Dfile.encoding=UTF-8 -Dtemperance.pid.dir=/tmp"
 MEMCACHED="localhost:11211"
+MECABRC="/opt/local/etc/mecabrc"
 
 export JAVA_HOME=$JAVA_HOME
 export _JAVA_OPTIONS=$JAVA_OPTIONS
@@ -30,4 +31,4 @@ LIB=$LIB:"$DIR/lib/protobuf-java-2.2.0.jar"
 LIB=$LIB:"$DIR/lib/protobuf-socket-rpc.jar"
 LIB=$LIB:"$DIR/lib/jparsec-2.0.jar"
 
-$JAVA_HOME/bin/java -cp $LIB temperance.Start -memc $MEMCACHED -p 17001 -daemonize
+$JAVA_HOME/bin/java -cp $LIB temperance.Start -memc $MEMCACHED -mecabrc $MECABRC -p 17001 -daemonize

@@ -1,17 +1,18 @@
 package temperance.handler.function;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import libmemcached.exception.LibMemcachedException;
 
 import org.chasen.mecab.wrapper.Tagger;
 
+import temperance.ft.Mecab;
+import temperance.handler.function.exception.ExecutionException;
 import temperance.hash.HashFunction;
 import temperance.ql.InternalFunction;
-import temperance.storage.MemcachedFullTextList;
-import temperance.util.FullTextUtil;
+import temperance.storage.MemcachedFullText;
+import temperance.util.ListUtils;
 
 public class MecabFunction implements InternalFunction {
     
@@ -23,23 +24,27 @@ public class MecabFunction implements InternalFunction {
         this.context = context;
     }
     
-    public List<String> deleteIn(String key, List<String> args) {
-        return null;
+    public List<String> deleteIn(String key, List<String> args) throws ExecutionException {
+        throw new ExecutionException("not yet implemented");
     }
 
-    public List<String> deleteNot(String key, List<String> args) {
-        return null;
+    public List<String> deleteNot(String key, List<String> args) throws ExecutionException {
+        throw new ExecutionException("not yet implemented");
     }
 
-    public List<String> selectIn(String key, List<String> args) {
-        HashFunction hashFunction = context.getHashFunction();
-        Tagger tagger = context.getTagger();
-        String str = args.get(0);
+    public List<String> selectIn(String key, List<String> args) throws ExecutionException {
+        if(args.isEmpty()){
+            throw new ExecutionException("arguments was empty");
+        }
+        
+        final HashFunction hashFunction = context.getHashFunction();
+        final Tagger tagger = context.getTagger();
+        final String str = args.get(0);
         
         try {
-            MemcachedFullTextList list = new MemcachedFullTextList(context.getClient());
+            MemcachedFullText list = new MemcachedFullText(context.getClient());
             List<String> returnValue = new ArrayList<String>();
-            List<Long> hashes = FullTextUtil.mecab(hashFunction, tagger, str);
+            List<Long> hashes = new Mecab(hashFunction, tagger, context.getNodeFilter()).parse(str);
             for(Long hash: hashes){
                 long count = list.count(key, hash);
                 for(long i = 0; i < count; i += SPLIT){
@@ -48,35 +53,46 @@ public class MecabFunction implements InternalFunction {
             }
             return returnValue;
         } catch(LibMemcachedException e){
-            e.printStackTrace();
-            return Collections.emptyList();
+            throw new ExecutionException(e);
         }
     }
 
-    public List<String> selectNot(String key, List<String> args) {
-        HashFunction hashFunction = context.getHashFunction();
-        Tagger tagger = context.getTagger();
-        String str = args.get(0);
+    public List<String> selectNot(String key, List<String> args) throws ExecutionException {
+        if(args.isEmpty()){
+            throw new ExecutionException("arguments was empty");
+        }
+        
+        final HashFunction hashFunction = context.getHashFunction();
+        final Tagger tagger = context.getTagger();
+        final String str = args.get(0);
         
         try {
-            MemcachedFullTextList list = new MemcachedFullTextList(context.getClient());
+            MemcachedFullText list = new MemcachedFullText(context.getClient());
+            List<Long> ignoreHashes = new Mecab(hashFunction, tagger, context.getNodeFilter()).parse(str);
+            List<String> selectHashes = new ArrayList<String>();
+            long allHashes = list.count(key);
+            
+            // FIXME: exclude not in key
+            for(long i = 0; i < allHashes; i += SPLIT){
+                List<String> storedHashes = list.get(key, i, SPLIT);
+                for(Long ignore: ignoreHashes){
+                    storedHashes.remove(ignore.toString());
+                }
+                selectHashes.addAll(storedHashes);
+            }
+            selectHashes = ListUtils.unique(selectHashes);
+            
             List<String> returnValue = new ArrayList<String>();
-            List<Long> ignoreHashes = FullTextUtil.mecab(hashFunction, tagger, str);
-            // FIXME: search not in key
-            for(Long ignoreHash: ignoreHashes){
-                long count = list.count(key);
+            for(String selectHash: selectHashes){
+                Long hash = Long.valueOf(selectHash);
+                long count = list.count(key, hash);
                 for(long i = 0; i < count; i += SPLIT){
-                    List<String> storedHashes = list.get(key, i, SPLIT);
-                    storedHashes.remove(ignoreHash.toString());
-                    for(String hash: storedHashes){
-                        returnValue.addAll(list.get(key, Long.valueOf(hash), i, SPLIT));
-                    }
+                    returnValue.addAll(list.get(key, hash, i, SPLIT));
                 }
             }
             return returnValue;
         } catch(LibMemcachedException e){
-            e.printStackTrace();
-            return Collections.emptyList();
+            throw new ExecutionException(e);
         }
     }
 

@@ -9,8 +9,11 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.Parser;
 
+import temperance.ft.Mecab;
+import temperance.ft.MecabNodeFilter;
 import temperance.handler.Context;
 import temperance.hash.Hash;
+import temperance.hash.HashFunction;
 import temperance.server.Server;
 import temperance.server.TemperanceServer;
 
@@ -26,9 +29,14 @@ public class StartStop {
             
             String memcached = cli.getOptionValue("memc");
             String mecabrc = cli.getOptionValue("mecabrc", "/opt/local/etc/mecabrc");
-            String fullTextHashFunction = Hash.MD5.name();
+            
+            MecabNodeFilter nodeFilter = Mecab.Filter.Nouns;
+            if(cli.hasOption("mecab_node_filter_nouns")){
+                nodeFilter = Mecab.Filter.Default;
+            }
+            HashFunction fullTextHashFunction = Hash.MD5;
             if(cli.hasOption("ft_hash_sha1")){
-                fullTextHashFunction = Hash.SHA1.name();
+                fullTextHashFunction = Hash.SHA1;
             }
             
             String port = cli.getOptionValue("p", "17001");
@@ -38,6 +46,7 @@ public class StartStop {
             ctx.setMemcached(memcached);
             ctx.setMecabrc(mecabrc);
             ctx.setFullTextHashFunction(fullTextHashFunction);
+            ctx.setNodeFilter(nodeFilter);
             
             Server server = createServer(ctx, daemonize, Integer.parseInt(port));
             server.start();
@@ -65,13 +74,17 @@ public class StartStop {
         Option mecabrc = new Option("mecabrc", "mecabrc", true, "mecabrc path(ex. /etc/mecabrc)");
         mecabrc.setRequired(false);
         
+        OptionGroup mecabNodeFilter = new OptionGroup();
+        mecabNodeFilter.addOption(new Option("mecab_node_filter_none", false, "none filter"));
+        mecabNodeFilter.addOption(new Option("mecab_node_filter_nouns", false, "nouns node filter(default)"));
+        
         OptionGroup hashFunction = new OptionGroup();
         hashFunction.addOption(new Option("ft_hash_md5", false, "fulltext hash function MD5"));
         hashFunction.addOption(new Option("ft_hash_sha1", false, "fulltext hash function SHA1"));
         hashFunction.setRequired(false);
 
         Option port = new Option("p", "port", true, "server port");
-        port.setRequired(true);
+        port.setRequired(false);
         
         Option daemonize = new Option("daemonize", false, "daemonize process");
         daemonize.setRequired(false);
