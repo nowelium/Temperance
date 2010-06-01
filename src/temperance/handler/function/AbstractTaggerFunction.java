@@ -1,6 +1,5 @@
 package temperance.handler.function;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import libmemcached.exception.LibMemcachedException;
@@ -8,7 +7,8 @@ import temperance.ft.Hashing;
 import temperance.handler.function.exception.ExecutionException;
 import temperance.ql.InternalFunction;
 import temperance.storage.MemcachedFullText;
-import temperance.util.ListUtils;
+import temperance.util.Lists;
+import temperance.util.Lists.IntersectList;
 
 public abstract class AbstractTaggerFunction implements InternalFunction {
     
@@ -16,9 +16,14 @@ public abstract class AbstractTaggerFunction implements InternalFunction {
 
     protected final FunctionContext context;
     
+    protected final MemcachedFullText ft;
+    
     protected AbstractTaggerFunction(FunctionContext context){
         this.context = context;
+        this.ft = new MemcachedFullText(context.getClient());
     }
+    
+    protected abstract Hashing createHashing(List<String> args);
     
     public List<String> deleteIn(String key, List<String> args) throws ExecutionException {
         throw new ExecutionException("not yet implemented");
@@ -35,16 +40,14 @@ public abstract class AbstractTaggerFunction implements InternalFunction {
         
         final String str = args.get(0);
         final Hashing hashing = createHashing(args);
-        final MemcachedFullText list = new MemcachedFullText(context.getClient());
         try {
-            List<String> returnValue = new ArrayList<String>();
-            List<Long> hashes = hashing.parse(str);
-            for(Long hash: hashes){
-                long count = list.count(key, hash);
-                for(long i = 0; i < count; i += SPLIT){
-                    returnValue.addAll(list.get(key, hash, i, SPLIT));
-                }
+            IntersectList<String> returnValue = Lists.newIntersectList();
+            List<Long> allHashes = hashing.parse(str);
+            for(Long hash: allHashes){
+                List<String> results = getAll(key, hash);
+                returnValue.intersect(results);
             }
+            
             return returnValue;
         } catch(LibMemcachedException e){
             throw new ExecutionException(e);
@@ -58,29 +61,15 @@ public abstract class AbstractTaggerFunction implements InternalFunction {
         
         final String str = args.get(0);
         final Hashing hashing = createHashing(args);
-        final MemcachedFullText list = new MemcachedFullText(context.getClient());
         try {
             List<Long> ignoreHashes = hashing.parse(str);
-            List<String> selectHashes = new ArrayList<String>();
-            long allHashes = list.count(key);
+            List<Long> allKeys = getAll(key);
+            // remove ignore keys
+            allKeys.removeAll(ignoreHashes);
             
-            // FIXME: exclude not in key
-            for(long i = 0; i < allHashes; i += SPLIT){
-                List<String> storedHashes = list.get(key, i, SPLIT);
-                for(Long ignore: ignoreHashes){
-                    storedHashes.remove(ignore.toString());
-                }
-                selectHashes.addAll(storedHashes);
-            }
-            selectHashes = ListUtils.unique(selectHashes);
-            
-            List<String> returnValue = new ArrayList<String>();
-            for(String selectHash: selectHashes){
-                Long hash = Long.valueOf(selectHash);
-                long count = list.count(key, hash);
-                for(long i = 0; i < count; i += SPLIT){
-                    returnValue.addAll(list.get(key, hash, i, SPLIT));
-                }
+            List<String> returnValue = Lists.newArrayList();
+            for(Long selectHash: allKeys){
+                returnValue.addAll(getAll(key, selectHash));
             }
             return returnValue;
         } catch(LibMemcachedException e){
@@ -88,6 +77,24 @@ public abstract class AbstractTaggerFunction implements InternalFunction {
         }
     }
     
-    protected abstract Hashing createHashing(List<String> args);
+    protected List<Long> getAll(String key) throws LibMemcachedException {
+        final List<Long> results = Lists.newArrayList();
+        
+        long allHasheCount = ft.count(key);
+        for(long i = 0; i < allHasheCount; i += SPLIT){
+            results.addAll(ft.get(key, i, SPLIT));
+        }
+        return results;
+    }
+    
+    protected List<String> getAll(String key, Long hash) throws LibMemcachedException {
+        final List<String> results = Lists.newArrayList();
+        
+        long count = ft.count(key, hash);
+        for(long i = 0; i < count; i += SPLIT){
+            results.addAll(ft.get(key, hash, i, SPLIT));
+        }
+        return results;
+    }
     
 }

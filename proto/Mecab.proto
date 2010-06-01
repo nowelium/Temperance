@@ -1,0 +1,22 @@
+package temperance.protobuf;
+
+option optimize_for = SPEED;
+
+message Request {
+    message Parse {
+        required string str = 1;
+    }
+}
+message Response {
+    message Node {
+        required string surface = 1;
+        required string feature = 2; 
+    }
+    message Parse {
+        repeated Node nodes = 1;
+    }
+}
+
+service MecabService {
+    rpc parse(Request.Parse) returns(Response.Parse);
+}

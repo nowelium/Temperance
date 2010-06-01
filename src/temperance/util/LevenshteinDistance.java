@@ -1,6 +1,7 @@
 package temperance.util;
 
 public class LevenshteinDistance {
+    
     protected static int min(int a, int b){
         if(a <= b){
             return a;
@@ -26,11 +27,9 @@ public class LevenshteinDistance {
 
         for (int i = 1; i <= seq1Length; i++){
             for (int j = 1; j <= seq2Length; j++){
-                int cost;
+                int cost = 1;
                 if(seq1.charAt(i - 1) == seq2.charAt(j - 1)){
                     cost = 0;
-                } else {
-                    cost = 1;
                 }
                 
                 int deletion = distance[i - 1][j] + 1;

@@ -13,7 +13,7 @@ public class MecabTest {
 
     @Test
     public void parseStr_default() {
-        Mecab mecab = new Mecab(Hash.MD5, Tagger.create("-r /opt/local/etc/mecabrc"));
+        MecabHashing mecab = new MecabHashing(Hash.MD5, Tagger.create("-r /opt/local/etc/mecabrc"));
         {
             List<Long> hashes = mecab.parse("本日は");
             Assert.assertEquals(hashes.size(), 2); // "本日" "は"
@@ -30,7 +30,7 @@ public class MecabTest {
 
     @Test
     public void parseStr_nouns() {
-        Mecab mecab = new Mecab(Hash.MD5, Tagger.create("-r /opt/local/etc/mecabrc"), Mecab.Filter.Nouns);
+        MecabHashing mecab = new MecabHashing(Hash.MD5, Tagger.create("-r /opt/local/etc/mecabrc"), MecabHashing.Filter.Nouns);
         {
             List<Long> hashes = mecab.parse("本日は");
             Assert.assertEquals(hashes.size(), 1); // "本日"

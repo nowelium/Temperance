@@ -1,12 +1,12 @@
 package temperance.handler.function;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import libmemcached.exception.LibMemcachedException;
 import temperance.handler.function.exception.ExecutionException;
 import temperance.ql.InternalFunction;
 import temperance.storage.MemcachedList;
+import temperance.util.Lists;
 
 public class ValueFunction implements InternalFunction {
     
@@ -32,7 +32,7 @@ public class ValueFunction implements InternalFunction {
     public List<String> selectIn(String key, List<String> args) throws ExecutionException {
         try {
             MemcachedList list = new MemcachedList(context.getClient());
-            List<String> returnValue = new ArrayList<String>();
+            List<String> returnValue = Lists.newArrayList();
             
             Condition condition = new NotContainsReject(args);
             long count = list.count(key);
@@ -58,7 +58,7 @@ public class ValueFunction implements InternalFunction {
     public List<String> selectNot(String key, List<String> args) throws ExecutionException {
         try {
             MemcachedList list = new MemcachedList(context.getClient());
-            List<String> returnValue = new ArrayList<String>();
+            List<String> returnValue = Lists.newArrayList();
             
             Condition condition = new ContainsReject(args);
             long count = list.count(key);

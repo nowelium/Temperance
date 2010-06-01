@@ -9,11 +9,11 @@ import libmemcached.wrapper.MemcachedServerList;
 
 import org.chasen.mecab.wrapper.Tagger;
 
-import temperance.ft.Gram;
+import temperance.ft.GramHashing;
 import temperance.ft.Hashing;
-import temperance.ft.Mecab;
+import temperance.ft.MecabHashing;
 import temperance.ft.MecabNodeFilter;
-import temperance.ft.Prefix;
+import temperance.ft.PrefixHashing;
 import temperance.hash.HashFunction;
 import temperance.protobuf.FullText.FullTextService;
 import temperance.protobuf.FullText.Request;
@@ -53,12 +53,12 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
     
     protected Hashing createHashing(Parser parser){
         if(Parser.BIGRAM.equals(parser)){
-            return new Gram(hashFunction);
+            return new GramHashing(hashFunction);
         }
         if(Parser.PREFIX.equals(parser)){
-            return new Prefix(hashFunction);
+            return new PrefixHashing(hashFunction);
         }
-        return new Mecab(hashFunction, tagger, nodeFilter);
+        return new MecabHashing(hashFunction, tagger, nodeFilter);
     }
     
     public Response.Set set(RpcController controller, Request.Set request) throws ServiceException {

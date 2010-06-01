@@ -3,7 +3,7 @@ package temperance.handler.function;
 import java.util.List;
 
 import temperance.ft.Hashing;
-import temperance.ft.Mecab;
+import temperance.ft.MecabHashing;
 
 
 public class MecabFunction extends AbstractTaggerFunction {
@@ -14,6 +14,6 @@ public class MecabFunction extends AbstractTaggerFunction {
 
     @Override
     protected Hashing createHashing(List<String> args) {
-        return new Mecab(context.getHashFunction(), context.getTagger(), context.getNodeFilter());
+        return new MecabHashing(context.getHashFunction(), context.getTagger(), context.getNodeFilter());
     }
 }

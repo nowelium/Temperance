@@ -4,6 +4,7 @@ import java.util.List;
 
 import libmemcached.exception.LibMemcachedException;
 import libmemcached.wrapper.MemcachedClient;
+import temperance.util.Lists;
 
 public class MemcachedFullText {
     
@@ -18,8 +19,13 @@ public class MemcachedFullText {
         return list.add(genKey(key, hash), value, expire);
     }
     
-    public List<String> get(String key, long offset, long limit) throws LibMemcachedException {
-        return list.get(key, offset, limit);
+    public List<Long> get(String key, long offset, long limit) throws LibMemcachedException {
+        List<String> hashStringList = list.get(key, offset, limit);
+        List<Long> hashLongList = Lists.newArrayList();
+        for(String hash: hashStringList){
+            hashLongList.add(Long.valueOf(hash));
+        }
+        return hashLongList;
     }
     
     public List<String> get(String key, Long hash, long offset, long limit) throws LibMemcachedException {

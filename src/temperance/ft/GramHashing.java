@@ -1,27 +1,27 @@
 package temperance.ft;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import temperance.hash.HashFunction;
+import temperance.util.Lists;
 
-public class Gram implements Hashing {
+public class GramHashing implements Hashing {
     
     protected final HashFunction function;
     
     protected final int split;
     
-    public Gram(HashFunction function){
+    public GramHashing(HashFunction function){
         this(function, 2);
     }
     
-    public Gram(HashFunction function, int split){
+    public GramHashing(HashFunction function, int split){
         this.function = function;
         this.split = split;
     }
     
     public List<Long> parse(String str) {
-        List<Long> hashes = new ArrayList<Long>();
+        List<Long> hashes = Lists.newArrayList();
         
         int length = str.length();
         for(int i = 0; i < length; ++i){

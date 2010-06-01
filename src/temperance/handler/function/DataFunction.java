@@ -1,12 +1,12 @@
 package temperance.handler.function;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import libmemcached.exception.LibMemcachedException;
 import temperance.handler.function.exception.ExecutionException;
 import temperance.ql.InternalFunction;
 import temperance.storage.MemcachedList;
+import temperance.util.Lists;
 
 public class DataFunction implements InternalFunction {
     
@@ -30,13 +30,13 @@ public class DataFunction implements InternalFunction {
         final String targetKey = args.get(0);
         MemcachedList list = new MemcachedList(context.getClient());
         try {
-            List<String> fromValues = new ArrayList<String>();
+            List<String> fromValues = Lists.newArrayList();
             long fromCount = list.count(fromKey);
             for(long i = 0; i < fromCount; i += SPLIT){
                 fromValues.addAll(list.get(fromKey, i, SPLIT));
             }
             
-            List<String> targetValues = new ArrayList<String>();
+            List<String> targetValues = Lists.newArrayList();
             long targetCount = list.count(targetKey);
             for(long i = 0; i < targetCount; i += SPLIT){
                 targetValues.addAll(list.get(targetKey, i, SPLIT));
@@ -55,7 +55,7 @@ public class DataFunction implements InternalFunction {
         final String targetKey = args.get(0);
         MemcachedList list = new MemcachedList(context.getClient());
         try {
-            List<String> fromValues = new ArrayList<String>();
+            List<String> fromValues = Lists.newArrayList();
             long fromCount = list.count(fromKey);
             for(long i = 0; i < fromCount; i += SPLIT){
                 fromValues.addAll(list.get(fromKey, i, SPLIT));

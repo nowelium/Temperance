@@ -9,7 +9,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.Parser;
 
-import temperance.ft.Mecab;
+import temperance.ft.MecabHashing;
 import temperance.ft.MecabNodeFilter;
 import temperance.handler.Context;
 import temperance.hash.Hash;
@@ -30,9 +30,9 @@ public class StartStop {
             String memcached = cli.getOptionValue("memc");
             String mecabrc = cli.getOptionValue("mecabrc", "/opt/local/etc/mecabrc");
             
-            MecabNodeFilter nodeFilter = Mecab.Filter.Nouns;
+            MecabNodeFilter nodeFilter = MecabHashing.Filter.Nouns;
             if(cli.hasOption("mecab_node_filter_nouns")){
-                nodeFilter = Mecab.Filter.Default;
+                nodeFilter = MecabHashing.Filter.Default;
             }
             HashFunction fullTextHashFunction = Hash.MD5;
             if(cli.hasOption("ft_hash_sha1")){

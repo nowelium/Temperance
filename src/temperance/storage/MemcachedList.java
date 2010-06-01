@@ -1,6 +1,5 @@
 package temperance.storage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import libmemcached.exception.LibMemcachedException;
@@ -11,6 +10,7 @@ import libmemcached.wrapper.MemcachedStorage;
 import libmemcached.wrapper.SimpleResult;
 import libmemcached.wrapper.type.BehaviorType;
 import libmemcached.wrapper.type.ReturnType;
+import temperance.util.Lists;
 
 public class MemcachedList {
     
@@ -37,7 +37,7 @@ public class MemcachedList {
     }
     
     public List<String> get(String key, long offset, long limit) throws LibMemcachedException {
-        List<String> keys = new ArrayList<String>();
+        List<String> keys = Lists.newArrayList();
         for(long i = offset, j = 0; i < (offset + limit); ++i, ++j){
             keys.add(indexKey(key, i));
         }
@@ -53,7 +53,7 @@ public class MemcachedList {
     }
     
     protected List<String> get(List<String> keys) throws LibMemcachedException {
-        final List<String> returnValue = new ArrayList<String>();
+        final List<String> returnValue = Lists.newArrayList();
         storage.getMulti(new Fetcher(){
             public void fetch(SimpleResult result) {
                 returnValue.add(result.getValue());
@@ -63,7 +63,7 @@ public class MemcachedList {
     }
     
     private long generateId(String key) throws LibMemcachedException {
-        String incrementKey = incrementKey(key);
+        final String incrementKey = incrementKey(key);
         while(true){
             MemcachedResult result = storage.gets(incrementKey);
             if(null == result){

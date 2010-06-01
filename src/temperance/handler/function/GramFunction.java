@@ -2,7 +2,7 @@ package temperance.handler.function;
 
 import java.util.List;
 
-import temperance.ft.Gram;
+import temperance.ft.GramHashing;
 import temperance.ft.Hashing;
 
 public class GramFunction extends AbstractTaggerFunction {
@@ -21,7 +21,7 @@ public class GramFunction extends AbstractTaggerFunction {
     @Override
     protected Hashing createHashing(List<String> args) {
         final int split = getSplitValue(args);
-        return new Gram(context.getHashFunction(), split);
+        return new GramHashing(context.getHashFunction(), split);
     }
 
     private int getSplitValue(List<String> args){
