@@ -41,6 +41,7 @@ public class Pool {
         try {
             return new Connection(refPool.get().pop(false));
         } catch(MaximumPoolException e){
+            // FIXME: reuse pool connection
             synchronized(this){
                 init();
             }
