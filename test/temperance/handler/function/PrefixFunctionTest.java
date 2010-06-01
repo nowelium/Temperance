@@ -6,14 +6,12 @@ import java.util.List;
 import libmemcached.exception.LibMemcachedException;
 import libmemcached.wrapper.MemcachedClient;
 
-import org.chasen.mecab.wrapper.Tagger;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import temperance.ft.MecabHashing;
-import temperance.ft.MecabNodeFilter;
+import temperance.ft.PrefixHashing;
 import temperance.handler.Context;
 import temperance.handler.function.exception.ExecutionException;
 import temperance.hash.Hash;
@@ -21,14 +19,9 @@ import temperance.hash.HashFunction;
 import temperance.memcached.Pool;
 import temperance.storage.MemcachedFullText;
 
-
-public class MecabFunctionTest {
+public class PrefixFunctionTest {
     
     protected static HashFunction hashFunction = Hash.MD5;
-    
-    protected static Tagger tagger = Tagger.create("-r /opt/local/etc/mecabrc");
-    
-    protected static MecabNodeFilter filter = MecabHashing.Filter.Nouns;
     
     protected Pool pool;
     
@@ -45,7 +38,7 @@ public class MecabFunctionTest {
     public void after(){
         cleanupData();
     }
-    
+
     public void setupPool(){
         Context c = new Context();
         c.setMemcachedPoolSize(1);
@@ -55,11 +48,11 @@ public class MecabFunctionTest {
     
     public void setupData() throws LibMemcachedException {
         MemcachedFullText ft = new MemcachedFullText(pool.get());
-        MecabHashing mecab = new MecabHashing(hashFunction, tagger, filter);
+        PrefixHashing hashing = new PrefixHashing(hashFunction);
         
         {
             String value = "test-value-a";
-            List<Long> hashes = mecab.parse("本日は晴天");
+            List<Long> hashes = hashing.parse("本日は晴天");
             for(int i = 0; i < hashes.size(); ++i){
                 Long hash = hashes.get(i);
                 ft.add("test-key", hash, value, 10);
@@ -67,7 +60,7 @@ public class MecabFunctionTest {
         }
         {
             String value = "test-value-b";
-            List<Long> hashes = mecab.parse("本日は快晴");
+            List<Long> hashes = hashing.parse("本日は快晴");
             for(int i = 0; i < hashes.size(); ++i){
                 Long hash = hashes.get(i);
                 ft.add("test-key", hash, value, 10);
@@ -78,8 +71,6 @@ public class MecabFunctionTest {
     public void setupFunctionContext() {
         ctx.setPool(pool);
         ctx.setHashFunction(hashFunction);
-        ctx.setNodeFilter(filter);
-        ctx.setTagger(tagger);
     }
     
     public void cleanupData(){
@@ -89,26 +80,19 @@ public class MecabFunctionTest {
 
     @Test
     public void selectIn() throws ExecutionException {
-        MecabFunction function = new MecabFunction(ctx);
+        PrefixFunction function = new PrefixFunction(ctx);
         List<String> results = function.selectIn("test-key", Arrays.asList("本日"));
         System.out.println(results);
         Assert.assertEquals(results.size(), 2);
         Assert.assertEquals(results.get(0), "test-value-a");
         Assert.assertEquals(results.get(1), "test-value-b");
     }
-
-    @Test
-    public void selectIn_refine() throws ExecutionException {
-        MecabFunction function = new MecabFunction(ctx);
-        List<String> results = function.selectIn("test-key", Arrays.asList("本日 晴天"));
-        Assert.assertEquals(results.size(), 1);
-        Assert.assertEquals(results.get(0), "test-value-a");
-    }
     
     @Test
-    public void selectIn_refine_mecab_tag() throws ExecutionException {
-        MecabFunction function = new MecabFunction(ctx);
-        List<String> results = function.selectIn("test-key", Arrays.asList("本日は晴天なり"));
+    public void selectIn_prefix() throws ExecutionException {
+        PrefixFunction function = new PrefixFunction(ctx);
+        List<String> results = function.selectIn("test-key", Arrays.asList("本日は晴"));
+        System.out.println(results);
         Assert.assertEquals(results.size(), 1);
         Assert.assertEquals(results.get(0), "test-value-a");
     }

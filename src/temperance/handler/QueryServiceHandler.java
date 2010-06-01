@@ -3,9 +3,6 @@ package temperance.handler;
 import java.util.Collections;
 import java.util.List;
 
-import libmemcached.wrapper.MemcachedClient;
-import libmemcached.wrapper.MemcachedServerList;
-
 import org.chasen.mecab.wrapper.Tagger;
 
 import temperance.ft.MecabNodeFilter;
@@ -15,9 +12,11 @@ import temperance.handler.function.FunctionContext;
 import temperance.handler.function.GeoPointFunction;
 import temperance.handler.function.GramFunction;
 import temperance.handler.function.MecabFunction;
+import temperance.handler.function.PrefixFunction;
 import temperance.handler.function.ValueFunction;
 import temperance.handler.function.exception.ExecutionException;
 import temperance.hash.HashFunction;
+import temperance.memcached.Pool;
 import temperance.protobuf.Query.QueryService;
 import temperance.protobuf.Query.Request;
 import temperance.protobuf.Query.Response;
@@ -48,19 +47,14 @@ protected final Context context;
 
     protected final Tagger tagger;
     
-    public QueryServiceHandler(Context context){
+    protected final Pool pool;
+    
+    public QueryServiceHandler(Context context, Pool pool){
         this.context = context;
         this.hashFunction = context.getFullTextHashFunction();
         this.nodeFilter = context.getNodeFilter();
         this.tagger = Tagger.create("-r", context.getMecabrc());
-    }
-    
-    protected MemcachedClient createMemcachedClient(){
-        MemcachedClient client = new MemcachedClient();
-        MemcachedServerList servers = client.getServerList();
-        servers.parse(context.getMemcached());
-        servers.push();
-        return client;
+        this.pool = pool;
     }
     
     public Response.Get get(RpcController controller, Request.Get request) throws ServiceException {
@@ -68,7 +62,7 @@ protected final Context context;
         final QueryParser parser = new QueryParser();
         try {
             FunctionContext ctx = new FunctionContext();
-            ctx.setClient(createMemcachedClient());
+            ctx.setPool(pool);
             ctx.setHashFunction(hashFunction);
             ctx.setTagger(tagger);
             ctx.setNodeFilter(nodeFilter);
@@ -180,6 +174,14 @@ protected final Context context;
         public InternalFunction createValue() {
             return new ValueFunction(context);
         }
+        
+        public InternalFunction createPrefix() {
+            return new PrefixFunction(context);
+        }
+        
+        public InternalFunction createLevenshteinDistance(){
+            return null;
+        }
     }
     
     protected static class Switch implements SetFunction.Switch<List<String>> {
@@ -199,15 +201,24 @@ protected final Context context;
             this.args = args;
         }
         public List<String> caseIn() {
-            try {
-                if(Behavior.Delete.equals(behavior)){
-                    return function.deleteIn(key, args);
+            return behavior.each(new Behavior.Switch<List<String>>(){
+                public List<String> caseDelete() {
+                    try {
+                        return function.deleteIn(key, args);
+                    } catch(ExecutionException e){
+                        e.printStackTrace();
+                        return Collections.emptyList();
+                    }
                 }
-                return function.selectIn(key, args);
-            } catch(ExecutionException e){
-                e.printStackTrace();
-                return Collections.emptyList();
-            }
+                public List<String> caseSelect() {
+                    try {
+                        return function.selectIn(key, args);
+                    } catch(ExecutionException e){
+                        e.printStackTrace();
+                        return Collections.emptyList();
+                    }
+                }
+            });
         }
         public List<String> caseNot() {
             try {

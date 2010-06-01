@@ -28,6 +28,7 @@ public class StartStop {
             CommandLine cli = parser.parse(options, args, true);
             
             String memcached = cli.getOptionValue("memc");
+            String memcachedPoolSize = cli.getOptionValue("memc_pool", "30");
             String mecabrc = cli.getOptionValue("mecabrc", "/opt/local/etc/mecabrc");
             
             MecabNodeFilter nodeFilter = MecabHashing.Filter.Nouns;
@@ -44,6 +45,7 @@ public class StartStop {
             
             Context ctx = new Context();
             ctx.setMemcached(memcached);
+            ctx.setMemcachedPoolSize(Integer.parseInt(memcachedPoolSize));
             ctx.setMecabrc(mecabrc);
             ctx.setFullTextHashFunction(fullTextHashFunction);
             ctx.setNodeFilter(nodeFilter);
@@ -71,6 +73,9 @@ public class StartStop {
         Option memcached = new Option("memc", "memcached", true, "memcached server string(ex. host01:11211,host02:11211)");
         memcached.setRequired(true);
         
+        Option memcachedPoolSize = new Option("memc_pool", "memcached_pool", true, "memcached connection poolsize");
+        memcachedPoolSize.setRequired(false);
+        
         Option mecabrc = new Option("mecabrc", "mecabrc", true, "mecabrc path(ex. /etc/mecabrc)");
         mecabrc.setRequired(false);
         
@@ -91,6 +96,7 @@ public class StartStop {
         
         Options options = new Options();
         options.addOption(memcached);
+        options.addOption(memcachedPoolSize);
         options.addOption(mecabrc);
         options.addOptionGroup(hashFunction);
         options.addOption(port);

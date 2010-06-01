@@ -1,8 +1,7 @@
 package temperance.handler;
 
 import libmemcached.exception.LibMemcachedException;
-import libmemcached.wrapper.MemcachedClient;
-import libmemcached.wrapper.MemcachedServerList;
+import temperance.memcached.Pool;
 import temperance.protobuf.Map.MapService;
 import temperance.protobuf.Map.Request;
 import temperance.protobuf.Map.Response;
@@ -15,23 +14,17 @@ public class MapServiceHandler implements MapService.BlockingInterface {
     
     protected final Context context;
     
-    public MapServiceHandler(Context context){
+    protected final Pool pool;
+    
+    public MapServiceHandler(Context context, Pool pool){
         this.context = context;
+        this.pool = pool;
     }
     
-    protected MemcachedClient createMemcachedClient(){
-        MemcachedClient client = new MemcachedClient();
-        MemcachedServerList servers = client.getServerList();
-        servers.parse(context.getMemcached());
-        servers.push();
-        return client;
-    }
-
     public Response.Get get(RpcController controller, Request.Get request) throws ServiceException {
         final String key = request.getKey();
-        MemcachedClient client = createMemcachedClient();
         
-        MemcachedMap map = new MemcachedMap(client);
+        MemcachedMap map = new MemcachedMap(pool.get());
         try {
             String result = map.get(key);
             Response.Get.Builder builder = Response.Get.newBuilder();
@@ -47,9 +40,8 @@ public class MapServiceHandler implements MapService.BlockingInterface {
         final String key = request.getKey();
         final String value = request.getValue();
         final int expire = request.getExpire();
-        MemcachedClient client = createMemcachedClient();
         
-        MemcachedMap map = new MemcachedMap(client);
+        MemcachedMap map = new MemcachedMap(pool.get());
         try {
             map.set(key, value, expire);
             

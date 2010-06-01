@@ -18,9 +18,9 @@ public abstract class AbstractTaggerFunction implements InternalFunction {
     
     protected final MemcachedFullText ft;
     
-    protected AbstractTaggerFunction(FunctionContext context){
+    public AbstractTaggerFunction(FunctionContext context){
         this.context = context;
-        this.ft = new MemcachedFullText(context.getClient());
+        this.ft = new MemcachedFullText(context.getPool().get());
     }
     
     protected abstract Hashing createHashing(List<String> args);
@@ -92,7 +92,11 @@ public abstract class AbstractTaggerFunction implements InternalFunction {
         
         long count = ft.count(key, hash);
         for(long i = 0; i < count; i += SPLIT){
-            results.addAll(ft.get(key, hash, i, SPLIT));
+            long limit = SPLIT;
+            if(count < SPLIT){
+                limit = count;
+            }
+            results.addAll(ft.get(key, hash, i, limit));
         }
         return results;
     }

@@ -31,13 +31,18 @@ public class ValueFunction implements InternalFunction {
      */
     public List<String> selectIn(String key, List<String> args) throws ExecutionException {
         try {
-            MemcachedList list = new MemcachedList(context.getClient());
+            MemcachedList list = new MemcachedList(context.getPool().get());
             List<String> returnValue = Lists.newArrayList();
             
             Condition condition = new NotContainsReject(args);
             long count = list.count(key);
             for(long i = 0; i < count; i += SPLIT){
-                List<String> results = list.get(key, i, SPLIT);
+                long limit = SPLIT;
+                if(count < SPLIT){
+                    limit = count;
+                }
+                
+                List<String> results = list.get(key, i, limit);
                 for(String result: results){
                     // continue when not contains
                     if(condition.reject(result)){
@@ -57,13 +62,18 @@ public class ValueFunction implements InternalFunction {
      */
     public List<String> selectNot(String key, List<String> args) throws ExecutionException {
         try {
-            MemcachedList list = new MemcachedList(context.getClient());
+            MemcachedList list = new MemcachedList(context.getPool().get());
             List<String> returnValue = Lists.newArrayList();
             
             Condition condition = new ContainsReject(args);
             long count = list.count(key);
             for(long i = 0; i < count; i += SPLIT){
-                List<String> results = list.get(key, i, SPLIT);
+                long limit = SPLIT;
+                if(count < SPLIT){
+                    limit = count;
+                }
+                
+                List<String> results = list.get(key, i, limit);
                 for(String result: results){
                     // continue when contains
                     if(condition.reject(result)){

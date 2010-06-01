@@ -7,6 +7,8 @@ public class Context {
     
     private String memcached;
     
+    private int memcachedPoolSize;
+    
     private String mecabrc;
     
     private HashFunction fullTextHashFunction;
@@ -19,6 +21,14 @@ public class Context {
     
     public void setMemcached(String memcached){
         this.memcached = memcached;
+    }
+
+    public int getMemcachedPoolSize() {
+        return memcachedPoolSize;
+    }
+
+    public void setMemcachedPoolSize(int memcachedPoolSize) {
+        this.memcachedPoolSize = memcachedPoolSize;
     }
     
     public String getMecabrc(){

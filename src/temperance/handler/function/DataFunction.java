@@ -28,7 +28,7 @@ public class DataFunction implements InternalFunction {
 
     public List<String> selectIn(String fromKey, List<String> args) throws ExecutionException {
         final String targetKey = args.get(0);
-        MemcachedList list = new MemcachedList(context.getClient());
+        MemcachedList list = new MemcachedList(context.getPool().get());
         try {
             List<String> fromValues = Lists.newArrayList();
             long fromCount = list.count(fromKey);
@@ -53,7 +53,7 @@ public class DataFunction implements InternalFunction {
 
     public List<String> selectNot(String fromKey, List<String> args) throws ExecutionException {
         final String targetKey = args.get(0);
-        MemcachedList list = new MemcachedList(context.getClient());
+        MemcachedList list = new MemcachedList(context.getPool().get());
         try {
             List<String> fromValues = Lists.newArrayList();
             long fromCount = list.count(fromKey);

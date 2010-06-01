@@ -29,7 +29,12 @@ public class GramHashing implements Hashing {
             if(length < limit){
                 limit = i + 1;
             }
-            long hash = function.hash(str.substring(i, limit));
+            String substr = str.substring(i, limit);
+            if(substr.length() < 1){
+                continue;
+            }
+            
+            long hash = function.hash(substr);
             hashes.add(Long.valueOf(hash));
         }
         return hashes;

@@ -1,15 +1,14 @@
 package temperance.handler.function;
 
-import libmemcached.wrapper.MemcachedClient;
-
 import org.chasen.mecab.wrapper.Tagger;
 
 import temperance.ft.MecabNodeFilter;
 import temperance.hash.HashFunction;
+import temperance.memcached.Pool;
 
 public class FunctionContext {
     
-    private MemcachedClient client;
+    private Pool pool;
     
     private Tagger tagger;
     
@@ -17,8 +16,8 @@ public class FunctionContext {
     
     private MecabNodeFilter nodeFilter;
     
-    public void setClient(MemcachedClient client){
-        this.client = client;
+    public void setPool(Pool pool){
+        this.pool = pool;
     }
     
     public void setTagger(Tagger tagger){
@@ -29,8 +28,8 @@ public class FunctionContext {
         this.hashFunction = hashFunction;
     }
     
-    public MemcachedClient getClient(){
-        return client;
+    public Pool getPool(){
+        return pool;
     }
     
     public Tagger getTagger(){

@@ -38,9 +38,15 @@ public enum QueryFunction {
         }
     },
     
+    PREFIX {
+        public InternalFunction create(Factory factory){
+            return factory.createPrefix();
+        }
+    },
+    
     LevenshteinDistance {
         public InternalFunction create(Factory factory){
-            return null;
+            return factory.createLevenshteinDistance();
         }
     }
     ;
@@ -52,6 +58,8 @@ public enum QueryFunction {
         public InternalFunction createMecab();
         public InternalFunction createBigram();
         public InternalFunction createGram();
+        public InternalFunction createPrefix();
+        public InternalFunction createLevenshteinDistance();
     }
     public abstract InternalFunction create(Factory factory);
 

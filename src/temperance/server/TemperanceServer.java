@@ -10,6 +10,7 @@ import temperance.handler.ListServiceHandler;
 import temperance.handler.MapServiceHandler;
 import temperance.handler.MecabServiceHandler;
 import temperance.handler.QueryServiceHandler;
+import temperance.memcached.Pool;
 import temperance.protobuf.FullText.FullTextService;
 import temperance.protobuf.List.ListService;
 import temperance.protobuf.Map.MapService;
@@ -33,7 +34,10 @@ public class TemperanceServer extends AbstractDaemon {
 
     @Override
     public void init() {
-        List<BlockingService> services = createBlockingService(context);
+        final Pool pool = new Pool(context);
+        pool.init();
+        
+        final List<BlockingService> services = createBlockingService(context, pool);
         for(BlockingService service: services){
             server.registerBlockingService(service);
         }
@@ -57,12 +61,12 @@ public class TemperanceServer extends AbstractDaemon {
         server.shutDown();
     }
     
-    protected List<BlockingService> createBlockingService(Context context){
+    protected List<BlockingService> createBlockingService(Context context, Pool pool){
         return Arrays.asList(
-            FullTextService.newReflectiveBlockingService(new FullTextServiceHandler(context)),
-            ListService.newReflectiveBlockingService(new ListServiceHandler(context)),
-            MapService.newReflectiveBlockingService(new MapServiceHandler(context)),
-            QueryService.newReflectiveBlockingService(new QueryServiceHandler(context)),
+            FullTextService.newReflectiveBlockingService(new FullTextServiceHandler(context, pool)),
+            ListService.newReflectiveBlockingService(new ListServiceHandler(context, pool)),
+            MapService.newReflectiveBlockingService(new MapServiceHandler(context, pool)),
+            QueryService.newReflectiveBlockingService(new QueryServiceHandler(context, pool)),
             MecabService.newReflectiveBlockingService(new MecabServiceHandler(context))
         );
     }

@@ -10,6 +10,7 @@ import libmemcached.wrapper.MemcachedStorage;
 import libmemcached.wrapper.SimpleResult;
 import libmemcached.wrapper.type.BehaviorType;
 import libmemcached.wrapper.type.ReturnType;
+import temperance.memcached.Connection;
 import temperance.util.Lists;
 
 public class MemcachedList {
@@ -20,12 +21,15 @@ public class MemcachedList {
     
     protected static final int flag = 0;
 
+    protected final Connection connection;
+    
     protected final MemcachedClient client;
     
     protected final MemcachedStorage storage;
 
-    public MemcachedList(MemcachedClient client){
-        this.client = client;
+    public MemcachedList(Connection connection){
+        this.connection = connection;
+        this.client = connection.get();
         this.storage = client.getStorage();
         client.getBehavior().set(BehaviorType.SUPPORT_CAS, 1);
     }

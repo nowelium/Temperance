@@ -10,6 +10,7 @@
 #
 
 JAVA_OPTIONS="-Dfile.encoding=UTF-8 -Dtemperance.pid.dir=/tmp"
+JMX_REMOTE="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=7900 -Dcom.sun.management.jmxremote.authenticate=false"
 MEMCACHED="localhost:11211"
 MECABRC="/opt/local/etc/mecabrc"
 
@@ -31,4 +32,4 @@ LIB=$LIB:"$DIR/lib/protobuf-java-2.2.0.jar"
 LIB=$LIB:"$DIR/lib/protobuf-socket-rpc.jar"
 LIB=$LIB:"$DIR/lib/jparsec-2.0.jar"
 
-$JAVA_HOME/bin/java -cp $LIB temperance.Start -memc $MEMCACHED -mecabrc $MECABRC -p 17001 -daemonize
+$JAVA_HOME/bin/java $JMX_REMOTE -cp $LIB temperance.Start -memc $MEMCACHED -mecabrc $MECABRC -p 17001 -daemonize

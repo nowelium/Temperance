@@ -3,8 +3,7 @@ package temperance.handler;
 import java.util.List;
 
 import libmemcached.exception.LibMemcachedException;
-import libmemcached.wrapper.MemcachedClient;
-import libmemcached.wrapper.MemcachedServerList;
+import temperance.memcached.Pool;
 import temperance.protobuf.List.ListService;
 import temperance.protobuf.List.Request;
 import temperance.protobuf.List.Response;
@@ -17,25 +16,19 @@ public class ListServiceHandler implements ListService.BlockingInterface {
     
     protected final Context context;
     
-    public ListServiceHandler(Context context){
+    protected final Pool pool;
+    
+    public ListServiceHandler(Context context, Pool pool){
         this.context = context;
+        this.pool = pool;
     }
     
-    protected MemcachedClient createMemcachedClient(){
-        MemcachedClient client = new MemcachedClient();
-        MemcachedServerList servers = client.getServerList();
-        servers.parse(context.getMemcached());
-        servers.push();
-        return client;
-    }
-
     public Response.Get get(RpcController controller, Request.Get request) throws ServiceException {
         final String key = request.getKey();
         final long offset = request.getOffset();
         final long limit = request.getLimit();
-        MemcachedClient client = createMemcachedClient();
         
-        MemcachedList list = new MemcachedList(client);
+        MemcachedList list = new MemcachedList(pool.get());
         try {
             Response.Get.Builder builder = Response.Get.newBuilder();
             List<String> values = list.get(key, offset, limit);
@@ -50,9 +43,8 @@ public class ListServiceHandler implements ListService.BlockingInterface {
         final String key = request.getKey();
         final String value = request.getValue();
         final int expire = request.getExpire();
-        MemcachedClient client = createMemcachedClient();
         
-        MemcachedList list = new MemcachedList(client);
+        MemcachedList list = new MemcachedList(pool.get());
         try {
             list.add(key, value, expire);
             return Response.Add.newBuilder().setSucceed(true).build();
@@ -64,9 +56,8 @@ public class ListServiceHandler implements ListService.BlockingInterface {
 
     public Response.Count count(RpcController controller, Request.Count request) throws ServiceException {
         final String key = request.getKey();
-        MemcachedClient client = createMemcachedClient();
         
-        MemcachedList list = new MemcachedList(client);
+        MemcachedList list = new MemcachedList(pool.get());
         try {
             long count = list.count(key);
             return Response.Count.newBuilder().setCount(count).build();

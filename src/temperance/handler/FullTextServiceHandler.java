@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import libmemcached.exception.LibMemcachedException;
-import libmemcached.wrapper.MemcachedClient;
-import libmemcached.wrapper.MemcachedServerList;
 
 import org.chasen.mecab.wrapper.Tagger;
 
@@ -15,6 +13,7 @@ import temperance.ft.MecabHashing;
 import temperance.ft.MecabNodeFilter;
 import temperance.ft.PrefixHashing;
 import temperance.hash.HashFunction;
+import temperance.memcached.Pool;
 import temperance.protobuf.FullText.FullTextService;
 import temperance.protobuf.FullText.Request;
 import temperance.protobuf.FullText.Response;
@@ -36,19 +35,14 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
 
     protected final Tagger tagger;
     
-    public FullTextServiceHandler(Context context){
+    protected final Pool pool;
+    
+    public FullTextServiceHandler(Context context, Pool pool){
         this.context = context;
         this.hashFunction = context.getFullTextHashFunction();
         this.nodeFilter = context.getNodeFilter();
         this.tagger = Tagger.create("-r", context.getMecabrc());
-    }
-    
-    protected MemcachedClient createMemcachedClient(){
-        MemcachedClient client = new MemcachedClient();
-        MemcachedServerList servers = client.getServerList();
-        servers.parse(context.getMemcached());
-        servers.push();
-        return client;
+        this.pool = pool;
     }
     
     protected Hashing createHashing(Parser parser){
@@ -67,9 +61,8 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
         final String value = request.getValue();
         final int expire = request.getExpire();
         final Parser parser = request.getParser();
-        MemcachedClient client = createMemcachedClient();
         
-        MemcachedFullText list = new MemcachedFullText(client);
+        MemcachedFullText list = new MemcachedFullText(pool.get());
         try {
             Hashing hashing = createHashing(parser);
             List<Long> hashes = hashing.parse(str);
@@ -87,9 +80,7 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
         final String key = request.getKey();
         final String str = request.getStr();
         final Parser parser = request.getParser();
-        MemcachedClient client = createMemcachedClient();
-        
-        MemcachedFullText list = new MemcachedFullText(client);
+        MemcachedFullText list = new MemcachedFullText(pool.get());
         
         Response.Get.Builder builder = Response.Get.newBuilder();
         try {
