@@ -24,6 +24,7 @@ $service = new Temperance_FullTextService('localhost', 17001);
     $service->set($setParam);
 }
 
+$total = array();
 while(true){
     $elapsed = microtime(true);
 
@@ -31,13 +32,13 @@ while(true){
     $getParam = new Temperance_Query_Request_Get;
     $getParam->query = 'FROM hoge IN MECAB("本日")';
     $result = $service->get($getParam);
-    var_dump($result->values);
 
     $getParam = new Temperance_Query_Request_Get;
     $getParam->query = 'FROM hoge NOT MECAB("昨日")';
     $result = $service->get($getParam);
-    var_dump($result->values);
 
-
-    echo microtime(true) - $elapsed, PHP_EOL;
+    $diff = microtime(true) - $elapsed;
+    $total[] = $diff;
+    echo $diff, PHP_EOL;
+    echo 'avg: ', array_sum($total) / count($total), PHP_EOL;
 }

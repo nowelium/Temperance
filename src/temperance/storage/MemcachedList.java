@@ -36,7 +36,7 @@ public class MemcachedList {
     
     public String add(String key, String value, int expire) throws LibMemcachedException {
         long nextId = generateId(key);
-        client.getStorage().set(indexKey(key, nextId), value, expire, 0);
+        client.getStorage().set(indexKey(key, nextId), value, expire, flag);
         return Long.toString(nextId);
     }
     

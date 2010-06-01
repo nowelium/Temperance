@@ -79,7 +79,7 @@ protected final Context context;
     }
     
     public Response.Delete delete(RpcController controller, Request.Delete request) throws ServiceException {
-        return null;
+        throw new ServiceException("not yet implemented");
     }
     
     protected static class FunctionFactoryFactory {
