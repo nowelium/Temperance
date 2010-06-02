@@ -54,7 +54,7 @@ public enum Hash implements HashFunction {
     }
     
     protected long hash(final MessageDigest digest, final String key, final int maxSize){
-        synchronized(this){
+        synchronized(digest){
             digest.reset();
             digest.update(charset.encode(key));
             return hash(digest.digest(), maxSize);
