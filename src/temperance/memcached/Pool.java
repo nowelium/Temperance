@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import libmemcached.exception.LibMemcachedException;
 import libmemcached.exception.MaximumPoolException;
+import libmemcached.wrapper.MemcachedBehavior;
 import libmemcached.wrapper.MemcachedClient;
 import libmemcached.wrapper.MemcachedPool;
 import libmemcached.wrapper.type.BehaviorType;
@@ -39,6 +40,13 @@ public class Pool {
         
         MemcachedClient client = new MemcachedClient();
         client.getServerList().parse(context.getMemcached()).push();
+        MemcachedBehavior behavior = client.getBehavior();
+        behavior.setDistribution(DistributionType.CONSISTENT);
+        behavior.set(BehaviorType.SUPPORT_CAS, true);
+        behavior.set(BehaviorType.BUFFER_REQUESTS, true);
+        behavior.set(BehaviorType.TCP_KEEPALIVE, true);
+        behavior.set(BehaviorType.TCP_NODELAY, true);
+        
         this.rootClient = client;
         
         this.lock = new CountDownLock((int) Math.round(maxPoolSize * 0.8));
@@ -46,12 +54,11 @@ public class Pool {
     
     protected void resetPool(){
         MemcachedPool pool = rootClient.createPool(INITIAL_POOL_SIZE, maxPoolSize);
-        pool.setBehavior(BehaviorType.DISTRIBUTION, DistributionType.CONSISTENT.getValue());
-        pool.setBehavior(BehaviorType.SUPPORT_CAS, 1);
-        pool.setBehavior(BehaviorType.CACHE_LOOKUPS, 1);
-        pool.setBehavior(BehaviorType.TCP_KEEPALIVE, 1);
-        pool.setBehavior(BehaviorType.BUFFER_REQUESTS, 1);
-        
+        pool.setBehavior(BehaviorType.DISTRIBUTION, DistributionType.CONSISTENT);
+        pool.setBehavior(BehaviorType.SUPPORT_CAS, true);
+        pool.setBehavior(BehaviorType.BUFFER_REQUESTS, true);
+        pool.setBehavior(BehaviorType.TCP_KEEPALIVE, true);
+        pool.setBehavior(BehaviorType.TCP_NODELAY, true);
         this.refPool.set(pool);
     }
     
