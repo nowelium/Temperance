@@ -1,6 +1,7 @@
 package temperance.lock.impl;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
 
 import temperance.lock.ConditionLock;
 
@@ -8,27 +9,25 @@ public class CountDownLock implements ConditionLock {
     
     protected final int initial;
     
-    protected final AtomicInteger counter;
-    
-    protected final CountedConditionLock.Sync sync = new CountedConditionLock.Sync();
+    protected final AtomicReference<CountDownLatch> lock = new AtomicReference<CountDownLatch>();
     
     public CountDownLock(final int initial){
         this.initial = initial;
-        this.counter = new AtomicInteger(initial);
-        this.sync.update(initial);
+        this.lock.set(new CountDownLatch(initial));
     }
 
     public void await() throws InterruptedException {
-        sync.acquireSharedInterruptibly(1);
-        sync.update(initial);
+        CountDownLatch latch = lock.get();
+        latch.await();
+        lock.set(new CountDownLatch(initial));
     }
 
     public void release() {
-        sync.releaseShared(1);
+        countDown();
     }
     
     public void countDown(){
-        sync.update(counter.decrementAndGet());
+        lock.get().countDown();
     }
 
 }

@@ -1,11 +1,8 @@
 package temperance.memcached;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import libmemcached.exception.LibMemcachedException;
 import libmemcached.exception.MaximumPoolException;
@@ -14,69 +11,70 @@ import libmemcached.wrapper.MemcachedPool;
 import libmemcached.wrapper.type.BehaviorType;
 import libmemcached.wrapper.type.DistributionType;
 import temperance.handler.Context;
-import temperance.lock.impl.RendezvousLock;
+import temperance.lock.impl.CountDownLock;
 
 public class Pool {
     
+    protected static final int INITIAL_POOL_SIZE = 30;
+    
     protected final Context context;
     
-    protected final MemcachedPool pool;
+    protected final int maxPoolSize;
+    
+    protected final AtomicReference<MemcachedPool> refPool = new AtomicReference<MemcachedPool>();
     
     protected final MemcachedClient rootClient;
     
-    protected final RendezvousLock rendezvous = new RendezvousLock();
-    
-    protected final BlockingQueue<MemcachedClient> releaseQueue = new LinkedBlockingQueue<MemcachedClient>();
+    protected final CountDownLock latch;
     
     protected final ExecutorService executor = Executors.newSingleThreadExecutor();
     
     public Pool(Context context){
         this.context = context;
         int maxPoolSize = context.getMemcachedPoolSize();
-        if(maxPoolSize < 30){
-            maxPoolSize = 30;
+        if(maxPoolSize < INITIAL_POOL_SIZE){
+            maxPoolSize = INITIAL_POOL_SIZE;
         }
+        this.maxPoolSize = maxPoolSize;
         
         MemcachedClient client = new MemcachedClient();
         client.getServerList().parse(context.getMemcached()).push();
         this.rootClient = client;
         
-        MemcachedPool pool = client.createPool(30, maxPoolSize);
+        this.latch = new CountDownLock((int) Math.round(maxPoolSize * 0.8));
+    }
+    
+    protected void resetPool(){
+        MemcachedPool pool = rootClient.createPool(INITIAL_POOL_SIZE, maxPoolSize);
         pool.setBehavior(BehaviorType.DISTRIBUTION, DistributionType.CONSISTENT.getValue());
         pool.setBehavior(BehaviorType.CACHE_LOOKUPS, 1);
-        pool.setBehavior(BehaviorType.TCP_KEEPALIVE, 128);
+        pool.setBehavior(BehaviorType.TCP_KEEPALIVE, 1);
         
-        this.pool = pool;
+        this.refPool.set(pool);
     }
     
     public void init(){
+        resetPool();
+        
         executor.execute(new Runnable(){
             public void run(){
                 try {
                     // infinite rendezvous
                     while(true){
-                        rendezvous.await();
+                        // rendezvous
+                        latch.await();
                         
-                        while(!releaseQueue.isEmpty()) {
-                            push(releaseQueue.take());
-                            
-                            // FIXME: pool.push are hangup when ..excess.. access
-                            TimeUnit.MILLISECONDS.sleep(100);
-                        }
+                        resetPool();
                     }
                 } catch(InterruptedException e){
                     //
                 }
             }
-            protected void push(MemcachedClient client){
-                System.out.println(client);
-                pool.push(client);
-            }
         });
         
         MemcachedClient client = get();
         try {
-            System.out.println(client.version());
+            client.version();
         } finally {
             release(client);
         }
@@ -84,12 +82,11 @@ public class Pool {
     
     public MemcachedClient get(){
         try {
-            return pool.pop(false);
-        } catch(MaximumPoolException e){
-            // rendezvous
-            rendezvous.release();
+            latch.countDown();
             
-            // root client
+            return refPool.get().pop(false);
+        } catch(MaximumPoolException e){
+            // 
             return rootClient;
         } catch(LibMemcachedException e){
             throw new RuntimeException(e);
@@ -97,12 +94,13 @@ public class Pool {
     }
     
     public void release(MemcachedClient client){
-        if(rootClient == client){
+        if(client == rootClient){
             // non pool release: root client
             return;
         }
         
-        releaseQueue.offer(client);
+        // TODO: reuse pool
+        client.quit();
     }
 
 }
