@@ -14,7 +14,7 @@ public class MemcachedFullText {
         this.list = new MemcachedList(pool);
     }
     
-    public String add(String key, Long hash, String value, int expire) throws LibMemcachedException {
+    public long add(String key, Long hash, String value, int expire) throws LibMemcachedException {
         list.add(key, hash.toString(), expire);
         return list.add(genKey(key, hash), value, expire);
     }

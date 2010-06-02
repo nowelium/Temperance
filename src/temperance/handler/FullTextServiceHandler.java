@@ -37,12 +37,15 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
     
     protected final Pool pool;
     
+    protected final MemcachedFullText fulltext;
+    
     public FullTextServiceHandler(Context context, Pool pool){
         this.context = context;
         this.hashFunction = context.getFullTextHashFunction();
         this.nodeFilter = context.getNodeFilter();
         this.tagger = Tagger.create("-r", context.getMecabrc());
         this.pool = pool;
+        this.fulltext = new MemcachedFullText(pool);
     }
     
     protected Hashing createHashing(Parser parser){
@@ -62,12 +65,11 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
         final int expire = request.getExpire();
         final Parser parser = request.getParser();
         
-        MemcachedFullText list = new MemcachedFullText(pool);
         try {
             Hashing hashing = createHashing(parser);
             List<Long> hashes = hashing.parse(str);
             for(Long hash: hashes){
-                list.add(key, hash, value, expire);
+                fulltext.add(key, hash, value, expire);
             }
             return Response.Set.newBuilder().setSucceed(true).build();
         } catch(LibMemcachedException e){
@@ -80,14 +82,13 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
         final String key = request.getKey();
         final String str = request.getStr();
         final Parser parser = request.getParser();
-        MemcachedFullText list = new MemcachedFullText(pool);
         
         Response.Get.Builder builder = Response.Get.newBuilder();
         try {
             Hashing hashing = createHashing(parser);
             List<Long> hashes = hashing.parse(str);
             for(Long hash: hashes){
-                builder.addAllValues(getAll(list, key, hash));
+                builder.addAllValues(getAll(fulltext, key, hash));
             }
             return builder.build();
         } catch(LibMemcachedException e){

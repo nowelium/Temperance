@@ -15,7 +15,7 @@ import temperance.lock.impl.CountDownLock;
 
 public class Pool {
     
-    protected static final int INITIAL_POOL_SIZE = 30;
+    protected static final int INITIAL_POOL_SIZE = 100;
     
     protected final Context context;
     
@@ -25,7 +25,7 @@ public class Pool {
     
     protected final MemcachedClient rootClient;
     
-    protected final CountDownLock latch;
+    protected final CountDownLock lock;
     
     protected final ExecutorService executor = Executors.newSingleThreadExecutor();
     
@@ -41,14 +41,16 @@ public class Pool {
         client.getServerList().parse(context.getMemcached()).push();
         this.rootClient = client;
         
-        this.latch = new CountDownLock((int) Math.round(maxPoolSize * 0.8));
+        this.lock = new CountDownLock((int) Math.round(maxPoolSize * 0.8));
     }
     
     protected void resetPool(){
         MemcachedPool pool = rootClient.createPool(INITIAL_POOL_SIZE, maxPoolSize);
         pool.setBehavior(BehaviorType.DISTRIBUTION, DistributionType.CONSISTENT.getValue());
+        pool.setBehavior(BehaviorType.SUPPORT_CAS, 1);
         pool.setBehavior(BehaviorType.CACHE_LOOKUPS, 1);
         pool.setBehavior(BehaviorType.TCP_KEEPALIVE, 1);
+        pool.setBehavior(BehaviorType.BUFFER_REQUESTS, 1);
         
         this.refPool.set(pool);
     }
@@ -62,7 +64,7 @@ public class Pool {
                     // infinite rendezvous
                     while(true){
                         // rendezvous
-                        latch.await();
+                        lock.await();
                         
                         resetPool();
                     }
@@ -82,11 +84,11 @@ public class Pool {
     
     public MemcachedClient get(){
         try {
-            latch.countDown();
+            lock.countDown();
             
             return refPool.get().pop(false);
         } catch(MaximumPoolException e){
-            // 
+            // temporary connection
             return rootClient;
         } catch(LibMemcachedException e){
             throw new RuntimeException(e);

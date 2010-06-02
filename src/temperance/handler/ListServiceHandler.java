@@ -18,22 +18,27 @@ public class ListServiceHandler implements ListService.BlockingInterface {
     
     protected final Pool pool;
     
+    protected final MemcachedList list;
+    
     public ListServiceHandler(Context context, Pool pool){
         this.context = context;
         this.pool = pool;
+        this.list = new MemcachedList(pool);
     }
     
     public Response.Get get(RpcController controller, Request.Get request) throws ServiceException {
         final String key = request.getKey();
         final long offset = request.getOffset();
-        final long limit = request.getLimit();
+        long limit = request.getLimit();
         
-        MemcachedList list = new MemcachedList(pool);
         try {
-            Response.Get.Builder builder = Response.Get.newBuilder();
+            long count = list.count(key);
+            if(count < limit){
+                limit = count;
+            }
+            
             List<String> values = list.get(key, offset, limit);
-            builder.addAllValues(values);
-            return builder.build();
+            return Response.Get.newBuilder().addAllValues(values).build();
         } catch(LibMemcachedException e){
             throw new ServiceException(e.getMessage());
         }
@@ -44,7 +49,6 @@ public class ListServiceHandler implements ListService.BlockingInterface {
         final String value = request.getValue();
         final int expire = request.getExpire();
         
-        MemcachedList list = new MemcachedList(pool);
         try {
             list.add(key, value, expire);
             return Response.Add.newBuilder().setSucceed(true).build();
@@ -57,7 +61,6 @@ public class ListServiceHandler implements ListService.BlockingInterface {
     public Response.Count count(RpcController controller, Request.Count request) throws ServiceException {
         final String key = request.getKey();
         
-        MemcachedList list = new MemcachedList(pool);
         try {
             long count = list.count(key);
             return Response.Count.newBuilder().setCount(count).build();

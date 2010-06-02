@@ -17,7 +17,6 @@ public class CountedConditionLock implements ConditionLock {
             return compareAndSetState(c, arg);
         }
         public boolean tryAcquire(int arg){
-            System.out.println("state=>" + getState());
             return getState() < arg;
         }
         public int tryAcquireShared(int arg){
