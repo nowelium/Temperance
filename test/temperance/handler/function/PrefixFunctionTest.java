@@ -47,7 +47,7 @@ public class PrefixFunctionTest {
     }
     
     public void setupData() throws LibMemcachedException {
-        MemcachedFullText ft = new MemcachedFullText(pool.get());
+        MemcachedFullText ft = new MemcachedFullText(pool);
         PrefixHashing hashing = new PrefixHashing(hashFunction);
         
         {
@@ -74,7 +74,7 @@ public class PrefixFunctionTest {
     }
     
     public void cleanupData(){
-        MemcachedClient client = pool.get().get();
+        MemcachedClient client = pool.get();
         client.getStorage().flush(0);
     }
 

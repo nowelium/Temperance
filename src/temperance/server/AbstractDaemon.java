@@ -46,15 +46,16 @@ public abstract class AbstractDaemon implements Server {
     
     protected final boolean daemonize;
     
+    protected final Logger logger;
+    
     protected final File pidFile;
     
     protected final File errFile;
     
-    protected final Logger logger = Logger.getLogger(getClass().getName());
-    
     protected AbstractDaemon(final String name, boolean daemonize){
         this.name = name;
         this.daemonize = daemonize;
+        this.logger = Logger.getLogger(name);
         this.pidFile = new File(PID_DIR + "/" + name + PID_FILE_SUFFIX);
         this.errFile = new File(PID_DIR + "/" + name + ERR_FILE_SUFFIX);
     }

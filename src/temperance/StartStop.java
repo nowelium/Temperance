@@ -28,7 +28,7 @@ public class StartStop {
             CommandLine cli = parser.parse(options, args, true);
             
             String memcached = cli.getOptionValue("memc");
-            String memcachedPoolSize = cli.getOptionValue("memc_pool", "100");
+            String memcachedPoolSize = cli.getOptionValue("memc_pool", "300");
             String mecabrc = cli.getOptionValue("mecabrc", "/opt/local/etc/mecabrc");
             
             MecabNodeFilter nodeFilter = MecabHashing.Filter.Nouns;

@@ -3,15 +3,15 @@ package temperance.storage;
 import java.util.List;
 
 import libmemcached.exception.LibMemcachedException;
-import temperance.memcached.Connection;
+import temperance.memcached.Pool;
 import temperance.util.Lists;
 
 public class MemcachedFullText {
     
     protected final MemcachedList list;
 
-    public MemcachedFullText(Connection connection) {
-        this.list = new MemcachedList(connection);
+    public MemcachedFullText(Pool pool) {
+        this.list = new MemcachedList(pool);
     }
     
     public String add(String key, Long hash, String value, int expire) throws LibMemcachedException {

@@ -10,7 +10,7 @@ import libmemcached.wrapper.MemcachedStorage;
 import libmemcached.wrapper.SimpleResult;
 import libmemcached.wrapper.type.BehaviorType;
 import libmemcached.wrapper.type.ReturnType;
-import temperance.memcached.Connection;
+import temperance.memcached.Pool;
 import temperance.util.Lists;
 
 public class MemcachedList {
@@ -21,23 +21,21 @@ public class MemcachedList {
     
     protected static final int flag = 0;
 
-    protected final Connection connection;
+    protected final Pool pool;
     
-    protected final MemcachedClient client;
-    
-    protected final MemcachedStorage storage;
-
-    public MemcachedList(Connection connection){
-        this.connection = connection;
-        this.client = connection.get();
-        this.storage = client.getStorage();
-        client.getBehavior().set(BehaviorType.SUPPORT_CAS, 1);
+    public MemcachedList(Pool pool){
+        this.pool = pool;
     }
     
     public String add(String key, String value, int expire) throws LibMemcachedException {
         long nextId = generateId(key);
-        client.getStorage().set(indexKey(key, nextId), value, expire, flag);
-        return Long.toString(nextId);
+        MemcachedClient client = pool.get();
+        try {
+            client.getStorage().set(indexKey(key, nextId), value, expire, flag);
+            return Long.toString(nextId);
+        } finally {
+            pool.release(client);
+        }
     }
     
     public List<String> get(String key, long offset, long limit) throws LibMemcachedException {
@@ -45,43 +43,64 @@ public class MemcachedList {
         for(long i = offset, j = 0; i < (offset + limit); ++i, ++j){
             keys.add(indexKey(key, i));
         }
-        return get(keys);
+        
+        final MemcachedClient client = pool.get();
+        try {
+            MemcachedStorage storage = client.getStorage();
+            
+            final List<String> returnValue = Lists.newArrayList();
+            storage.getMulti(new Fetcher(){
+                public void fetch(SimpleResult result) {
+                    returnValue.add(result.getValue());
+                }
+            }, keys.toArray(new String[keys.size()]));
+            return returnValue;
+        } finally {
+            pool.release(client);
+        }
     }
     
     public long count(String key) throws LibMemcachedException {
-        String result = storage.get(incrementKey(key));
-        if(null == result){
-            return 0L;
-        }
-        return Long.valueOf(result).longValue();
-    }
-    
-    protected List<String> get(List<String> keys) throws LibMemcachedException {
-        final List<String> returnValue = Lists.newArrayList();
-        storage.getMulti(new Fetcher(){
-            public void fetch(SimpleResult result) {
-                returnValue.add(result.getValue());
+        final MemcachedClient client = pool.get();
+        try {
+            MemcachedStorage storage = client.getStorage();
+            
+            String result = storage.get(incrementKey(key));
+            if(null == result){
+                return 0L;
             }
-        }, keys.toArray(new String[keys.size()]));
-        return returnValue;
+            return Long.valueOf(result).longValue();
+        } finally {
+            pool.release(client);
+        }
     }
     
     private long generateId(String key) throws LibMemcachedException {
-        final String incrementKey = incrementKey(key);
-        while(true){
-            MemcachedResult result = storage.gets(incrementKey);
-            if(null == result){
-                storage.set(incrementKey, "1", 0, flag);
-                return 1L;
-            }
+        final MemcachedClient client = pool.get();
+        client.getBehavior().set(BehaviorType.SUPPORT_CAS, 1);
+        try {
+            MemcachedStorage storage = client.getStorage();
             
-            long increment = Long.valueOf(result.getValue()).longValue() + 1L;
-            String incrementValue = Long.toString(increment);
-            ReturnType rt = storage.cas(incrementKey, incrementValue, 0, flag, result.getCAS());
-            if(!ReturnType.SUCCESS.equals(rt)){
-                continue;
+            final String incrementKey = incrementKey(key);
+            
+            // TODO: infinity loop
+            while(true){
+                MemcachedResult result = storage.gets(incrementKey);
+                if(null == result){
+                    storage.set(incrementKey, "1", 0, flag);
+                    return 1L;
+                }
+                
+                long increment = Long.valueOf(result.getValue()).longValue() + 1L;
+                String incrementValue = Long.toString(increment);
+                ReturnType rt = storage.cas(incrementKey, incrementValue, 0, flag, result.getCAS());
+                if(!ReturnType.SUCCESS.equals(rt)){
+                    continue;
+                }
+                return increment;
             }
-            return increment;
+        } finally {
+            pool.release(client);
         }
     }
     

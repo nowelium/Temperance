@@ -24,7 +24,7 @@ public class MapServiceHandler implements MapService.BlockingInterface {
     public Response.Get get(RpcController controller, Request.Get request) throws ServiceException {
         final String key = request.getKey();
         
-        MemcachedMap map = new MemcachedMap(pool.get());
+        MemcachedMap map = new MemcachedMap(pool);
         try {
             String result = map.get(key);
             Response.Get.Builder builder = Response.Get.newBuilder();
@@ -41,7 +41,7 @@ public class MapServiceHandler implements MapService.BlockingInterface {
         final String value = request.getValue();
         final int expire = request.getExpire();
         
-        MemcachedMap map = new MemcachedMap(pool.get());
+        MemcachedMap map = new MemcachedMap(pool);
         try {
             map.set(key, value, expire);
             

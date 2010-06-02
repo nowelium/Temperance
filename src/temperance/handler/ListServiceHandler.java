@@ -28,7 +28,7 @@ public class ListServiceHandler implements ListService.BlockingInterface {
         final long offset = request.getOffset();
         final long limit = request.getLimit();
         
-        MemcachedList list = new MemcachedList(pool.get());
+        MemcachedList list = new MemcachedList(pool);
         try {
             Response.Get.Builder builder = Response.Get.newBuilder();
             List<String> values = list.get(key, offset, limit);
@@ -44,7 +44,7 @@ public class ListServiceHandler implements ListService.BlockingInterface {
         final String value = request.getValue();
         final int expire = request.getExpire();
         
-        MemcachedList list = new MemcachedList(pool.get());
+        MemcachedList list = new MemcachedList(pool);
         try {
             list.add(key, value, expire);
             return Response.Add.newBuilder().setSucceed(true).build();
@@ -57,7 +57,7 @@ public class ListServiceHandler implements ListService.BlockingInterface {
     public Response.Count count(RpcController controller, Request.Count request) throws ServiceException {
         final String key = request.getKey();
         
-        MemcachedList list = new MemcachedList(pool.get());
+        MemcachedList list = new MemcachedList(pool);
         try {
             long count = list.count(key);
             return Response.Count.newBuilder().setCount(count).build();

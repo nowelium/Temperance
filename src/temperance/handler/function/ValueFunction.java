@@ -31,7 +31,7 @@ public class ValueFunction implements InternalFunction {
      */
     public List<String> selectIn(String key, List<String> args) throws ExecutionException {
         try {
-            MemcachedList list = new MemcachedList(context.getPool().get());
+            MemcachedList list = new MemcachedList(context.getPool());
             List<String> returnValue = Lists.newArrayList();
             
             Condition condition = new NotContainsReject(args);
@@ -62,7 +62,7 @@ public class ValueFunction implements InternalFunction {
      */
     public List<String> selectNot(String key, List<String> args) throws ExecutionException {
         try {
-            MemcachedList list = new MemcachedList(context.getPool().get());
+            MemcachedList list = new MemcachedList(context.getPool());
             List<String> returnValue = Lists.newArrayList();
             
             Condition condition = new ContainsReject(args);

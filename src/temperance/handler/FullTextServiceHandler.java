@@ -62,7 +62,7 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
         final int expire = request.getExpire();
         final Parser parser = request.getParser();
         
-        MemcachedFullText list = new MemcachedFullText(pool.get());
+        MemcachedFullText list = new MemcachedFullText(pool);
         try {
             Hashing hashing = createHashing(parser);
             List<Long> hashes = hashing.parse(str);
@@ -80,7 +80,7 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
         final String key = request.getKey();
         final String str = request.getStr();
         final Parser parser = request.getParser();
-        MemcachedFullText list = new MemcachedFullText(pool.get());
+        MemcachedFullText list = new MemcachedFullText(pool);
         
         Response.Get.Builder builder = Response.Get.newBuilder();
         try {

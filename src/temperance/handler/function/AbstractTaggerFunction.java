@@ -20,7 +20,7 @@ public abstract class AbstractTaggerFunction implements InternalFunction {
     
     public AbstractTaggerFunction(FunctionContext context){
         this.context = context;
-        this.ft = new MemcachedFullText(context.getPool().get());
+        this.ft = new MemcachedFullText(context.getPool());
     }
     
     protected abstract Hashing createHashing(List<String> args);

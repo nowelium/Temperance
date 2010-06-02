@@ -1,27 +1,34 @@
 package temperance.storage;
 
-import temperance.memcached.Connection;
 import libmemcached.exception.LibMemcachedException;
 import libmemcached.wrapper.MemcachedClient;
+import temperance.memcached.Pool;
 
 public class MemcachedMap {
     
     protected static final int flag = 0;
 
-    protected final Connection connection;
+    protected final Pool pool;
     
-    protected final MemcachedClient client;
-    
-    public MemcachedMap(Connection connection){
-        this.connection = connection;
-        this.client = connection.get();
+    public MemcachedMap(Pool pool){
+        this.pool = pool;
     }
     
     public void set(String key, String value, int expire) throws LibMemcachedException {
-        client.getStorage().set(key, value, expire, flag);
+        final MemcachedClient client = pool.get();
+        try {
+            client.getStorage().set(key, value, expire, flag);
+        } finally {
+            pool.release(client);
+        }
     }
     
     public String get(String key) throws LibMemcachedException {
-        return client.getStorage().get(key);
+        final MemcachedClient client = pool.get();
+        try {
+            return client.getStorage().get(key);
+        } finally {
+            pool.release(client);
+        }
     }
 }
