@@ -20,14 +20,14 @@ import temperance.protobuf.Query.QueryService;
 import com.google.protobuf.BlockingService;
 import com.googlecode.protobuf.socketrpc.SocketRpcServer;
 
-public class TemperanceServer extends AbstractDaemon {
+public class ProtobufServer extends AbstractDaemon {
     
     protected final SocketRpcServer server;
     
     protected final Context context;
     
-    public TemperanceServer(Context context, boolean daemonize, int rpcPort) {
-        super(TemperanceServer.class.getName(), daemonize);
+    public ProtobufServer(Context context, boolean daemonize, int rpcPort) {
+        super(ProtobufServer.class.getName(), daemonize);
         this.server = new SocketRpcServer(rpcPort, Executors.newCachedThreadPool());
         this.context = context;
     }

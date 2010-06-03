@@ -15,7 +15,7 @@ import temperance.handler.Context;
 import temperance.hash.Hash;
 import temperance.hash.HashFunction;
 import temperance.server.Server;
-import temperance.server.TemperanceServer;
+import temperance.server.ProtobufServer;
 
 public class StartStop {
     
@@ -66,7 +66,7 @@ public class StartStop {
     }
     
     protected Server createServer(Context ctx, boolean daemonize, int port) {
-        return new TemperanceServer(ctx, daemonize, port);
+        return new ProtobufServer(ctx, daemonize, port);
     }
     
     protected static Options createCliOptions(){

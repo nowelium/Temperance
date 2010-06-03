@@ -16,7 +16,7 @@ message Request {
         optional uint32 expire = 4 [default = 86400];
         optional Parser parser = 5 [default = MECAB];
     }
-    message Get {
+    message Search {
         required string key = 1;
         required string str = 2;
         optional Parser parser = 3 [default = MECAB];
@@ -26,12 +26,12 @@ message Response {
     message Set {
         required bool succeed = 1;
     }
-    message Get {
+    message Search {
         repeated string values = 1;
     }
 }
 
 service FullTextService {
     rpc set(Request.Set) returns(Response.Set);
-    rpc search(Request.Get) returns(Response.Get);
+    rpc search(Request.Search) returns(Response.Search);
 }
