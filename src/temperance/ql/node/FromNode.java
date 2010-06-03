@@ -20,7 +20,7 @@ public class FromNode implements Node {
     
     @Override
     public String toString(){
-        StringBuilder buf = new StringBuilder("FromStatement{");
+        StringBuilder buf = new StringBuilder("FromNode{");
         buf.append("key=").append(key);
         buf.append("}");
         return buf.toString();

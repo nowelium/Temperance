@@ -20,7 +20,7 @@ public class ParameterNode implements Node {
     
     @Override
     public String toString(){
-        StringBuilder buf = new StringBuilder("FunctionParameter{");
+        StringBuilder buf = new StringBuilder("ParameterNode{");
         buf.append("args=").append(args);
         buf.append("}");
         return buf.toString();

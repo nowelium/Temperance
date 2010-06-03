@@ -19,6 +19,7 @@ import temperance.ql.mapper.ArgumentsMapper;
 import temperance.ql.mapper.FromStatementMapper;
 import temperance.ql.mapper.FunctionMapper;
 import temperance.ql.mapper.FunctionParameterMapper;
+import temperance.ql.mapper.FunctionTypeMapper;
 import temperance.ql.mapper.KeyMapper;
 import temperance.ql.mapper.MengeStatementMapper;
 import temperance.ql.mapper.MengeTypeMapper;
@@ -47,14 +48,14 @@ public class QueryParser {
     
     protected static final Parser<List<Void>> WHITESPACES = Scanners.WHITESPACES.many();
     // LETTER ::= <identifier>
-    protected static final Parser<String> LETTER = Scanners.IDENTIFIER;
+    protected static final Parser<String> LETTER = Scanners.IDENTIFIER.or(Scanners.DECIMAL);
     // SPECIAL_CHARS ::= ":" | "_" | "@" | "{" | "}" | "[" | "]"
     protected static final Parser<String> SPECIAL_CHARS = specialChars(":", "@", "_").source();
     // QUOTE_STRING ::= single_quote_string | double_quote_string
     protected static final Parser<String> QUOTE_STRING = quoteString();
     // KEY_STRING ::= <QUOTE_STRING> | <LETTER>
     protected static final Parser<String> KEY_STRING = QUOTE_STRING.or(LETTER);
-    // KEY ::= <KEY_STRING>
+    // KEY ::= keyString()
     protected static final Parser<KeyNode> KEY = keyString();
     // FROM ::= "from" <KEY>
     protected static final Parser<FromNode> FROM = sequence(stringCaseInsensitive("FROM"), WHITESPACES, KEY).map(new FromStatementMapper());
@@ -72,8 +73,10 @@ public class QueryParser {
     protected static final Parser<List<Void>> ARGS_CLOSE = sequence(WHITESPACES.optional(), string(")"), WHITESPACES);
     // FUNCTION_PARAMETER ::= "(" <FUNCTION_ARGS> ")"
     protected static final Parser<ParameterNode> FUNCTION_PARAMTER = tuple(ARGS_OPEN, FUNCTION_ARGS, ARGS_CLOSE).map(new FunctionParameterMapper());
+    // FUNCTON_NAME ::= functionType()
+    protected static final Parser<FunctionType> FUNCTION_NAME = functionType();
     // FUNCTION ::= <FUNCTION_NAME> "(" <FUNCTION_PARAMTER> ")"
-    protected static final Parser<FunctionNode> FUNCTION = tuple(LETTER, FUNCTION_PARAMTER).map(new FunctionMapper());
+    protected static final Parser<FunctionNode> FUNCTION = tuple(FUNCTION_NAME, FUNCTION_PARAMTER).map(new FunctionMapper());
     // STATEMENT ::= <FROM> <SET> <FUNCTION>
     protected static final Parser<Statement> STATEMENT = tuple(FROM, MENGE, FUNCTION).map(new StatementMapper());
     // PARSER ::= parser
@@ -101,9 +104,20 @@ public class QueryParser {
     }
     
     protected static Parser<MengeType> mengeType(){
-        return string(MengeType.IN.name())
-            .or(string(MengeType.NOT.name()))
-            .source().map(new MengeTypeMapper());
+        List<Parser<Void>> parsers = Lists.newArrayList();
+        for(MengeType type: MengeType.values()){
+            parsers.add(stringCaseInsensitive(type.name()));
+        }
+        return or(parsers).source().map(new MengeTypeMapper());
+    }
+    
+    protected static Parser<FunctionType> functionType(){
+        List<Parser<Void>> parsers = Lists.newArrayList();
+        for(FunctionType type: FunctionType.values()){
+            parsers.add(stringCaseInsensitive(type.name()));
+        }
+        return or(parsers).source().map(new FunctionTypeMapper());
+
     }
     
     protected static Parser<Statement> parser(Parser<Statement> atom){

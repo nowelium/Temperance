@@ -1,20 +1,21 @@
 package temperance.ql.node;
 
+import temperance.ql.FunctionType;
 import temperance.ql.Visitor;
 
 public class FunctionNode implements Node {
 
-    private final String functionName;
+    private final FunctionType functionType;
     
     private final ParameterNode parameter;
     
-    public FunctionNode(String functionName, ParameterNode parameter){
-        this.functionName = functionName;
+    public FunctionNode(FunctionType functionType, ParameterNode parameter){
+        this.functionType = functionType;
         this.parameter = parameter;
     }
     
-    public String getFunctionName(){
-        return functionName;
+    public FunctionType getFunctionType(){
+        return functionType;
     }
     
     public ParameterNode getParameter(){
@@ -27,8 +28,8 @@ public class FunctionNode implements Node {
     
     @Override
     public String toString(){
-        StringBuilder buf = new StringBuilder("FunctionStatement{");
-        buf.append("functionName=").append(functionName).append(",");
+        StringBuilder buf = new StringBuilder("FunctionNode{");
+        buf.append("functionType=").append(functionType).append(",");
         buf.append("parameter=").append(parameter);
         buf.append("}");
         return buf.toString();

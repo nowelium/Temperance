@@ -5,14 +5,14 @@ import temperance.ql.Visitor;
 
 public class MengeNode implements Node {
 
-    private final MengeType menge;
+    private final MengeType mengeType;
     
-    public MengeNode(MengeType menge){
-        this.menge = menge;
+    public MengeNode(MengeType mengeType){
+        this.mengeType = mengeType;
     }
     
-    public MengeType getMenge(){
-        return menge;
+    public MengeType getMengeType(){
+        return mengeType;
     }
     
     public <T, DATA> T accept(Visitor<T, DATA> visitor, DATA data){
@@ -21,8 +21,8 @@ public class MengeNode implements Node {
     
     @Override
     public String toString(){
-        StringBuilder buf = new StringBuilder("SetStatement{");
-        buf.append("menge=").append(menge);
+        StringBuilder buf = new StringBuilder("MengeNode{");
+        buf.append("mengeType=").append(mengeType);
         buf.append("}");
         return buf.toString();
     }

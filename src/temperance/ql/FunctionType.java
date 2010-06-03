@@ -1,6 +1,6 @@
 package temperance.ql;
 
-public enum QueryFunction {
+public enum FunctionType {
     
     DATA {
         public InternalFunction create(Factory factory){

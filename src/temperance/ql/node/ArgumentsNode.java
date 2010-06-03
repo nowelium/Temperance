@@ -22,7 +22,7 @@ public class ArgumentsNode implements Node {
     
     @Override
     public String toString(){
-        StringBuilder buf = new StringBuilder("ArgumentsStatement{");
+        StringBuilder buf = new StringBuilder("ArgumentsNode{");
         buf.append("values=").append(values);
         buf.append("}");
         return buf.toString();

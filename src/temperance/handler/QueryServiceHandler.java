@@ -21,7 +21,7 @@ import temperance.protobuf.Query.QueryService;
 import temperance.protobuf.Query.Request;
 import temperance.protobuf.Query.Response;
 import temperance.ql.InternalFunction;
-import temperance.ql.QueryFunction;
+import temperance.ql.FunctionType;
 import temperance.ql.QueryParser;
 import temperance.ql.MengeType;
 import temperance.ql.Visitor;
@@ -61,6 +61,10 @@ public class QueryServiceHandler implements QueryService.BlockingInterface {
     
     public Response.Get get(RpcController controller, Request.Get request) throws ServiceException {
         final String query = request.getQuery();
+        if("".equals(query)){
+            throw new ServiceException("query was empty");
+        }
+        
         try {
             FunctionContext ctx = new FunctionContext();
             ctx.setPool(pool);
@@ -116,7 +120,7 @@ public class QueryServiceHandler implements QueryService.BlockingInterface {
         }
 
         public List<String> visit(FunctionNode node, FunctionFactoryFactory data) {
-            QueryFunction queryFunc = QueryFunction.valueOf(node.getFunctionName());
+            FunctionType queryFunc = node.getFunctionType();
             this.function = queryFunc.create(data.create());
             return node.getParameter().accept(this, data);
         }
@@ -126,7 +130,7 @@ public class QueryServiceHandler implements QueryService.BlockingInterface {
         }
 
         public List<String> visit(MengeNode node, FunctionFactoryFactory data) {
-            return node.getMenge().each(new Switch(behavior, function, key, argsValue));
+            return node.getMengeType().each(new Switch(behavior, function, key, argsValue));
         }
 
         public List<String> visit(KeyNode node, FunctionFactoryFactory data) {
@@ -141,11 +145,11 @@ public class QueryServiceHandler implements QueryService.BlockingInterface {
         public List<String> visit(Statement node, FunctionFactoryFactory data) {
             node.getFrom().accept(this, data);
             node.getFunction().accept(this, data);
-            return node.getSet().accept(this, data);
+            return node.getMenge().accept(this, data);
         }
     }
     
-    protected static class FunctionFactory implements QueryFunction.Factory {
+    protected static class FunctionFactory implements FunctionType.Factory {
 
         private final FunctionContext context;
         

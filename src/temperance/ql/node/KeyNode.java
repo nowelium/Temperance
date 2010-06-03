@@ -20,7 +20,7 @@ public class KeyNode implements Node {
     
     @Override
     public String toString(){
-        StringBuilder buf = new StringBuilder("Key{");
+        StringBuilder buf = new StringBuilder("KeyNode{");
         buf.append("key=").append(key);
         buf.append("}");
         return buf.toString();
