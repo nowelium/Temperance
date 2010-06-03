@@ -1,5 +1,7 @@
 package temperance.ql;
 
+import temperance.function.InternalFunction;
+
 public enum FunctionType {
     
     DATA {
@@ -51,6 +53,8 @@ public enum FunctionType {
     }
     ;
     
+    public abstract InternalFunction create(Factory factory);
+    
     public interface Factory {
         public InternalFunction createData();
         public InternalFunction createValue();
@@ -61,6 +65,5 @@ public enum FunctionType {
         public InternalFunction createPrefix();
         public InternalFunction createLevenshteinDistance();
     }
-    public abstract InternalFunction create(Factory factory);
 
 }

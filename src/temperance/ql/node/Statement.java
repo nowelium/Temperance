@@ -4,16 +4,23 @@ import temperance.ql.Visitor;
 
 public class Statement implements Node {
 
+    private final Boolean distinct;
+    
     private final FromNode from;
 
     private final MengeNode menge;
     
     private final FunctionNode function;
     
-    public Statement(FromNode from, MengeNode menge, FunctionNode function){
+    public Statement(Boolean distinct, FromNode from, MengeNode menge, FunctionNode function){
+        this.distinct = distinct;
         this.from = from;
         this.menge = menge;
         this.function = function;
+    }
+    
+    public boolean isDistinct(){
+        return distinct.booleanValue();
     }
     
     public FromNode getFrom(){

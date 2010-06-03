@@ -1,4 +1,4 @@
-package temperance.handler.function;
+package temperance.function;
 
 import java.util.Arrays;
 import java.util.List;
@@ -83,7 +83,7 @@ public class PrefixFunctionTest {
     @Test
     public void selectIn() throws ExecutionException {
         PrefixFunction function = new PrefixFunction(ctx);
-        List<String> results = function.selectIn("test-key", Arrays.asList("本日"));
+        List<String> results = function.createSelect().and("test-key", Arrays.asList("本日"));
         System.out.println(results);
         Assert.assertEquals(results.size(), 2);
         Assert.assertEquals(results.get(0), "test-value-a");
@@ -93,7 +93,7 @@ public class PrefixFunctionTest {
     @Test
     public void selectIn_prefix() throws ExecutionException {
         PrefixFunction function = new PrefixFunction(ctx);
-        List<String> results = function.selectIn("test-key", Arrays.asList("本日は晴"));
+        List<String> results = function.createSelect().and("test-key", Arrays.asList("本日は晴"));
         System.out.println(results);
         Assert.assertEquals(results.size(), 1);
         Assert.assertEquals(results.get(0), "test-value-a");

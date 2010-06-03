@@ -140,5 +140,23 @@ public class QueryParserTest {
             Assert.assertEquals(statement.getFunction().getParameter().getArgs().getValues().get(1), "2");
         }
     }
+    
+    @Test
+    public void query_distinct(){
+        {
+            Statement statement = QueryParser.PARSER.parse("DISTINCT FROM hoge IN VALUE(1)");
+            Assert.assertEquals(statement.getFrom().getKey().getKey(), "hoge");
+            Assert.assertEquals(statement.isDistinct(), true);
+            Assert.assertEquals(statement.getMenge().getMengeType(), MengeType.IN);
+            Assert.assertEquals(statement.getFunction().getFunctionType(), FunctionType.VALUE);
+        }
+        {
+            Statement statement = QueryParser.PARSER.parse("FROM hoge IN VALUE(1)");
+            Assert.assertEquals(statement.getFrom().getKey().getKey(), "hoge");
+            Assert.assertEquals(statement.isDistinct(), false);
+            Assert.assertEquals(statement.getMenge().getMengeType(), MengeType.IN);
+            Assert.assertEquals(statement.getFunction().getFunctionType(), FunctionType.VALUE);
+        }
+    }
 
 }

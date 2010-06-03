@@ -1,4 +1,4 @@
-package temperance.handler.function;
+package temperance.function;
 
 import java.util.Arrays;
 import java.util.List;
@@ -92,7 +92,7 @@ public class MecabFunctionTest {
     @Test
     public void selectIn() throws ExecutionException {
         MecabFunction function = new MecabFunction(ctx);
-        List<String> results = function.selectIn("test-key", Arrays.asList("本日"));
+        List<String> results = function.createSelect().and("test-key", Arrays.asList("本日"));
         System.out.println(results);
         Assert.assertEquals(results.size(), 2);
         Assert.assertEquals(results.get(0), "test-value-a");
@@ -102,7 +102,7 @@ public class MecabFunctionTest {
     @Test
     public void selectIn_refine() throws ExecutionException {
         MecabFunction function = new MecabFunction(ctx);
-        List<String> results = function.selectIn("test-key", Arrays.asList("本日 晴天"));
+        List<String> results = function.createSelect().and("test-key", Arrays.asList("本日 晴天"));
         Assert.assertEquals(results.size(), 1);
         Assert.assertEquals(results.get(0), "test-value-a");
     }
@@ -110,7 +110,7 @@ public class MecabFunctionTest {
     @Test
     public void selectIn_refine_mecab_tag() throws ExecutionException {
         MecabFunction function = new MecabFunction(ctx);
-        List<String> results = function.selectIn("test-key", Arrays.asList("本日は晴天なり"));
+        List<String> results = function.createSelect().and("test-key", Arrays.asList("本日は晴天なり"));
         Assert.assertEquals(results.size(), 1);
         Assert.assertEquals(results.get(0), "test-value-a");
     }

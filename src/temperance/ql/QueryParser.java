@@ -77,8 +77,10 @@ public class QueryParser {
     protected static final Parser<FunctionType> FUNCTION_NAME = functionType();
     // FUNCTION ::= <FUNCTION_NAME> "(" <FUNCTION_PARAMTER> ")"
     protected static final Parser<FunctionNode> FUNCTION = tuple(FUNCTION_NAME, FUNCTION_PARAMTER).map(new FunctionMapper());
-    // STATEMENT ::= <FROM> <SET> <FUNCTION>
-    protected static final Parser<Statement> STATEMENT = tuple(FROM, MENGE, FUNCTION).map(new StatementMapper());
+    // DISTINCT ::= "DISTINCT"
+    protected static final Parser<Boolean> DISTINCT = sequence(stringCaseInsensitive("DISTINCT"), WHITESPACES).source().retn(Boolean.TRUE);
+    // STATEMENT ::= <FROM> <SET> <FUNCTION> <DISTINCT>?
+    protected static final Parser<Statement> STATEMENT = tuple(DISTINCT.optional(), FROM, MENGE, FUNCTION).map(new StatementMapper());
     // PARSER ::= parser
     protected static final Parser<Statement> PARSER = parser(STATEMENT);
     

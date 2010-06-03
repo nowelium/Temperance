@@ -3,7 +3,6 @@ package temperance.function;
 import java.util.List;
 
 import temperance.exception.ExecutionException;
-import temperance.ql.InternalFunction;
 
 public class GeoPointFunction implements InternalFunction {
 
@@ -13,20 +12,39 @@ public class GeoPointFunction implements InternalFunction {
         this.context = context;
     }
 
-    public List<String> deleteIn(String key, List<String> args) throws ExecutionException {
-        throw new ExecutionException("not yet implemented");
+    public Command createDelete() {
+        return new Delete();
     }
 
-    public List<String> deleteNot(String key, List<String> args) throws ExecutionException {
-        throw new ExecutionException("not yet implemented");
+    public Command createSelect() {
+        return new Select();
     }
 
-    public List<String> selectIn(String key, List<String> args) throws ExecutionException {
-        throw new ExecutionException("not yet implemented");
-    }
+    protected class Delete implements InternalFunction.Command {
+        public List<String> and(String key, List<String> args) throws ExecutionException {
+            throw new ExecutionException("not yet implemented");
+        }
 
-    public List<String> selectNot(String key, List<String> args) throws ExecutionException {
-        throw new ExecutionException("not yet implemented");
-    }
+        public List<String> not(String key, List<String> args) throws ExecutionException {
+            throw new ExecutionException("not yet implemented");
+        }
 
+        public List<String> or(String key, List<String> args) throws ExecutionException {
+            throw new ExecutionException("not yet implemented");
+        }
+    }
+    
+    protected class Select implements InternalFunction.Command {
+        public List<String> and(String key, List<String> args) throws ExecutionException {
+            throw new ExecutionException("not yet implemented");
+        }
+
+        public List<String> not(String key, List<String> args) throws ExecutionException {
+            throw new ExecutionException("not yet implemented");
+        }
+
+        public List<String> or(String key, List<String> args) throws ExecutionException {
+            throw new ExecutionException("not yet implemented");
+        }
+    }
 }

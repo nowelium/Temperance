@@ -11,10 +11,10 @@ public class ListUtils {
     }
     
     public static <T> List<T> unique(List<T> list){
+        List<T> result = Lists.newArrayList();
         Set<T> set = new HashSet<T>(list);
-        list.clear();
-        list.addAll(set);
-        return list;
+        result.addAll(set);
+        return result;
     }
     
     public static <T> List<T> intersect(List<T> list1, List<T> list2){

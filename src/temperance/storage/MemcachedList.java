@@ -3,6 +3,7 @@ package temperance.storage;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import libmemcached.exception.LibMemcachedException;
 import libmemcached.wrapper.Fetcher;
@@ -11,6 +12,7 @@ import libmemcached.wrapper.MemcachedResult;
 import libmemcached.wrapper.MemcachedStorage;
 import libmemcached.wrapper.SimpleResult;
 import libmemcached.wrapper.type.ReturnType;
+import temperance.exception.MemcachedOperationRuntimeException;
 import temperance.memcached.Pool;
 import temperance.util.Lists;
 import temperance.util.SoftReferenceMap;
@@ -23,13 +25,16 @@ public class MemcachedList {
     
     protected static final String INCREMENT_SUFFIX = ".increment";
     
-    protected static final String KEY_SEPARATOR = ":";
+    protected static final String KEY_SEPARATOR = "$";
     
     protected static final int INCREMENT_VALUE_FLAG = 0;
     
     protected static final int INCREMENT_VALUE_EXPIRE = 0;
     
     protected static final int DEFAULT_VALUE_FLAG = 0;
+    
+    // TODO: hardcode, runtime parameter
+    protected static final long LOCK_TIMEOUT = TimeUnit.SECONDS.toMillis(1);
     
     protected final Pool pool;
     
@@ -50,7 +55,7 @@ public class MemcachedList {
     
     public List<String> get(String key, long offset, long limit) throws LibMemcachedException {
         final List<String> keys = Lists.newArrayList();
-        for(long i = offset, j = 0; i < (offset + limit); ++i, ++j){
+        for(long i = offset; i <= (offset + limit); ++i){
             keys.add(indexKey(key, i));
         }
         
@@ -97,8 +102,13 @@ public class MemcachedList {
             final MemcachedStorage storage = client.getStorage();
             final String incrementKey = incrementKey(key);
             
-            // TODO: infinity loop
+            long begin = System.currentTimeMillis();
             while(true){
+                long diff = System.currentTimeMillis() - begin;
+                if(LOCK_TIMEOUT < diff){
+                    throw new MemcachedOperationRuntimeException("incremental lock timeout");
+                }
+                
                 MemcachedResult result = storage.gets(incrementKey);
                 if(null == result){
                     storage.set(incrementKey, "1", INCREMENT_VALUE_EXPIRE, INCREMENT_VALUE_FLAG);
