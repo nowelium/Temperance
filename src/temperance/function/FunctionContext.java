@@ -1,4 +1,4 @@
-package temperance.handler.function;
+package temperance.function;
 
 import org.chasen.mecab.wrapper.Tagger;
 

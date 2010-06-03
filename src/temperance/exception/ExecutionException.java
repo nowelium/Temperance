@@ -1,4 +1,4 @@
-package temperance.handler.function.exception;
+package temperance.exception;
 
 public class ExecutionException extends Exception {
 

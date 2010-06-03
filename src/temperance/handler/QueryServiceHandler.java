@@ -5,16 +5,16 @@ import java.util.List;
 
 import org.chasen.mecab.wrapper.Tagger;
 
+import temperance.exception.ExecutionException;
 import temperance.ft.MecabNodeFilter;
-import temperance.handler.function.Behavior;
-import temperance.handler.function.DataFunction;
-import temperance.handler.function.FunctionContext;
-import temperance.handler.function.GeoPointFunction;
-import temperance.handler.function.GramFunction;
-import temperance.handler.function.MecabFunction;
-import temperance.handler.function.PrefixFunction;
-import temperance.handler.function.ValueFunction;
-import temperance.handler.function.exception.ExecutionException;
+import temperance.function.Behavior;
+import temperance.function.DataFunction;
+import temperance.function.FunctionContext;
+import temperance.function.GeoPointFunction;
+import temperance.function.GramFunction;
+import temperance.function.MecabFunction;
+import temperance.function.PrefixFunction;
+import temperance.function.ValueFunction;
 import temperance.hash.HashFunction;
 import temperance.memcached.Pool;
 import temperance.protobuf.Query.QueryService;

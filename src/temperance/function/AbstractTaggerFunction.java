@@ -1,10 +1,10 @@
-package temperance.handler.function;
+package temperance.function;
 
 import java.util.List;
 
 import libmemcached.exception.LibMemcachedException;
+import temperance.exception.ExecutionException;
 import temperance.ft.Hashing;
-import temperance.handler.function.exception.ExecutionException;
 import temperance.ql.InternalFunction;
 import temperance.storage.MemcachedFullText;
 import temperance.util.Lists;

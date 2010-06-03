@@ -1,9 +1,9 @@
-package temperance.handler.function;
+package temperance.function;
 
 import java.util.List;
 
 import libmemcached.exception.LibMemcachedException;
-import temperance.handler.function.exception.ExecutionException;
+import temperance.exception.ExecutionException;
 import temperance.ql.InternalFunction;
 import temperance.storage.MemcachedList;
 import temperance.util.Lists;

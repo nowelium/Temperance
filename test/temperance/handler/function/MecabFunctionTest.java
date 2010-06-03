@@ -12,10 +12,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import temperance.exception.ExecutionException;
 import temperance.ft.MecabHashing;
 import temperance.ft.MecabNodeFilter;
+import temperance.function.FunctionContext;
+import temperance.function.MecabFunction;
 import temperance.handler.Context;
-import temperance.handler.function.exception.ExecutionException;
 import temperance.hash.Hash;
 import temperance.hash.HashFunction;
 import temperance.memcached.Pool;

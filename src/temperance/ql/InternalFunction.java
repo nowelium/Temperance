@@ -2,7 +2,7 @@ package temperance.ql;
 
 import java.util.List;
 
-import temperance.handler.function.exception.ExecutionException;
+import temperance.exception.ExecutionException;
 
 public interface InternalFunction {
     

@@ -1,4 +1,4 @@
-package temperance.handler.function;
+package temperance.function;
 
 public enum Behavior {
     
