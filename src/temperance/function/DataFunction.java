@@ -1,15 +1,12 @@
 package temperance.function;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
-import libmemcached.exception.LibMemcachedException;
 import temperance.exception.ExecutionException;
-import temperance.storage.MemcachedList;
-import temperance.util.Lists;
+import temperance.memcached.ListCommand;
 
 public class DataFunction implements InternalFunction {
-    
-    protected static final int SPLIT = 1000;
     
     protected final FunctionContext context;
     
@@ -44,27 +41,23 @@ public class DataFunction implements InternalFunction {
          * DATA(1, 2, 3, 4, 5) in DATA(2, 3, 5) => results(2, 3, 5)
          */
         public List<String> and(String key, List<String> args) throws ExecutionException {
-            final MemcachedList list = new MemcachedList(context.getPool());
+            final ListCommand command = new ListCommand(context.getPool());
+            
+            final Future<List<String>> fromFuture = command.getAll(key);
             try {
-                List<String> fromValues = Lists.newArrayList();
-                long fromCount = list.count(key);
-                for(long i = 0; i < fromCount; i += SPLIT){
-                    fromValues.addAll(list.get(key, i, SPLIT));
-                }
-                
-                for(final String targetKey: args){
-                    List<String> targetValues = Lists.newArrayList();
-                    long targetCount = list.count(targetKey);
-                    for(long i = 0; i < targetCount; i += SPLIT){
-                        targetValues.addAll(list.get(targetKey, i, SPLIT));
-                    }
+                List<String> returnValues = fromFuture.get();
+                List<Future<List<String>>> futures = command.getAll(args);
+                for(Future<List<String>> future: futures){
+                    List<String> results = future.get();
                     
                     // narrow
                     // fromValues contains all(only) tagetValues
-                    fromValues.retainAll(targetValues);
+                    returnValues.retainAll(results);
                 }
-                return fromValues;
-            } catch(LibMemcachedException e){
+                return returnValues;
+            } catch (InterruptedException e) {
+                throw new ExecutionException(e);
+            } catch (java.util.concurrent.ExecutionException e) {
                 throw new ExecutionException(e);
             }
         }
@@ -73,35 +66,48 @@ public class DataFunction implements InternalFunction {
          * DATA(1, 2, 3, 4, 5) not DATA(2, 3, 5) => results(1, 4)
          */
         public List<String> not(String key, List<String> args) throws ExecutionException {
-            final MemcachedList list = new MemcachedList(context.getPool());
+            final ListCommand command = new ListCommand(context.getPool());
+            
+            final Future<List<String>> fromFuture = command.getAll(key);
             try {
-                List<String> fromValues = Lists.newArrayList();
-                long fromCount = list.count(key);
-                for(long i = 0; i < fromCount; i += SPLIT){
-                    fromValues.addAll(list.get(key, i, SPLIT));
-                }
-                
-                for(final String targetKey: args){
-                    // narrow
-                    long targetCount = list.count(targetKey);
-                    for(long i = 0; i < targetCount; i += SPLIT){
-                        List<String> results = list.get(targetKey, i, SPLIT);
-                        for(String result: results){
-                            // contains remove
-                            fromValues.remove(result);
-                        }
+                List<String> returnValues = fromFuture.get();
+                List<Future<List<String>>> futures = command.getAll(args);
+                for(Future<List<String>> future: futures){
+                    List<String> results = future.get();
+                    for(String result: results){
+                        // contains remove
+                        returnValues.remove(result);
                     }
                 }
-                
-                return fromValues;
-            } catch(LibMemcachedException e){
+                return returnValues;
+            } catch (InterruptedException e) {
+                throw new ExecutionException(e);
+            } catch (java.util.concurrent.ExecutionException e) {
                 throw new ExecutionException(e);
             }
         }
 
+        /**
+         * DATA(1, 2, 3, 4, 5) or DATA(4, 5, 6, 7) => result(1, 2, 3, 4, 5, 6, 7)
+         */
         public List<String> or(String key, List<String> args) throws ExecutionException {
-            throw new ExecutionException("not yet implemented");
+            final ListCommand command = new ListCommand(context.getPool());
+            
+            final Future<List<String>> fromFuture = command.getAll(key);
+            try {
+                List<String> returnValue = fromFuture.get();
+                
+                List<Future<List<String>>> futures = command.getAll(args);
+                for(Future<List<String>> future: futures){
+                    returnValue.addAll(future.get());
+                }
+                return returnValue;
+            } catch (InterruptedException e) {
+                throw new ExecutionException(e);
+            } catch (java.util.concurrent.ExecutionException e) {
+                throw new ExecutionException(e);
+            }
         }
     }
-
+    
 }

@@ -64,12 +64,14 @@ public class MemcachedList {
             final MemcachedStorage storage = client.getStorage();
             final List<String> returnValue = Lists.newArrayList();
             
-            storage.getMulti(new Fetcher(){
-                public void fetch(SimpleResult result) {
-                    returnValue.add(result.getValue());
-                }
-            }, keys.toArray(new String[keys.size()]));
-            return returnValue;
+            synchronized(storage){
+                storage.getMulti(new Fetcher(){
+                    public void fetch(SimpleResult result) {
+                        returnValue.add(result.getValue());
+                    }
+                }, keys.toArray(new String[keys.size()]));
+                return returnValue;
+            }
         } catch(LibMemcachedException e){
             if(ReturnType.NOTFOUND.equals(e.getReturnType())){
                 return Collections.emptyList();

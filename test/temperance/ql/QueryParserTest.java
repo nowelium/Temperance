@@ -1,5 +1,7 @@
 package temperance.ql;
 
+import java.util.Arrays;
+
 import org.codehaus.jparsec.error.ParserException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -7,6 +9,7 @@ import org.junit.Test;
 import temperance.ql.node.FromNode;
 import temperance.ql.node.FunctionNode;
 import temperance.ql.node.KeyNode;
+import temperance.ql.node.ParameterNode;
 import temperance.ql.node.Statement;
 
 public class QueryParserTest {
@@ -70,6 +73,38 @@ public class QueryParserTest {
         {
             FromNode from = QueryParser.FROM.parse("FROM Hoge@0");
             Assert.assertEquals(from.getKey().getKey(), "Hoge@0");
+        }
+    }
+    
+    @Test
+    public void parameter(){
+        {
+            ParameterNode parameter = QueryParser.FUNCTION_PARAMTER.parse("(A, B)");
+            Assert.assertEquals(parameter.getArgs().getValues(), Arrays.asList("A", "B"));
+        }
+        {
+            ParameterNode parameter = QueryParser.FUNCTION_PARAMTER.parse("(1, 2)");
+            Assert.assertEquals(parameter.getArgs().getValues(), Arrays.asList("1", "2"));
+        }
+        {
+            ParameterNode parameter = QueryParser.FUNCTION_PARAMTER.parse("(hoge)");
+            Assert.assertEquals(parameter.getArgs().getValues(), Arrays.asList("hoge"));
+        }
+        {
+            ParameterNode parameter = QueryParser.FUNCTION_PARAMTER.parse("('foo')");
+            Assert.assertEquals(parameter.getArgs().getValues(), Arrays.asList("foo"));
+        }
+        {
+            ParameterNode parameter = QueryParser.FUNCTION_PARAMTER.parse("('bar', 'baz')");
+            Assert.assertEquals(parameter.getArgs().getValues(), Arrays.asList("bar", "baz"));
+        }
+        {
+            ParameterNode parameter = QueryParser.FUNCTION_PARAMTER.parse("(A:0,A:1)");
+            Assert.assertEquals(parameter.getArgs().getValues(), Arrays.asList("A:0", "A:1"));
+        }
+        {
+            ParameterNode parameter = QueryParser.FUNCTION_PARAMTER.parse("(A:0,   A:1)");
+            Assert.assertEquals(parameter.getArgs().getValues(), Arrays.asList("A:0", "A:1"));
         }
     }
     
@@ -157,6 +192,10 @@ public class QueryParserTest {
             Assert.assertEquals(statement.getMenge().getMengeType(), MengeType.IN);
             Assert.assertEquals(statement.getFunction().getFunctionType(), FunctionType.VALUE);
         }
+    }
+    
+    @Test
+    public void parser(){
     }
 
 }

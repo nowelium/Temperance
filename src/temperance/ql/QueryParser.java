@@ -53,10 +53,12 @@ public class QueryParser {
     protected static final Parser<String> SPECIAL_CHARS = specialChars(":", "@", "_").source();
     // QUOTE_STRING ::= single_quote_string | double_quote_string
     protected static final Parser<String> QUOTE_STRING = quoteString();
+    // SPECIAL_LETTER ::= <LETTER> <SPECIAL_CHARS> <LETTER>
+    protected static final Parser<String> SPECIAL_LETTER = SPECIAL_CHARS.between(LETTER, LETTER).source();
     // KEY_STRING ::= <QUOTE_STRING> | <LETTER>
-    protected static final Parser<String> KEY_STRING = QUOTE_STRING.or(LETTER);
+    protected static final Parser<String> KEY_STRING = QUOTE_STRING.or(SPECIAL_LETTER).or(LETTER);
     // KEY ::= keyString()
-    protected static final Parser<KeyNode> KEY = keyString();
+    protected static final Parser<KeyNode> KEY = SPECIAL_LETTER.or(KEY_STRING).map(new KeyMapper());
     // FROM ::= "from" <KEY>
     protected static final Parser<FromNode> FROM = sequence(stringCaseInsensitive("FROM"), WHITESPACES, KEY).map(new FromStatementMapper());
     // SET ::= <FROM> (IN | NOT)
@@ -100,11 +102,6 @@ public class QueryParser {
         return or(parsers);
     }
     
-    protected static Parser<KeyNode> keyString(){
-        return SPECIAL_CHARS.between(LETTER, LETTER).source()
-            .or(KEY_STRING).map(new KeyMapper());
-    }
-    
     protected static Parser<MengeType> mengeType(){
         List<Parser<Void>> parsers = Lists.newArrayList();
         for(MengeType type: MengeType.values()){
@@ -144,7 +141,7 @@ public class QueryParser {
             parserCache.put(source, stmt);
             return stmt;
         } catch(ParserException e) {
-            throw new ParseException(e.getMessage());
+            throw new ParseException(e.getMessage() + " in query: " + source);
         }
     }
 

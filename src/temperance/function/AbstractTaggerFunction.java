@@ -1,10 +1,11 @@
 package temperance.function;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
-import libmemcached.exception.LibMemcachedException;
 import temperance.exception.ExecutionException;
 import temperance.ft.Hashing;
+import temperance.memcached.FullTextCommand;
 import temperance.storage.MemcachedFullText;
 import temperance.util.Lists;
 import temperance.util.Lists.IntersectList;
@@ -23,30 +24,6 @@ public abstract class AbstractTaggerFunction implements InternalFunction {
     }
     
     protected abstract Hashing createHashing(List<String> args);
-    
-    protected List<Long> getAll(String key) throws LibMemcachedException {
-        final List<Long> results = Lists.newArrayList();
-        
-        long allHasheCount = ft.count(key);
-        for(long i = 0; i < allHasheCount; i += SPLIT){
-            results.addAll(ft.get(key, i, SPLIT));
-        }
-        return results;
-    }
-    
-    protected List<String> getAll(String key, Long hash) throws LibMemcachedException {
-        final List<String> results = Lists.newArrayList();
-        
-        long count = ft.count(key, hash);
-        for(long i = 0; i < count; i += SPLIT){
-            long limit = SPLIT;
-            if(count < SPLIT){
-                limit = count;
-            }
-            results.addAll(ft.get(key, hash, i, limit));
-        }
-        return results;
-    }
     
     public Command createDelete(){
         return new Delete();
@@ -81,13 +58,18 @@ public abstract class AbstractTaggerFunction implements InternalFunction {
             try {
                 IntersectList<String> returnValue = Lists.newIntersectList();
                 List<Long> allHashes = hashing.parse(str);
-                for(Long hash: allHashes){
-                    List<String> results = getAll(key, hash);
+                
+                FullTextCommand command = new FullTextCommand(context.getPool());
+                List<Future<List<String>>> futures = command.getAll(key, allHashes);
+                for(Future<List<String>> future: futures){
+                    List<String> results = future.get();
                     returnValue.intersect(results);
                 }
                 
                 return returnValue;
-            } catch(LibMemcachedException e){
+            } catch (InterruptedException e) {
+                throw new ExecutionException(e);
+            } catch (java.util.concurrent.ExecutionException e) {
                 throw new ExecutionException(e);
             }
         }
@@ -101,16 +83,22 @@ public abstract class AbstractTaggerFunction implements InternalFunction {
             final Hashing hashing = createHashing(args);
             try {
                 List<Long> ignoreHashes = hashing.parse(str);
-                List<Long> allKeys = getAll(key);
+                FullTextCommand command = new FullTextCommand(context.getPool());
+                
+                List<Long> allKeys = command.getAll(key).get();
                 // remove ignore keys
                 allKeys.removeAll(ignoreHashes);
                 
                 List<String> returnValue = Lists.newArrayList();
-                for(Long selectHash: allKeys){
-                    returnValue.addAll(getAll(key, selectHash));
+                List<Future<List<String>>> futures = command.getAll(key, allKeys);
+                for(Future<List<String>> future: futures){
+                    List<String> result = future.get();
+                    returnValue.addAll(result);
                 }
                 return returnValue;
-            } catch(LibMemcachedException e){
+            } catch (InterruptedException e) {
+                throw new ExecutionException(e);
+            } catch (java.util.concurrent.ExecutionException e) {
                 throw new ExecutionException(e);
             }
         }

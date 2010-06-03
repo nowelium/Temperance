@@ -1,7 +1,8 @@
 package temperance.handler;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import libmemcached.exception.LibMemcachedException;
 
@@ -13,6 +14,7 @@ import temperance.ft.MecabHashing;
 import temperance.ft.MecabNodeFilter;
 import temperance.ft.PrefixHashing;
 import temperance.hash.HashFunction;
+import temperance.memcached.FullTextCommand;
 import temperance.memcached.Pool;
 import temperance.protobuf.FullText.FullTextService;
 import temperance.protobuf.FullText.Request;
@@ -24,8 +26,6 @@ import com.google.protobuf.RpcController;
 import com.google.protobuf.ServiceException;
 
 public class FullTextServiceHandler implements FullTextService.BlockingInterface {
-    
-    protected static final int SPLIT = 3000;
     
     protected final Context context;
     
@@ -83,26 +83,21 @@ public class FullTextServiceHandler implements FullTextService.BlockingInterface
         final String str = request.getStr();
         final Parser parser = request.getParser();
         
+        final FullTextCommand command = new FullTextCommand(pool);
         Response.Get.Builder builder = Response.Get.newBuilder();
         try {
             Hashing hashing = createHashing(parser);
             List<Long> hashes = hashing.parse(str);
-            for(Long hash: hashes){
-                builder.addAllValues(getAll(fulltext, key, hash));
+            List<Future<List<String>>> futures = command.getAll(key, hashes);
+            for(Future<List<String>> future: futures){
+                builder.addAllValues(future.get());
             }
             return builder.build();
-        } catch(LibMemcachedException e){
+        } catch (InterruptedException e) {
+            throw new ServiceException(e.getMessage());
+        } catch (ExecutionException e) {
             throw new ServiceException(e.getMessage());
         }
     }
     
-    protected List<String> getAll(MemcachedFullText list, String key, Long hash) throws LibMemcachedException {
-        List<String> results = new ArrayList<String>();
-        long count = list.count(key, hash);
-        for(long i = 0; i < count; i += SPLIT){
-            results.addAll(list.get(key, hash, i, SPLIT));
-        }
-        return results;
-    }
-
 }

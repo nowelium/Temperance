@@ -1,7 +1,9 @@
 package temperance.memcached;
 
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
 import libmemcached.exception.LibMemcachedException;
@@ -28,7 +30,12 @@ public class Pool {
     
     protected final CountDownLock lock;
     
-    protected final ExecutorService executor = Executors.newSingleThreadExecutor();
+    protected final ExecutorService executor = Executors.newFixedThreadPool(2);
+    
+    protected final BlockingQueue<MemcachedClient> releaseQueue = new LinkedBlockingQueue<MemcachedClient>();
+    
+    // TODO
+    protected final ExecutorService sharedThreadPool = Executors.newCachedThreadPool();
     
     public Pool(Context context){
         this.context = context;
@@ -45,11 +52,10 @@ public class Pool {
         behavior.set(BehaviorType.SUPPORT_CAS, true);
         behavior.set(BehaviorType.BUFFER_REQUESTS, true);
         behavior.set(BehaviorType.TCP_KEEPALIVE, true);
-        behavior.set(BehaviorType.TCP_NODELAY, true);
+        //behavior.set(BehaviorType.TCP_NODELAY, true);
         
         this.rootClient = client;
-        
-        this.lock = new CountDownLock((int) Math.round(maxPoolSize * 0.8));
+        this.lock = new CountDownLock((int) Math.round(maxPoolSize * 0.9));
     }
     
     protected void resetPool(){
@@ -58,7 +64,7 @@ public class Pool {
         pool.setBehavior(BehaviorType.SUPPORT_CAS, true);
         pool.setBehavior(BehaviorType.BUFFER_REQUESTS, true);
         pool.setBehavior(BehaviorType.TCP_KEEPALIVE, true);
-        pool.setBehavior(BehaviorType.TCP_NODELAY, true);
+        //pool.setBehavior(BehaviorType.TCP_NODELAY, true);
         this.refPool.set(pool);
     }
     
@@ -74,6 +80,18 @@ public class Pool {
                         lock.await();
                         
                         resetPool();
+                    }
+                } catch(InterruptedException e){
+                    //
+                }
+            }
+        });
+        executor.execute(new Runnable(){
+            public void run(){
+                try {
+                    while(true){
+                        MemcachedClient client = releaseQueue.take();
+                        client.quit();
                     }
                 } catch(InterruptedException e){
                     //
@@ -109,7 +127,7 @@ public class Pool {
         }
         
         // TODO: reuse pool
-        client.quit();
+        releaseQueue.offer(client);
     }
 
 }
