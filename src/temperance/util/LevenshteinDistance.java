@@ -2,6 +2,10 @@ package temperance.util;
 
 public class LevenshteinDistance {
     
+    protected LevenshteinDistance(){
+        // nop
+    }
+    
     protected static int min(int a, int b){
         if(a <= b){
             return a;
@@ -13,7 +17,7 @@ public class LevenshteinDistance {
         return min(min(a, b), c);
     }
     
-    public static int levenshteinDistance(CharSequence seq1, CharSequence seq2){
+    public static int distance(CharSequence seq1, CharSequence seq2){
         final int seq1Length = seq1.length();
         final int seq2Length = seq2.length();
         

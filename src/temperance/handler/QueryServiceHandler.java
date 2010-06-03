@@ -23,7 +23,7 @@ import temperance.protobuf.Query.Response;
 import temperance.ql.InternalFunction;
 import temperance.ql.QueryFunction;
 import temperance.ql.QueryParser;
-import temperance.ql.SetFunction;
+import temperance.ql.MengeType;
 import temperance.ql.Visitor;
 import temperance.ql.exception.ParseException;
 import temperance.ql.node.ArgumentsNode;
@@ -31,7 +31,7 @@ import temperance.ql.node.FromNode;
 import temperance.ql.node.FunctionNode;
 import temperance.ql.node.KeyNode;
 import temperance.ql.node.ParameterNode;
-import temperance.ql.node.SetNode;
+import temperance.ql.node.MengeNode;
 import temperance.ql.node.Statement;
 
 import com.google.protobuf.RpcController;
@@ -39,7 +39,9 @@ import com.google.protobuf.ServiceException;
 
 public class QueryServiceHandler implements QueryService.BlockingInterface {
 
-protected final Context context;
+    protected final QueryParser parser = new QueryParser();
+    
+    protected final Context context;
     
     protected final HashFunction hashFunction;
     
@@ -59,7 +61,6 @@ protected final Context context;
     
     public Response.Get get(RpcController controller, Request.Get request) throws ServiceException {
         final String query = request.getQuery();
-        final QueryParser parser = new QueryParser();
         try {
             FunctionContext ctx = new FunctionContext();
             ctx.setPool(pool);
@@ -124,8 +125,8 @@ protected final Context context;
             return node.getArgs().accept(this, data);
         }
 
-        public List<String> visit(SetNode node, FunctionFactoryFactory data) {
-            return node.getSet().each(new Switch(behavior, function, key, argsValue));
+        public List<String> visit(MengeNode node, FunctionFactoryFactory data) {
+            return node.getMenge().each(new Switch(behavior, function, key, argsValue));
         }
 
         public List<String> visit(KeyNode node, FunctionFactoryFactory data) {
@@ -184,7 +185,7 @@ protected final Context context;
         }
     }
     
-    protected static class Switch implements SetFunction.Switch<List<String>> {
+    protected static class Switch implements MengeType.Switch<List<String>> {
         
         private final Behavior behavior;
         
@@ -200,7 +201,7 @@ protected final Context context;
             this.key = key;
             this.args = args;
         }
-        public List<String> caseIn() {
+        public List<String> caseAnd() {
             return behavior.each(new Behavior.Switch<List<String>>(){
                 public List<String> caseDelete() {
                     try {

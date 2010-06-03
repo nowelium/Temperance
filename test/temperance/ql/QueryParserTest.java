@@ -1,10 +1,12 @@
 package temperance.ql;
 
+import org.codehaus.jparsec.error.ParserException;
 import org.junit.Assert;
 import org.junit.Test;
 
 import temperance.ql.node.FromNode;
 import temperance.ql.node.FunctionNode;
+import temperance.ql.node.KeyNode;
 import temperance.ql.node.Statement;
 
 public class QueryParserTest {
@@ -16,6 +18,38 @@ public class QueryParserTest {
     }
     
     @Test
+    public void key(){
+        {
+            KeyNode key = QueryParser.KEY.parse("A");
+            Assert.assertEquals(key.getKey(), "A");
+        }
+        {
+            KeyNode key = QueryParser.KEY.parse("'HELLO'");
+            Assert.assertEquals(key.getKey(), "HELLO");
+        }
+        {
+            KeyNode key = QueryParser.KEY.parse("HELLO:WORLD");
+            Assert.assertEquals(key.getKey(), "HELLO:WORLD");
+        }
+        {
+            KeyNode key = QueryParser.KEY.parse("'HELLO:WORLD'");
+            Assert.assertEquals(key.getKey(), "HELLO:WORLD");
+        }
+        {
+            KeyNode key = QueryParser.KEY.parse("HELLO@WORLD");
+            Assert.assertEquals(key.getKey(), "HELLO@WORLD");
+        }
+        {
+            try {
+                KeyNode key = QueryParser.KEY.parse("HELLO[0]");
+                Assert.assertEquals(key.getKey(), "HELLO[0]");
+                Assert.fail();
+            } catch(ParserException e){
+            }
+        }
+    }
+    
+    @Test
     public void from(){
         {
             FromNode from = QueryParser.FROM.parse("FROM A");
@@ -24,6 +58,14 @@ public class QueryParserTest {
         {
             FromNode from = QueryParser.FROM.parse("FROM    B");
             Assert.assertEquals(from.getKey().getKey(), "B");
+        }
+        {
+            FromNode from = QueryParser.FROM.parse("FROM 'Hoge:0'");
+            Assert.assertEquals(from.getKey().getKey(), "Hoge:0");
+        }
+        {
+            FromNode from = QueryParser.FROM.parse("FROM Hoge:Foo");
+            Assert.assertEquals(from.getKey().getKey(), "Hoge:Foo");
         }
     }
     

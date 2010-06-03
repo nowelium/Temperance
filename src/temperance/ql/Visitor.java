@@ -5,7 +5,7 @@ import temperance.ql.node.FromNode;
 import temperance.ql.node.FunctionNode;
 import temperance.ql.node.KeyNode;
 import temperance.ql.node.ParameterNode;
-import temperance.ql.node.SetNode;
+import temperance.ql.node.MengeNode;
 import temperance.ql.node.Statement;
 
 public interface Visitor<T, DATA> {
@@ -20,7 +20,7 @@ public interface Visitor<T, DATA> {
     
     public T visit(ParameterNode node, DATA data);
     
-    public T visit(SetNode node, DATA data);
+    public T visit(MengeNode node, DATA data);
     
     public T visit(Statement node, DATA data);
 

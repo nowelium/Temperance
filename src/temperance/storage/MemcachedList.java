@@ -2,6 +2,7 @@ package temperance.storage;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import libmemcached.exception.LibMemcachedException;
 import libmemcached.wrapper.Fetcher;
@@ -12,8 +13,13 @@ import libmemcached.wrapper.SimpleResult;
 import libmemcached.wrapper.type.ReturnType;
 import temperance.memcached.Pool;
 import temperance.util.Lists;
+import temperance.util.SoftReferenceMap;
 
 public class MemcachedList {
+    
+    protected static final Map<String, String> incrementKeyCache = new SoftReferenceMap<String, String>();
+    
+    protected static final KeyCache<String> indexKeyCache = new KeyCache<String>();
     
     protected static final String INCREMENT_SUFFIX = ".increment";
     
@@ -113,11 +119,58 @@ public class MemcachedList {
     }
     
     protected static String incrementKey(String key){
-        return new StringBuilder(key).append(INCREMENT_SUFFIX).toString();
+        if(incrementKeyCache.containsKey(key)){
+            return incrementKeyCache.get(key);
+        }
+        
+        String incrementKey = new StringBuilder(key).append(INCREMENT_SUFFIX).toString();
+        incrementKeyCache.put(key, incrementKey);
+        return incrementKey;
     }
     
     protected static String indexKey(String key, long index){
-        return new StringBuilder(key).append(KEY_SEPARATOR).append(index).toString();
+        if(indexKeyCache.contains(key, index)){
+            return indexKeyCache.get(key, index);
+        }
+        
+        String indexKey = new StringBuilder(key).append(KEY_SEPARATOR).append(index).toString();
+        indexKeyCache.put(key, index, indexKey);
+        return indexKey;
+    }
+    
+    protected static class KeyCache<V> {
+        protected final SoftReferenceMap<String, Map<Long, V>> cache = new SoftReferenceMap<String, Map<Long, V>>();
+        
+        public boolean contains(String key, Long index){
+            if(!cache.containsKey(key)){
+                return false;
+            }
+            Map<Long, V> map = cache.get(key);
+            if(!map.containsKey(index)){
+                return false;
+            }
+            return true;
+        }
+        
+        public V put(String key, Long index, V value){
+            if(cache.containsKey(key)){
+                Map<Long, V> map = cache.get(key);
+                return map.put(index, value);
+            }
+            
+            SoftReferenceMap<Long, V> map = new SoftReferenceMap<Long, V>();
+            map.put(index, value);
+            cache.put(key, map);
+            return null;
+        }
+        
+        public V get(String key, Long index){
+            if(cache.containsKey(key)){
+                Map<Long, V> map = cache.get(key);
+                return map.get(index);
+            }
+            return null;
+        }
     }
     
 }

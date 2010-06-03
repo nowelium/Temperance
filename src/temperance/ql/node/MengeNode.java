@@ -1,18 +1,18 @@
 package temperance.ql.node;
 
-import temperance.ql.SetFunction;
+import temperance.ql.MengeType;
 import temperance.ql.Visitor;
 
-public class SetNode implements Node {
+public class MengeNode implements Node {
 
-    private final SetFunction set;
+    private final MengeType menge;
     
-    public SetNode(SetFunction set){
-        this.set = set;
+    public MengeNode(MengeType menge){
+        this.menge = menge;
     }
     
-    public SetFunction getSet(){
-        return set;
+    public MengeType getMenge(){
+        return menge;
     }
     
     public <T, DATA> T accept(Visitor<T, DATA> visitor, DATA data){
@@ -22,7 +22,7 @@ public class SetNode implements Node {
     @Override
     public String toString(){
         StringBuilder buf = new StringBuilder("SetStatement{");
-        buf.append("set=").append(set);
+        buf.append("menge=").append(menge);
         buf.append("}");
         return buf.toString();
     }

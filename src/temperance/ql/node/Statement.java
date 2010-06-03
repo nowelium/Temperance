@@ -6,11 +6,11 @@ public class Statement implements Node {
 
     private final FromNode from;
 
-    private final SetNode set;
+    private final MengeNode set;
     
     private final FunctionNode function;
     
-    public Statement(FromNode from, SetNode set, FunctionNode function){
+    public Statement(FromNode from, MengeNode set, FunctionNode function){
         this.from = from;
         this.set = set;
         this.function = function;
@@ -20,7 +20,7 @@ public class Statement implements Node {
         return from;
     }
     
-    public SetNode getSet(){
+    public MengeNode getSet(){
         return set;
     }
     

@@ -20,17 +20,19 @@ import temperance.ql.mapper.FromStatementMapper;
 import temperance.ql.mapper.FunctionMapper;
 import temperance.ql.mapper.FunctionParameterMapper;
 import temperance.ql.mapper.KeyMapper;
-import temperance.ql.mapper.SetFunctionNameMapper;
-import temperance.ql.mapper.SetStatementMapper;
+import temperance.ql.mapper.MengeStatementMapper;
+import temperance.ql.mapper.MengeTypeMapper;
 import temperance.ql.mapper.QuoteStringMapper;
 import temperance.ql.mapper.StatementMapper;
 import temperance.ql.node.ArgumentsNode;
 import temperance.ql.node.FromNode;
 import temperance.ql.node.FunctionNode;
 import temperance.ql.node.KeyNode;
+import temperance.ql.node.MengeNode;
 import temperance.ql.node.ParameterNode;
-import temperance.ql.node.SetNode;
 import temperance.ql.node.Statement;
+import temperance.util.Lists;
+import temperance.util.SoftReferenceMap;
 
 public class QueryParser {
     
@@ -46,16 +48,20 @@ public class QueryParser {
     protected static final Parser<List<Void>> WHITESPACES = Scanners.WHITESPACES.many();
     // LETTER ::= <identifier>
     protected static final Parser<String> LETTER = Scanners.IDENTIFIER;
+    // SPECIAL_CHARS ::= ":" | "_" | "@" | "{" | "}" | "[" | "]"
+    protected static final Parser<String> SPECIAL_CHARS = specialChars(":", "@", "_").source();
     // QUOTE_STRING ::= single_quote_string | double_quote_string
     protected static final Parser<String> QUOTE_STRING = quoteString();
-    // KEY ::= <LETTER>+ ":" <LETTER>
-    protected static final Parser<KeyNode> KEY = LETTER.map(new KeyMapper());
+    // KEY_STRING ::= <QUOTE_STRING> | <LETTER>
+    protected static final Parser<String> KEY_STRING = QUOTE_STRING.or(LETTER);
+    // KEY ::= <KEY_STRING>
+    protected static final Parser<KeyNode> KEY = keyString();
     // FROM ::= "from" <KEY>
     protected static final Parser<FromNode> FROM = sequence(stringCaseInsensitive("FROM"), WHITESPACES, KEY).map(new FromStatementMapper());
     // SET ::= <FROM> (IN | NOT)
-    protected static final Parser<SetNode> SET = tuple(WHITESPACES, setFunctions(), WHITESPACES).map(new SetStatementMapper());
-    // PARAMETER ::= <KEY> | <single_quote_str> | <LETTER> | <decimal>
-    protected static final Parser<String> PARAMETER = KEY.source().or(QUOTE_STRING).or(LETTER).or(Scanners.DECIMAL);
+    protected static final Parser<MengeNode> MENGE = tuple(WHITESPACES, mengeType(), WHITESPACES).map(new MengeStatementMapper());
+    // PARAMETER ::= <KEY_STRING> | <decimal>
+    protected static final Parser<String> PARAMETER = KEY_STRING.or(Scanners.DECIMAL);
     // skip(PARAMETER_DELIMTER) ::= <WHITESPACE>? "," <WHITESPACE>
     protected static final Parser<List<Void>> PARAMETER_DELIMTER = sequence(WHITESPACES.optional(), string(","), WHITESPACES);
     // FUNCTION_ARGS ::= <PARAMETER> | <PARAMETER>, <PARAMETER>
@@ -69,19 +75,35 @@ public class QueryParser {
     // FUNCTION ::= <FUNCTION_NAME> "(" <FUNCTION_PARAMTER> ")"
     protected static final Parser<FunctionNode> FUNCTION = tuple(LETTER, FUNCTION_PARAMTER).map(new FunctionMapper());
     // STATEMENT ::= <FROM> <SET> <FUNCTION>
-    protected static final Parser<Statement> STATEMENT = tuple(FROM, SET, FUNCTION).map(new StatementMapper());
+    protected static final Parser<Statement> STATEMENT = tuple(FROM, MENGE, FUNCTION).map(new StatementMapper());
     // PARSER ::= parser
     protected static final Parser<Statement> PARSER = parser(STATEMENT);
+    
+    // parser cache
+    protected final SoftReferenceMap<String, Statement> parserCache = new SoftReferenceMap<String, Statement>();
     
     protected static Parser<String> quoteString(){
         return Scanners.SINGLE_QUOTE_STRING.map(new QuoteStringMapper('\''))
             .or(Scanners.DOUBLE_QUOTE_STRING.map(new QuoteStringMapper('"')));
     }
     
-    protected static Parser<SetFunction> setFunctions(){
-        return string(SetFunction.IN.name())
-            .or(string(SetFunction.NOT.name()))
-            .source().map(new SetFunctionNameMapper());
+    protected static Parser<Void> specialChars(String...chars){
+        List<Parser<Void>> parsers = Lists.newArrayList();
+        for(String ch: chars){
+            parsers.add(string(ch));
+        }
+        return or(parsers);
+    }
+    
+    protected static Parser<KeyNode> keyString(){
+        return SPECIAL_CHARS.between(LETTER, LETTER).source()
+            .or(KEY_STRING).map(new KeyMapper());
+    }
+    
+    protected static Parser<MengeType> mengeType(){
+        return string(MengeType.IN.name())
+            .or(string(MengeType.NOT.name()))
+            .source().map(new MengeTypeMapper());
     }
     
     protected static Parser<Statement> parser(Parser<Statement> atom){
@@ -96,8 +118,15 @@ public class QueryParser {
         if("".equals(source)){
             throw new ParseException("empty query");
         }
+        
         try {
-            return PARSER.parse(source);
+            if(parserCache.containsKey(source)){
+                return parserCache.get(source);
+            }
+            
+            Statement stmt = PARSER.parse(source);
+            parserCache.put(source, stmt);
+            return stmt;
         } catch(ParserException e) {
             throw new ParseException(e.getMessage());
         }

@@ -5,11 +5,11 @@ import org.codehaus.jparsec.functors.Tuple3;
 
 import temperance.ql.node.FromNode;
 import temperance.ql.node.FunctionNode;
-import temperance.ql.node.SetNode;
+import temperance.ql.node.MengeNode;
 import temperance.ql.node.Statement;
 
-public class StatementMapper implements Map<Tuple3<FromNode, SetNode, FunctionNode>, Statement> {
-    public Statement map(Tuple3<FromNode, SetNode, FunctionNode> tuple) {
+public class StatementMapper implements Map<Tuple3<FromNode, MengeNode, FunctionNode>, Statement> {
+    public Statement map(Tuple3<FromNode, MengeNode, FunctionNode> tuple) {
         return new Statement(tuple.a, tuple.b, tuple.c);
     }
 }
