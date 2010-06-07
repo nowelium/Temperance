@@ -3,14 +3,14 @@ package temperance.storage;
 import java.util.List;
 
 import libmemcached.exception.LibMemcachedException;
-import temperance.memcached.Pool;
+import temperance.memcached.ConnectionPool;
 import temperance.util.Lists;
 
 public class MemcachedFullText {
     
     protected final MemcachedList list;
 
-    public MemcachedFullText(Pool pool) {
+    public MemcachedFullText(ConnectionPool pool) {
         this.list = new MemcachedList(pool);
     }
     

@@ -25,13 +25,13 @@ $service = new Temperance_FullTextService('localhost', 17001);
 }
 
 $service = new Temperance_QueryService('localhost', 17001);
-$getParam = new Temperance_Query_Request_Get;
+$getParam = new Temperance_Query_Request_Select;
 $getParam->query = 'FROM hoge IN PREFIX("本日は")';
-$result = $service->get($getParam);
+$result = $service->select($getParam);
 var_dump($result->values);
 
 $service = new Temperance_QueryService('localhost', 17001);
-$getParam = new Temperance_Query_Request_Get;
+$getParam = new Temperance_Query_Request_Select;
 $getParam->query = 'FROM hoge IN PREFIX("本日は晴天")';
-$result = $service->get($getParam);
+$result = $service->select($getParam);
 var_dump($result->values);

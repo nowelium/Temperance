@@ -2,20 +2,18 @@ package temperance.memcached;
 
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import temperance.storage.MemcachedFullText;
 import temperance.util.Lists;
 
-public class FullTextCommand implements ConcurrentCommand {
+public class FullTextCommand implements Command {
     
-    protected final ExecutorService service;
+    protected final ThreadPool thread = ThreadPool.getInstance();
     
-    protected final Pool pool;
+    protected final ConnectionPool pool;
 
-    public FullTextCommand(Pool pool){
-        this.service = pool.sharedThreadPool;
+    public FullTextCommand(ConnectionPool pool){
         this.pool = pool;
     }
     
@@ -36,13 +34,13 @@ public class FullTextCommand implements ConcurrentCommand {
     }
     
     protected <T> Future<List<T>> submit(Callable<List<T>> task){
-        return service.submit(task);
+        return thread.submit(task);
     }
     
     protected static class GetAllHashes implements Callable<List<Long>> {
-        private final Pool pool;
+        private final ConnectionPool pool;
         private final String key;
-        protected GetAllHashes(Pool pool, String key){
+        protected GetAllHashes(ConnectionPool pool, String key){
             this.pool = pool;
             this.key = key;
         }
@@ -59,10 +57,10 @@ public class FullTextCommand implements ConcurrentCommand {
     }
 
     protected static class GetAllValue implements Callable<List<String>> {
-        private final Pool pool;
+        private final ConnectionPool pool;
         private final String key;
         private final Long hash;
-        protected GetAllValue(Pool pool, String key, Long hash){
+        protected GetAllValue(ConnectionPool pool, String key, Long hash){
             this.pool = pool;
             this.key = key;
             this.hash = hash;

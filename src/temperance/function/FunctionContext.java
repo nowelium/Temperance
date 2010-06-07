@@ -4,11 +4,11 @@ import org.chasen.mecab.wrapper.Tagger;
 
 import temperance.ft.MecabNodeFilter;
 import temperance.hash.HashFunction;
-import temperance.memcached.Pool;
+import temperance.memcached.ConnectionPool;
 
 public class FunctionContext {
     
-    private Pool pool;
+    private ConnectionPool pool;
     
     private Tagger tagger;
     
@@ -16,7 +16,7 @@ public class FunctionContext {
     
     private MecabNodeFilter nodeFilter;
     
-    public void setPool(Pool pool){
+    public void setPool(ConnectionPool pool){
         this.pool = pool;
     }
     
@@ -28,7 +28,7 @@ public class FunctionContext {
         this.hashFunction = hashFunction;
     }
     
-    public Pool getPool(){
+    public ConnectionPool getPool(){
         return pool;
     }
     

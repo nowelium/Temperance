@@ -15,17 +15,17 @@ import temperance.exception.ExecutionException;
 import temperance.ft.PrefixHashing;
 import temperance.function.FunctionContext;
 import temperance.function.PrefixFunction;
-import temperance.handler.Context;
 import temperance.hash.Hash;
 import temperance.hash.HashFunction;
-import temperance.memcached.Pool;
+import temperance.memcached.ConnectionPool;
+import temperance.rpc.Context;
 import temperance.storage.MemcachedFullText;
 
 public class PrefixFunctionTest {
     
     protected static HashFunction hashFunction = Hash.MD5;
     
-    protected Pool pool;
+    protected ConnectionPool pool;
     
     protected FunctionContext ctx = new FunctionContext();
     
@@ -45,7 +45,7 @@ public class PrefixFunctionTest {
         Context c = new Context();
         c.setMemcachedPoolSize(1);
         c.setMemcached("localhost:11211");
-        pool = new Pool(c);
+        pool = new ConnectionPool(c);
     }
     
     public void setupData() throws LibMemcachedException {

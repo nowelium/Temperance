@@ -38,13 +38,13 @@ echo 'add key: foo', PHP_EOL;
 
 $service = new Temperance_QueryService('localhost', 17001);
 
-$getParam = new Temperance_Query_Request_Get;
+$getParam = new Temperance_Query_Request_Select;
 $getParam->query = 'FROM hoge IN DATA(foo)';
-$result = $service->get($getParam);
+$result = $service->select($getParam);
 var_dump($result->values);
 
-$getParam = new Temperance_Query_Request_Get;
+$getParam = new Temperance_Query_Request_Select;
 $getParam->query = "FROM hoge NOT DATA(foo)";
-$result = $service->get($getParam);
+$result = $service->select($getParam);
 var_dump($result->values);
 

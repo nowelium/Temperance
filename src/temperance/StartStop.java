@@ -11,9 +11,9 @@ import org.apache.commons.cli.Parser;
 
 import temperance.ft.MecabHashing;
 import temperance.ft.MecabNodeFilter;
-import temperance.handler.Context;
 import temperance.hash.Hash;
 import temperance.hash.HashFunction;
+import temperance.rpc.Context;
 import temperance.server.Server;
 import temperance.server.ProtobufServer;
 

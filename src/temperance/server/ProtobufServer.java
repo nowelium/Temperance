@@ -4,47 +4,36 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-import temperance.handler.Context;
-import temperance.handler.FullTextServiceHandler;
-import temperance.handler.ListServiceHandler;
-import temperance.handler.MapServiceHandler;
-import temperance.handler.MecabServiceHandler;
-import temperance.handler.QueryServiceHandler;
-import temperance.memcached.Pool;
 import temperance.protobuf.FullText.FullTextService;
 import temperance.protobuf.List.ListService;
 import temperance.protobuf.Map.MapService;
 import temperance.protobuf.Mecab.MecabService;
 import temperance.protobuf.Query.QueryService;
+import temperance.rpc.Context;
+import temperance.rpc.protobuf.ProtobufFullTextService;
+import temperance.rpc.protobuf.ProtobufListService;
+import temperance.rpc.protobuf.ProtobufMapService;
+import temperance.rpc.protobuf.ProtobufMecabService;
+import temperance.rpc.protobuf.ProtobufQueryService;
 
 import com.google.protobuf.BlockingService;
 import com.googlecode.protobuf.socketrpc.SocketRpcServer;
 
-public class ProtobufServer extends AbstractDaemon {
+public class ProtobufServer extends AbstractRpcServer {
     
     protected final SocketRpcServer server;
     
-    protected final Context context;
-    
     public ProtobufServer(Context context, boolean daemonize, int rpcPort) {
-        super(ProtobufServer.class.getName(), daemonize);
+        super(context, ProtobufServer.class.getName(), daemonize);
         this.server = new SocketRpcServer(rpcPort, Executors.newCachedThreadPool());
-        this.context = context;
-    }
-
-    @Override
-    public void init() {
-        final Pool pool = new Pool(context);
-        pool.init();
-        
-        final List<BlockingService> services = createBlockingService(context, pool);
-        for(BlockingService service: services){
-            server.registerBlockingService(service);
-        }
     }
 
     @Override
     public void run() {
+        for(BlockingService service: createBlockingService()){
+            server.registerBlockingService(service);
+        }
+
         server.startServer();
         try {
             Object o = new Object();
@@ -61,13 +50,13 @@ public class ProtobufServer extends AbstractDaemon {
         server.shutDown();
     }
     
-    protected List<BlockingService> createBlockingService(Context context, Pool pool){
+    protected List<BlockingService> createBlockingService(){
         return Arrays.asList(
-            FullTextService.newReflectiveBlockingService(new FullTextServiceHandler(context, pool)),
-            ListService.newReflectiveBlockingService(new ListServiceHandler(context, pool)),
-            MapService.newReflectiveBlockingService(new MapServiceHandler(context, pool)),
-            QueryService.newReflectiveBlockingService(new QueryServiceHandler(context, pool)),
-            MecabService.newReflectiveBlockingService(new MecabServiceHandler(context))
+            FullTextService.newReflectiveBlockingService(new ProtobufFullTextService(createRpcFullText())),
+            ListService.newReflectiveBlockingService(new ProtobufListService(createRpcList())),
+            MapService.newReflectiveBlockingService(new ProtobufMapService(createRpcMap())),
+            MecabService.newReflectiveBlockingService(new ProtobufMecabService(createRpcMecab())),
+            QueryService.newReflectiveBlockingService(new ProtobufQueryService(createRpcQuery()))
         );
     }
 }

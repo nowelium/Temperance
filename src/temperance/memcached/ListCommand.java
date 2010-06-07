@@ -2,20 +2,18 @@ package temperance.memcached;
 
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import temperance.storage.MemcachedList;
 import temperance.util.Lists;
 
-public class ListCommand implements ConcurrentCommand {
+public class ListCommand implements Command {
     
-    protected final ExecutorService service;
+    protected final ThreadPool thread = ThreadPool.getInstance();
 
-    protected final Pool pool;
+    protected final ConnectionPool pool;
     
-    public ListCommand(Pool pool){
-        this.service = pool.sharedThreadPool;
+    public ListCommand(ConnectionPool pool){
         this.pool = pool;
     }
     
@@ -32,13 +30,13 @@ public class ListCommand implements ConcurrentCommand {
     }
     
     protected Future<List<String>> submit(Callable<List<String>> task){
-        return service.submit(task);
+        return thread.submit(task);
     }
     
     protected static class GetAllValues implements Callable<List<String>> {
-        private final Pool pool;
+        private final ConnectionPool pool;
         private final String key;
-        protected GetAllValues(Pool pool, String key){
+        protected GetAllValues(ConnectionPool pool, String key){
             this.pool = pool;
             this.key = key;
         }

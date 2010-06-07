@@ -13,16 +13,16 @@ import org.junit.Test;
 
 import temperance.exception.ExecutionException;
 import temperance.ft.MecabHashing;
-import temperance.handler.Context;
 import temperance.hash.Hash;
-import temperance.memcached.Pool;
+import temperance.memcached.ConnectionPool;
+import temperance.rpc.Context;
 import temperance.storage.MemcachedList;
 
 
 public class DataFunctionTest {
     protected Context context;
     
-    protected Pool pool;
+    protected ConnectionPool pool;
     
     protected FunctionContext ctx;
     
@@ -35,7 +35,7 @@ public class DataFunctionTest {
         context.setMemcachedPoolSize(10);
         context.setNodeFilter(MecabHashing.Filter.Nouns);
         
-        pool = new Pool(context);
+        pool = new ConnectionPool(context);
         pool.init();
         
         ctx = new FunctionContext();

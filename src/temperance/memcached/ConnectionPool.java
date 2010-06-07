@@ -13,10 +13,10 @@ import libmemcached.wrapper.MemcachedClient;
 import libmemcached.wrapper.MemcachedPool;
 import libmemcached.wrapper.type.BehaviorType;
 import libmemcached.wrapper.type.DistributionType;
-import temperance.handler.Context;
 import temperance.lock.impl.CountDownLock;
+import temperance.rpc.Context;
 
-public class Pool {
+public class ConnectionPool {
     
     protected static final int INITIAL_POOL_SIZE = 100;
     
@@ -34,10 +34,7 @@ public class Pool {
     
     protected final BlockingQueue<MemcachedClient> releaseQueue = new LinkedBlockingQueue<MemcachedClient>();
     
-    // TODO
-    protected final ExecutorService sharedThreadPool = Executors.newCachedThreadPool();
-    
-    public Pool(Context context){
+    public ConnectionPool(Context context){
         this.context = context;
         int maxPoolSize = context.getMemcachedPoolSize();
         if(maxPoolSize < INITIAL_POOL_SIZE){

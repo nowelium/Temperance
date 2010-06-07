@@ -31,28 +31,28 @@ public final class Query {
       return temperance.protobuf.Query.internal_static_temperance_protobuf_Request_fieldAccessorTable;
     }
     
-    public static final class Get extends
+    public static final class Select extends
         com.google.protobuf.GeneratedMessage {
-      // Use Get.newBuilder() to construct.
-      private Get() {}
+      // Use Select.newBuilder() to construct.
+      private Select() {}
       
-      private static final Get defaultInstance = new Get();
-      public static Get getDefaultInstance() {
+      private static final Select defaultInstance = new Select();
+      public static Select getDefaultInstance() {
         return defaultInstance;
       }
       
-      public Get getDefaultInstanceForType() {
+      public Select getDefaultInstanceForType() {
         return defaultInstance;
       }
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return temperance.protobuf.Query.internal_static_temperance_protobuf_Request_Get_descriptor;
+        return temperance.protobuf.Query.internal_static_temperance_protobuf_Request_Select_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return temperance.protobuf.Query.internal_static_temperance_protobuf_Request_Get_fieldAccessorTable;
+        return temperance.protobuf.Query.internal_static_temperance_protobuf_Request_Select_fieldAccessorTable;
       }
       
       // required string query = 1;
@@ -90,57 +90,57 @@ public final class Query {
         return size;
       }
       
-      public static temperance.protobuf.Query.Request.Get parseFrom(
+      public static temperance.protobuf.Query.Request.Select parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data).buildParsed();
       }
-      public static temperance.protobuf.Query.Request.Get parseFrom(
+      public static temperance.protobuf.Query.Request.Select parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.Query.Request.Get parseFrom(byte[] data)
+      public static temperance.protobuf.Query.Request.Select parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data).buildParsed();
       }
-      public static temperance.protobuf.Query.Request.Get parseFrom(
+      public static temperance.protobuf.Query.Request.Select parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.Query.Request.Get parseFrom(java.io.InputStream input)
+      public static temperance.protobuf.Query.Request.Select parseFrom(java.io.InputStream input)
           throws java.io.IOException {
         return newBuilder().mergeFrom(input).buildParsed();
       }
-      public static temperance.protobuf.Query.Request.Get parseFrom(
+      public static temperance.protobuf.Query.Request.Select parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return newBuilder().mergeFrom(input, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.Query.Request.Get parseDelimitedFrom(java.io.InputStream input)
+      public static temperance.protobuf.Query.Request.Select parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
         return newBuilder().mergeDelimitedFrom(input).buildParsed();
       }
-      public static temperance.protobuf.Query.Request.Get parseDelimitedFrom(
+      public static temperance.protobuf.Query.Request.Select parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return newBuilder().mergeDelimitedFrom(input, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.Query.Request.Get parseFrom(
+      public static temperance.protobuf.Query.Request.Select parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
         return newBuilder().mergeFrom(input).buildParsed();
       }
-      public static temperance.protobuf.Query.Request.Get parseFrom(
+      public static temperance.protobuf.Query.Request.Select parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -150,25 +150,25 @@ public final class Query {
       
       public static Builder newBuilder() { return Builder.create(); }
       public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(temperance.protobuf.Query.Request.Get prototype) {
+      public static Builder newBuilder(temperance.protobuf.Query.Request.Select prototype) {
         return newBuilder().mergeFrom(prototype);
       }
       public Builder toBuilder() { return newBuilder(this); }
       
       public static final class Builder extends
           com.google.protobuf.GeneratedMessage.Builder<Builder> {
-        private temperance.protobuf.Query.Request.Get result;
+        private temperance.protobuf.Query.Request.Select result;
         
-        // Construct using temperance.protobuf.Query.Request.Get.newBuilder()
+        // Construct using temperance.protobuf.Query.Request.Select.newBuilder()
         private Builder() {}
         
         private static Builder create() {
           Builder builder = new Builder();
-          builder.result = new temperance.protobuf.Query.Request.Get();
+          builder.result = new temperance.protobuf.Query.Request.Select();
           return builder;
         }
         
-        protected temperance.protobuf.Query.Request.Get internalGetResult() {
+        protected temperance.protobuf.Query.Request.Select internalGetResult() {
           return result;
         }
         
@@ -177,7 +177,7 @@ public final class Query {
             throw new IllegalStateException(
               "Cannot call clear() after build().");
           }
-          result = new temperance.protobuf.Query.Request.Get();
+          result = new temperance.protobuf.Query.Request.Select();
           return this;
         }
         
@@ -187,24 +187,24 @@ public final class Query {
         
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return temperance.protobuf.Query.Request.Get.getDescriptor();
+          return temperance.protobuf.Query.Request.Select.getDescriptor();
         }
         
-        public temperance.protobuf.Query.Request.Get getDefaultInstanceForType() {
-          return temperance.protobuf.Query.Request.Get.getDefaultInstance();
+        public temperance.protobuf.Query.Request.Select getDefaultInstanceForType() {
+          return temperance.protobuf.Query.Request.Select.getDefaultInstance();
         }
         
         public boolean isInitialized() {
           return result.isInitialized();
         }
-        public temperance.protobuf.Query.Request.Get build() {
+        public temperance.protobuf.Query.Request.Select build() {
           if (result != null && !isInitialized()) {
             throw newUninitializedMessageException(result);
           }
           return buildPartial();
         }
         
-        private temperance.protobuf.Query.Request.Get buildParsed()
+        private temperance.protobuf.Query.Request.Select buildParsed()
             throws com.google.protobuf.InvalidProtocolBufferException {
           if (!isInitialized()) {
             throw newUninitializedMessageException(
@@ -213,27 +213,27 @@ public final class Query {
           return buildPartial();
         }
         
-        public temperance.protobuf.Query.Request.Get buildPartial() {
+        public temperance.protobuf.Query.Request.Select buildPartial() {
           if (result == null) {
             throw new IllegalStateException(
               "build() has already been called on this Builder.");
           }
-          temperance.protobuf.Query.Request.Get returnMe = result;
+          temperance.protobuf.Query.Request.Select returnMe = result;
           result = null;
           return returnMe;
         }
         
         public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof temperance.protobuf.Query.Request.Get) {
-            return mergeFrom((temperance.protobuf.Query.Request.Get)other);
+          if (other instanceof temperance.protobuf.Query.Request.Select) {
+            return mergeFrom((temperance.protobuf.Query.Request.Select)other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
         
-        public Builder mergeFrom(temperance.protobuf.Query.Request.Get other) {
-          if (other == temperance.protobuf.Query.Request.Get.getDefaultInstance()) return this;
+        public Builder mergeFrom(temperance.protobuf.Query.Request.Select other) {
+          if (other == temperance.protobuf.Query.Request.Select.getDefaultInstance()) return this;
           if (other.hasQuery()) {
             setQuery(other.getQuery());
           }
@@ -801,28 +801,28 @@ public final class Query {
       return temperance.protobuf.Query.internal_static_temperance_protobuf_Response_fieldAccessorTable;
     }
     
-    public static final class Get extends
+    public static final class Select extends
         com.google.protobuf.GeneratedMessage {
-      // Use Get.newBuilder() to construct.
-      private Get() {}
+      // Use Select.newBuilder() to construct.
+      private Select() {}
       
-      private static final Get defaultInstance = new Get();
-      public static Get getDefaultInstance() {
+      private static final Select defaultInstance = new Select();
+      public static Select getDefaultInstance() {
         return defaultInstance;
       }
       
-      public Get getDefaultInstanceForType() {
+      public Select getDefaultInstanceForType() {
         return defaultInstance;
       }
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return temperance.protobuf.Query.internal_static_temperance_protobuf_Response_Get_descriptor;
+        return temperance.protobuf.Query.internal_static_temperance_protobuf_Response_Select_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return temperance.protobuf.Query.internal_static_temperance_protobuf_Response_Get_fieldAccessorTable;
+        return temperance.protobuf.Query.internal_static_temperance_protobuf_Response_Select_fieldAccessorTable;
       }
       
       // repeated string values = 1;
@@ -869,57 +869,57 @@ public final class Query {
         return size;
       }
       
-      public static temperance.protobuf.Query.Response.Get parseFrom(
+      public static temperance.protobuf.Query.Response.Select parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data).buildParsed();
       }
-      public static temperance.protobuf.Query.Response.Get parseFrom(
+      public static temperance.protobuf.Query.Response.Select parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.Query.Response.Get parseFrom(byte[] data)
+      public static temperance.protobuf.Query.Response.Select parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data).buildParsed();
       }
-      public static temperance.protobuf.Query.Response.Get parseFrom(
+      public static temperance.protobuf.Query.Response.Select parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.Query.Response.Get parseFrom(java.io.InputStream input)
+      public static temperance.protobuf.Query.Response.Select parseFrom(java.io.InputStream input)
           throws java.io.IOException {
         return newBuilder().mergeFrom(input).buildParsed();
       }
-      public static temperance.protobuf.Query.Response.Get parseFrom(
+      public static temperance.protobuf.Query.Response.Select parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return newBuilder().mergeFrom(input, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.Query.Response.Get parseDelimitedFrom(java.io.InputStream input)
+      public static temperance.protobuf.Query.Response.Select parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
         return newBuilder().mergeDelimitedFrom(input).buildParsed();
       }
-      public static temperance.protobuf.Query.Response.Get parseDelimitedFrom(
+      public static temperance.protobuf.Query.Response.Select parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return newBuilder().mergeDelimitedFrom(input, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.Query.Response.Get parseFrom(
+      public static temperance.protobuf.Query.Response.Select parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
         return newBuilder().mergeFrom(input).buildParsed();
       }
-      public static temperance.protobuf.Query.Response.Get parseFrom(
+      public static temperance.protobuf.Query.Response.Select parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -929,25 +929,25 @@ public final class Query {
       
       public static Builder newBuilder() { return Builder.create(); }
       public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(temperance.protobuf.Query.Response.Get prototype) {
+      public static Builder newBuilder(temperance.protobuf.Query.Response.Select prototype) {
         return newBuilder().mergeFrom(prototype);
       }
       public Builder toBuilder() { return newBuilder(this); }
       
       public static final class Builder extends
           com.google.protobuf.GeneratedMessage.Builder<Builder> {
-        private temperance.protobuf.Query.Response.Get result;
+        private temperance.protobuf.Query.Response.Select result;
         
-        // Construct using temperance.protobuf.Query.Response.Get.newBuilder()
+        // Construct using temperance.protobuf.Query.Response.Select.newBuilder()
         private Builder() {}
         
         private static Builder create() {
           Builder builder = new Builder();
-          builder.result = new temperance.protobuf.Query.Response.Get();
+          builder.result = new temperance.protobuf.Query.Response.Select();
           return builder;
         }
         
-        protected temperance.protobuf.Query.Response.Get internalGetResult() {
+        protected temperance.protobuf.Query.Response.Select internalGetResult() {
           return result;
         }
         
@@ -956,7 +956,7 @@ public final class Query {
             throw new IllegalStateException(
               "Cannot call clear() after build().");
           }
-          result = new temperance.protobuf.Query.Response.Get();
+          result = new temperance.protobuf.Query.Response.Select();
           return this;
         }
         
@@ -966,24 +966,24 @@ public final class Query {
         
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return temperance.protobuf.Query.Response.Get.getDescriptor();
+          return temperance.protobuf.Query.Response.Select.getDescriptor();
         }
         
-        public temperance.protobuf.Query.Response.Get getDefaultInstanceForType() {
-          return temperance.protobuf.Query.Response.Get.getDefaultInstance();
+        public temperance.protobuf.Query.Response.Select getDefaultInstanceForType() {
+          return temperance.protobuf.Query.Response.Select.getDefaultInstance();
         }
         
         public boolean isInitialized() {
           return result.isInitialized();
         }
-        public temperance.protobuf.Query.Response.Get build() {
+        public temperance.protobuf.Query.Response.Select build() {
           if (result != null && !isInitialized()) {
             throw newUninitializedMessageException(result);
           }
           return buildPartial();
         }
         
-        private temperance.protobuf.Query.Response.Get buildParsed()
+        private temperance.protobuf.Query.Response.Select buildParsed()
             throws com.google.protobuf.InvalidProtocolBufferException {
           if (!isInitialized()) {
             throw newUninitializedMessageException(
@@ -992,7 +992,7 @@ public final class Query {
           return buildPartial();
         }
         
-        public temperance.protobuf.Query.Response.Get buildPartial() {
+        public temperance.protobuf.Query.Response.Select buildPartial() {
           if (result == null) {
             throw new IllegalStateException(
               "build() has already been called on this Builder.");
@@ -1001,22 +1001,22 @@ public final class Query {
             result.values_ =
               java.util.Collections.unmodifiableList(result.values_);
           }
-          temperance.protobuf.Query.Response.Get returnMe = result;
+          temperance.protobuf.Query.Response.Select returnMe = result;
           result = null;
           return returnMe;
         }
         
         public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof temperance.protobuf.Query.Response.Get) {
-            return mergeFrom((temperance.protobuf.Query.Response.Get)other);
+          if (other instanceof temperance.protobuf.Query.Response.Select) {
+            return mergeFrom((temperance.protobuf.Query.Response.Select)other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
         
-        public Builder mergeFrom(temperance.protobuf.Query.Response.Get other) {
-          if (other == temperance.protobuf.Query.Response.Get.getDefaultInstance()) return this;
+        public Builder mergeFrom(temperance.protobuf.Query.Response.Select other) {
+          if (other == temperance.protobuf.Query.Response.Select.getDefaultInstance()) return this;
           if (!other.values_.isEmpty()) {
             if (result.values_.isEmpty()) {
               result.values_ = new java.util.ArrayList<java.lang.String>();
@@ -1622,10 +1622,10 @@ public final class Query {
     protected QueryService() {}
     
     public interface Interface {
-      public abstract void get(
+      public abstract void select(
           com.google.protobuf.RpcController controller,
-          temperance.protobuf.Query.Request.Get request,
-          com.google.protobuf.RpcCallback<temperance.protobuf.Query.Response.Get> done);
+          temperance.protobuf.Query.Request.Select request,
+          com.google.protobuf.RpcCallback<temperance.protobuf.Query.Response.Select> done);
       
       public abstract void delete(
           com.google.protobuf.RpcController controller,
@@ -1638,11 +1638,11 @@ public final class Query {
         final Interface impl) {
       return new QueryService() {
         @Override
-        public  void get(
+        public  void select(
             com.google.protobuf.RpcController controller,
-            temperance.protobuf.Query.Request.Get request,
-            com.google.protobuf.RpcCallback<temperance.protobuf.Query.Response.Get> done) {
-          impl.get(controller, request, done);
+            temperance.protobuf.Query.Request.Select request,
+            com.google.protobuf.RpcCallback<temperance.protobuf.Query.Response.Select> done) {
+          impl.select(controller, request, done);
         }
         
         @Override
@@ -1676,7 +1676,7 @@ public final class Query {
           }
           switch(method.getIndex()) {
             case 0:
-              return impl.get(controller, (temperance.protobuf.Query.Request.Get)request);
+              return impl.select(controller, (temperance.protobuf.Query.Request.Select)request);
             case 1:
               return impl.delete(controller, (temperance.protobuf.Query.Request.Delete)request);
             default:
@@ -1694,7 +1694,7 @@ public final class Query {
           }
           switch(method.getIndex()) {
             case 0:
-              return temperance.protobuf.Query.Request.Get.getDefaultInstance();
+              return temperance.protobuf.Query.Request.Select.getDefaultInstance();
             case 1:
               return temperance.protobuf.Query.Request.Delete.getDefaultInstance();
             default:
@@ -1712,7 +1712,7 @@ public final class Query {
           }
           switch(method.getIndex()) {
             case 0:
-              return temperance.protobuf.Query.Response.Get.getDefaultInstance();
+              return temperance.protobuf.Query.Response.Select.getDefaultInstance();
             case 1:
               return temperance.protobuf.Query.Response.Delete.getDefaultInstance();
             default:
@@ -1723,10 +1723,10 @@ public final class Query {
       };
     }
     
-    public abstract void get(
+    public abstract void select(
         com.google.protobuf.RpcController controller,
-        temperance.protobuf.Query.Request.Get request,
-        com.google.protobuf.RpcCallback<temperance.protobuf.Query.Response.Get> done);
+        temperance.protobuf.Query.Request.Select request,
+        com.google.protobuf.RpcCallback<temperance.protobuf.Query.Response.Select> done);
     
     public abstract void delete(
         com.google.protobuf.RpcController controller,
@@ -1756,8 +1756,8 @@ public final class Query {
       }
       switch(method.getIndex()) {
         case 0:
-          this.get(controller, (temperance.protobuf.Query.Request.Get)request,
-            com.google.protobuf.RpcUtil.<temperance.protobuf.Query.Response.Get>specializeCallback(
+          this.select(controller, (temperance.protobuf.Query.Request.Select)request,
+            com.google.protobuf.RpcUtil.<temperance.protobuf.Query.Response.Select>specializeCallback(
               done));
           return;
         case 1:
@@ -1780,7 +1780,7 @@ public final class Query {
       }
       switch(method.getIndex()) {
         case 0:
-          return temperance.protobuf.Query.Request.Get.getDefaultInstance();
+          return temperance.protobuf.Query.Request.Select.getDefaultInstance();
         case 1:
           return temperance.protobuf.Query.Request.Delete.getDefaultInstance();
         default:
@@ -1798,7 +1798,7 @@ public final class Query {
       }
       switch(method.getIndex()) {
         case 0:
-          return temperance.protobuf.Query.Response.Get.getDefaultInstance();
+          return temperance.protobuf.Query.Response.Select.getDefaultInstance();
         case 1:
           return temperance.protobuf.Query.Response.Delete.getDefaultInstance();
         default:
@@ -1822,19 +1822,19 @@ public final class Query {
         return channel;
       }
       
-      public  void get(
+      public  void select(
           com.google.protobuf.RpcController controller,
-          temperance.protobuf.Query.Request.Get request,
-          com.google.protobuf.RpcCallback<temperance.protobuf.Query.Response.Get> done) {
+          temperance.protobuf.Query.Request.Select request,
+          com.google.protobuf.RpcCallback<temperance.protobuf.Query.Response.Select> done) {
         channel.callMethod(
           getDescriptor().getMethods().get(0),
           controller,
           request,
-          temperance.protobuf.Query.Response.Get.getDefaultInstance(),
+          temperance.protobuf.Query.Response.Select.getDefaultInstance(),
           com.google.protobuf.RpcUtil.generalizeCallback(
             done,
-            temperance.protobuf.Query.Response.Get.class,
-            temperance.protobuf.Query.Response.Get.getDefaultInstance()));
+            temperance.protobuf.Query.Response.Select.class,
+            temperance.protobuf.Query.Response.Select.getDefaultInstance()));
       }
       
       public  void delete(
@@ -1859,9 +1859,9 @@ public final class Query {
     }
     
     public interface BlockingInterface {
-      public temperance.protobuf.Query.Response.Get get(
+      public temperance.protobuf.Query.Response.Select select(
           com.google.protobuf.RpcController controller,
-          temperance.protobuf.Query.Request.Get request)
+          temperance.protobuf.Query.Request.Select request)
           throws com.google.protobuf.ServiceException;
       
       public temperance.protobuf.Query.Response.Delete delete(
@@ -1877,15 +1877,15 @@ public final class Query {
       
       private final com.google.protobuf.BlockingRpcChannel channel;
       
-      public temperance.protobuf.Query.Response.Get get(
+      public temperance.protobuf.Query.Response.Select select(
           com.google.protobuf.RpcController controller,
-          temperance.protobuf.Query.Request.Get request)
+          temperance.protobuf.Query.Request.Select request)
           throws com.google.protobuf.ServiceException {
-        return (temperance.protobuf.Query.Response.Get) channel.callBlockingMethod(
+        return (temperance.protobuf.Query.Response.Select) channel.callBlockingMethod(
           getDescriptor().getMethods().get(0),
           controller,
           request,
-          temperance.protobuf.Query.Response.Get.getDefaultInstance());
+          temperance.protobuf.Query.Response.Select.getDefaultInstance());
       }
       
       
@@ -1909,10 +1909,10 @@ public final class Query {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_temperance_protobuf_Request_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_temperance_protobuf_Request_Get_descriptor;
+    internal_static_temperance_protobuf_Request_Select_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_temperance_protobuf_Request_Get_fieldAccessorTable;
+      internal_static_temperance_protobuf_Request_Select_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_temperance_protobuf_Request_Delete_descriptor;
   private static
@@ -1924,10 +1924,10 @@ public final class Query {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_temperance_protobuf_Response_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_temperance_protobuf_Response_Get_descriptor;
+    internal_static_temperance_protobuf_Response_Select_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_temperance_protobuf_Response_Get_fieldAccessorTable;
+      internal_static_temperance_protobuf_Response_Select_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_temperance_protobuf_Response_Delete_descriptor;
   private static
@@ -1942,15 +1942,15 @@ public final class Query {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\013Query.proto\022\023temperance.protobuf\"8\n\007Re" +
-      "quest\032\024\n\003Get\022\r\n\005query\030\001 \002(\t\032\027\n\006Delete\022\r\n" +
-      "\005query\030\001 \002(\t\";\n\010Response\032\025\n\003Get\022\016\n\006value" +
-      "s\030\001 \003(\t\032\030\n\006Delete\022\016\n\006values\030\001 \003(\t2\257\001\n\014Qu" +
-      "eryService\022J\n\003get\022 .temperance.protobuf." +
-      "Request.Get\032!.temperance.protobuf.Respon" +
-      "se.Get\022S\n\006delete\022#.temperance.protobuf.R" +
-      "equest.Delete\032$.temperance.protobuf.Resp" +
-      "onse.DeleteB\002H\001"
+      "\n\013Query.proto\022\023temperance.protobuf\";\n\007Re" +
+      "quest\032\027\n\006Select\022\r\n\005query\030\001 \002(\t\032\027\n\006Delete" +
+      "\022\r\n\005query\030\001 \002(\t\">\n\010Response\032\030\n\006Select\022\016\n" +
+      "\006values\030\001 \003(\t\032\030\n\006Delete\022\016\n\006values\030\001 \003(\t2" +
+      "\270\001\n\014QueryService\022S\n\006select\022#.temperance." +
+      "protobuf.Request.Select\032$.temperance.pro" +
+      "tobuf.Response.Select\022S\n\006delete\022#.temper" +
+      "ance.protobuf.Request.Delete\032$.temperanc" +
+      "e.protobuf.Response.DeleteB\002H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1965,14 +1965,14 @@ public final class Query {
               new java.lang.String[] { },
               temperance.protobuf.Query.Request.class,
               temperance.protobuf.Query.Request.Builder.class);
-          internal_static_temperance_protobuf_Request_Get_descriptor =
+          internal_static_temperance_protobuf_Request_Select_descriptor =
             internal_static_temperance_protobuf_Request_descriptor.getNestedTypes().get(0);
-          internal_static_temperance_protobuf_Request_Get_fieldAccessorTable = new
+          internal_static_temperance_protobuf_Request_Select_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_temperance_protobuf_Request_Get_descriptor,
+              internal_static_temperance_protobuf_Request_Select_descriptor,
               new java.lang.String[] { "Query", },
-              temperance.protobuf.Query.Request.Get.class,
-              temperance.protobuf.Query.Request.Get.Builder.class);
+              temperance.protobuf.Query.Request.Select.class,
+              temperance.protobuf.Query.Request.Select.Builder.class);
           internal_static_temperance_protobuf_Request_Delete_descriptor =
             internal_static_temperance_protobuf_Request_descriptor.getNestedTypes().get(1);
           internal_static_temperance_protobuf_Request_Delete_fieldAccessorTable = new
@@ -1989,14 +1989,14 @@ public final class Query {
               new java.lang.String[] { },
               temperance.protobuf.Query.Response.class,
               temperance.protobuf.Query.Response.Builder.class);
-          internal_static_temperance_protobuf_Response_Get_descriptor =
+          internal_static_temperance_protobuf_Response_Select_descriptor =
             internal_static_temperance_protobuf_Response_descriptor.getNestedTypes().get(0);
-          internal_static_temperance_protobuf_Response_Get_fieldAccessorTable = new
+          internal_static_temperance_protobuf_Response_Select_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_temperance_protobuf_Response_Get_descriptor,
+              internal_static_temperance_protobuf_Response_Select_descriptor,
               new java.lang.String[] { "Values", },
-              temperance.protobuf.Query.Response.Get.class,
-              temperance.protobuf.Query.Response.Get.Builder.class);
+              temperance.protobuf.Query.Response.Select.class,
+              temperance.protobuf.Query.Response.Select.Builder.class);
           internal_static_temperance_protobuf_Response_Delete_descriptor =
             internal_static_temperance_protobuf_Response_descriptor.getNestedTypes().get(1);
           internal_static_temperance_protobuf_Response_Delete_fieldAccessorTable = new

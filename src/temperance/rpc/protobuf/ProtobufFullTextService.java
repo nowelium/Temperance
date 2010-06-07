@@ -1,5 +1,6 @@
 package temperance.rpc.protobuf;
 
+import temperance.exception.RpcException;
 import temperance.protobuf.FullText.FullTextService;
 import temperance.protobuf.FullText.Request;
 import temperance.protobuf.FullText.Response;
@@ -28,32 +29,40 @@ public class ProtobufFullTextService implements FullTextService.BlockingInterfac
         throw new RuntimeException("unkown parser:" + parser);
     }
 
-    public Response.Get search(RpcController controller, Request.Get get) throws ServiceException {
-        RpcFullText.Request.Search request = new RpcFullText.Request.Search();
+    public Response.Search search(RpcController controller, Request.Search get) throws ServiceException {
+        RpcFullText.Request.Search request = RpcFullText.Request.Search.newInstance();
         request.key = get.getKey();
         request.str = get.getStr();
         request.parser = convert(get.getParser());
         
-        RpcFullText.Response.Search response = rpc.search(request);
-        
-        Response.Get.Builder builder = Response.Get.newBuilder();
-        builder.addAllValues(response.values);
-        return builder.build();
+        try {
+            RpcFullText.Response.Search response = rpc.search(request);
+            
+            Response.Search.Builder builder = Response.Search.newBuilder();
+            builder.addAllValues(response.values);
+            return builder.build();
+        } catch(RpcException e){
+            throw new ServiceException(e.getMessage());
+        }
     }
 
     public Response.Set set(RpcController controller, Request.Set set) throws ServiceException {
-        RpcFullText.Request.Set request = new RpcFullText.Request.Set();
+        RpcFullText.Request.Set request = RpcFullText.Request.Set.newInstance();
         request.key = set.getKey();
         request.str = set.getStr();
         request.value = set.getValue();
         request.expire = set.getExpire();
         request.parser = convert(set.getParser());
         
-        RpcFullText.Response.Set response = rpc.set(request);
-        
-        Response.Set.Builder builder = Response.Set.newBuilder();
-        builder.setSucceed(response.succeed);
-        return builder.build();
+        try {
+            RpcFullText.Response.Set response = rpc.set(request);
+            
+            Response.Set.Builder builder = Response.Set.newBuilder();
+            builder.setSucceed(response.succeed);
+            return builder.build();
+        } catch(RpcException e){
+            throw new ServiceException(e.getMessage());
+        }
     }
 
 }

@@ -26,12 +26,12 @@ $service = new Temperance_FullTextService('localhost', 17001);
 
 $service = new Temperance_QueryService('localhost', 17001);
 
-$getParam = new Temperance_Query_Request_Get;
+$getParam = new Temperance_Query_Request_Select;
 $getParam->query = 'FROM hoge IN GRAM("寒天などを食べた")';
-$result = $service->get($getParam);
+$result = $service->select($getParam);
 var_dump($result->values);
 
-$getParam = new Temperance_Query_Request_Get;
+$getParam = new Temperance_Query_Request_Select;
 $getParam->query = 'FROM hoge IN GRAM("運動会は雨天決行です")';
-$result = $service->get($getParam);
+$result = $service->select($getParam);
 var_dump($result->values);

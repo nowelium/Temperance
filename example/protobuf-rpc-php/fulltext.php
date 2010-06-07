@@ -43,7 +43,7 @@ $service = new Temperance_FullTextService('localhost', 17001);
 }
 
 echo 'searching: 本日', PHP_EOL;
-$getParam = new Temperance_FullText_Request_Get;
+$getParam = new Temperance_FullText_Request_Search;
 $getParam->key = 'hoge';
 $getParam->str = '本日';
 $getParam->parser = Temperance_FullText_Request_Parser::MECAB;
@@ -51,7 +51,7 @@ $response = $service->search($getParam);
 var_dump($response->values);
 
 echo 'searching: 昨日', PHP_EOL;
-$getParam = new Temperance_FullText_Request_Get;
+$getParam = new Temperance_FullText_Request_Search;
 $getParam->key = 'hoge';
 $getParam->str = '昨日';
 $getParam->parser = Temperance_FullText_Request_Parser::MECAB;

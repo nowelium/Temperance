@@ -13,7 +13,7 @@ import libmemcached.wrapper.MemcachedStorage;
 import libmemcached.wrapper.SimpleResult;
 import libmemcached.wrapper.type.ReturnType;
 import temperance.exception.MemcachedOperationRuntimeException;
-import temperance.memcached.Pool;
+import temperance.memcached.ConnectionPool;
 import temperance.util.Lists;
 import temperance.util.SoftReferenceMap;
 
@@ -36,9 +36,9 @@ public class MemcachedList {
     // TODO: hardcode, runtime parameter
     protected static final long LOCK_TIMEOUT = TimeUnit.SECONDS.toMillis(1);
     
-    protected final Pool pool;
+    protected final ConnectionPool pool;
     
-    public MemcachedList(Pool pool){
+    public MemcachedList(ConnectionPool pool){
         this.pool = pool;
     }
     

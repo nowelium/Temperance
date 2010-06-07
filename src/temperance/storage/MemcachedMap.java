@@ -2,15 +2,15 @@ package temperance.storage;
 
 import libmemcached.exception.LibMemcachedException;
 import libmemcached.wrapper.MemcachedClient;
-import temperance.memcached.Pool;
+import temperance.memcached.ConnectionPool;
 
 public class MemcachedMap {
     
     protected static final int flag = 0;
 
-    protected final Pool pool;
+    protected final ConnectionPool pool;
     
-    public MemcachedMap(Pool pool){
+    public MemcachedMap(ConnectionPool pool){
         this.pool = pool;
     }
     

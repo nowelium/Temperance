@@ -29,13 +29,13 @@ while(true){
     $elapsed = microtime(true);
 
     $service = new Temperance_QueryService('localhost', 17001);
-    $getParam = new Temperance_Query_Request_Get;
+    $getParam = new Temperance_Query_Request_Select;
     $getParam->query = 'FROM hoge IN MECAB("本日")';
-    $result = $service->get($getParam);
+    $result = $service->select($getParam);
 
-    $getParam = new Temperance_Query_Request_Get;
+    $getParam = new Temperance_Query_Request_Select;
     $getParam->query = 'FROM hoge NOT MECAB("昨日")';
-    $result = $service->get($getParam);
+    $result = $service->select($getParam);
 
     $diff = microtime(true) - $elapsed;
     $total[] = $diff;

@@ -1,28 +1,18 @@
 package temperance.rpc;
 
-import java.util.List;
-
 import temperance.exception.RpcException;
-import temperance.util.Lists;
 
-public interface RpcFullText {
+public interface RpcMap {
     
     public Response.Set set(Request.Set request) throws RpcException;
     
-    public Response.Search search(Request.Search request) throws RpcException;
+    public Response.Get get(Request.Get request) throws RpcException;
     
     public static abstract class Request {
-        public static enum Parser {
-            MECAB,
-            BIGRAM,
-            PREFIX
-        }
         public static class Set {
             public String key;
-            public String str;
             public String value;
             public int expire = 86400;
-            public Parser parser = Parser.MECAB;
             
             private Set(){
                 // nop
@@ -31,16 +21,14 @@ public interface RpcFullText {
                 return new Set();
             }
         }
-        public static class Search {
+        public static class Get {
             public String key;
-            public String str;
-            public Parser parser = Parser.MECAB;
             
-            private Search(){
+            private Get(){
                 // nop
             }
-            public static Search newInstance(){
-                return new Search();
+            public static Get newInstance(){
+                return new Get();
             }
         }
     }
@@ -56,14 +44,14 @@ public interface RpcFullText {
                 return new Set();
             }
         }
-        public static class Search {
-            public List<String> values = Lists.newArrayList();
+        public static class Get {
+            public String value;
             
-            private Search(){
+            private Get(){
                 // nop
             }
-            public static Search newInstance(){
-                return new Search();
+            public static Get newInstance(){
+                return new Get();
             }
         }
     }

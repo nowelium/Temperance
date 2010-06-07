@@ -5,7 +5,7 @@ import java.util.List;
 import temperance.exception.RpcException;
 import temperance.util.Lists;
 
-public interface RpcList {
+public interface RpcGeoPoint {
 
     public Response.Add add(Request.Add request) throws RpcException;
     
@@ -13,9 +13,22 @@ public interface RpcList {
     
     public Response.Count count(Request.Count request) throws RpcException;
     
+    public Response.Search search(Request.Search request) throws RpcException;
+    
     public static abstract class Request {
+        public static class Point {
+            public double latitude;
+            public double longitude;
+            
+            private Point(){
+                // nop
+            }
+            public static Point newInstance(){
+                return new Point();
+            }
+        }
         public static class Add {
-            public String key;
+            public Point point;
             public String value;
             public int expire = 86400;
             
@@ -27,7 +40,7 @@ public interface RpcList {
             }
         }
         public static class Get {
-            public String key;
+            public Point point;
             public long offset = 0;
             public long limit = 1000;
             
@@ -39,7 +52,7 @@ public interface RpcList {
             }
         }
         public static class Count {
-            public String key;
+            public Point point;
             
             private Count(){
                 // nop
@@ -48,7 +61,19 @@ public interface RpcList {
                 return new Count();
             }
         }
+        public static class Search {
+            public Point point;
+            public short precision;
+            
+            private Search(){
+                // nop
+            }
+            public static Search newInstance(){
+                return new Search();
+            }
+        }
     }
+    
     public static abstract class Response {
         public static class Add {
             public boolean succeed;
@@ -78,6 +103,16 @@ public interface RpcList {
             }
             public static Count newInstance(){
                 return new Count();
+            }
+        }
+        public static class Search {
+            public List<String> values = Lists.newArrayList();
+            
+            private Search(){
+                // nop
+            }
+            public static Search newInstance(){
+                return new Search();
             }
         }
     }

@@ -1,4 +1,4 @@
-package temperance.handler;
+package temperance.rpc.impl;
 
 import java.util.Collections;
 import java.util.List;
@@ -6,15 +6,13 @@ import java.util.List;
 import org.chasen.mecab.wrapper.Tagger;
 
 import temperance.exception.ExecutionException;
+import temperance.exception.RpcException;
 import temperance.ft.MecabNodeFilter;
 import temperance.function.FunctionContext;
 import temperance.function.FunctionFactory;
 import temperance.function.InternalFunction;
 import temperance.hash.HashFunction;
-import temperance.memcached.Pool;
-import temperance.protobuf.Query.QueryService;
-import temperance.protobuf.Query.Request;
-import temperance.protobuf.Query.Response;
+import temperance.memcached.ConnectionPool;
 import temperance.ql.FunctionType;
 import temperance.ql.MengeType;
 import temperance.ql.QueryParser;
@@ -27,12 +25,11 @@ import temperance.ql.node.KeyNode;
 import temperance.ql.node.MengeNode;
 import temperance.ql.node.ParameterNode;
 import temperance.ql.node.Statement;
+import temperance.rpc.Context;
+import temperance.rpc.RpcQuery;
 import temperance.util.ListUtils;
 
-import com.google.protobuf.RpcController;
-import com.google.protobuf.ServiceException;
-
-public class QueryServiceHandler implements QueryService.BlockingInterface {
+public class RpcQueryImpl implements RpcQuery {
 
     protected final QueryParser parser = new QueryParser();
     
@@ -44,9 +41,9 @@ public class QueryServiceHandler implements QueryService.BlockingInterface {
 
     protected final Tagger tagger;
     
-    protected final Pool pool;
+    protected final ConnectionPool pool;
     
-    public QueryServiceHandler(Context context, Pool pool){
+    public RpcQueryImpl(Context context, ConnectionPool pool){
         this.context = context;
         this.hashFunction = context.getFullTextHashFunction();
         this.nodeFilter = context.getNodeFilter();
@@ -54,11 +51,12 @@ public class QueryServiceHandler implements QueryService.BlockingInterface {
         this.pool = pool;
     }
     
-    public Response.Get get(RpcController controller, Request.Get request) throws ServiceException {
-        final String query = request.getQuery();
-        if("".equals(query)){
-            throw new ServiceException("query was empty");
-        }
+    public Response.Delete delete(Request.Delete request) throws RpcException {
+        throw new RpcException("not yet implemented");
+    }
+
+    public Response.Select select(Request.Select request) throws RpcException {
+        final String query = request.query;
         
         try {
             FunctionContext ctx = new FunctionContext();
@@ -72,14 +70,12 @@ public class QueryServiceHandler implements QueryService.BlockingInterface {
             Statement stmt = parser.parse(query);
             List<String> results = stmt.accept(visitor, factory);
             
-            return Response.Get.newBuilder().addAllValues(results).build();
+            Response.Select response = Response.Select.newInstance();
+            response.values = results;
+            return response;
         } catch(ParseException e){
-            throw new ServiceException(e.getMessage());
+            throw new RpcException(e.getMessage());
         }
-    }
-    
-    public Response.Delete delete(RpcController controller, Request.Delete request) throws ServiceException {
-        throw new ServiceException("not yet implemented");
     }
     
     protected static enum Behavior {
@@ -205,5 +201,5 @@ public class QueryServiceHandler implements QueryService.BlockingInterface {
             }
         }
     }
-    
+
 }

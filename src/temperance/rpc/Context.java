@@ -1,4 +1,4 @@
-package temperance.handler;
+package temperance.rpc;
 
 import temperance.ft.MecabNodeFilter;
 import temperance.hash.HashFunction;

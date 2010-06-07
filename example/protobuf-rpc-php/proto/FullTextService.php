@@ -29,7 +29,7 @@ class Temperance_FullText_Request_Set extends PhpBuf_Message_Abstract {
     }
 }
 
-class Temperance_FullText_Request_Get extends PhpBuf_Message_Abstract {
+class Temperance_FullText_Request_Search extends PhpBuf_Message_Abstract {
     public function __construct(){
         $this->setField('key', PhpBuf_Type::STRING, PhpBuf_Rule::REQUIRED, 1);
         $this->setField('str', PhpBuf_Type::STRING, PhpBuf_Rule::REQUIRED, 2);
@@ -48,7 +48,7 @@ class Temperance_FullText_Response_Set extends PhpBuf_Message_Abstract {
         return __CLASS__;
     }
 }
-class Temperance_FullText_Response_Get extends PhpBuf_Message_Abstract {
+class Temperance_FullText_Response_Search extends PhpBuf_Message_Abstract {
     public function __construct(){
         $this->setField('values', PhpBuf_Type::STRING, PhpBuf_Rule::REPEATED, 1);
     }
@@ -62,6 +62,6 @@ class Temperance_FullTextService extends PhpBuf_RPC_Socket_Service_Client {
         parent::__construct($host, $port);
         $this->setServiceFullQualifiedName('temperance.protobuf.FullTextService');
         $this->registerMethodResponderClass('set', Temperance_FullText_Response_Set::name());
-        $this->registerMethodResponderClass('search', Temperance_FullText_Response_Get::name());
+        $this->registerMethodResponderClass('search', Temperance_FullText_Response_Search::name());
     }
 }

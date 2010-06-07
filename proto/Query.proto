@@ -3,7 +3,7 @@ package temperance.protobuf;
 option optimize_for = SPEED;
 
 message Request {
-    message Get {
+    message Select {
         required string query = 1;
     }
     message Delete {
@@ -11,7 +11,7 @@ message Request {
     }
 }
 message Response {
-    message Get {
+    message Select {
         repeated string values = 1;
     }
     message Delete {
@@ -20,6 +20,6 @@ message Response {
 }
 
 service QueryService {
-    rpc get(Request.Get) returns(Response.Get);
+    rpc select(Request.Select) returns(Response.Select);
     rpc delete(Request.Delete) returns(Response.Delete);
 }
