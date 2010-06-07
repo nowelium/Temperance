@@ -4,13 +4,10 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.TimeUnit;
 
-import libmemcached.exception.LibMemcachedException;
-import libmemcached.exception.MaximumPoolException;
 import libmemcached.wrapper.MemcachedBehavior;
 import libmemcached.wrapper.MemcachedClient;
-import libmemcached.wrapper.MemcachedPool;
 import libmemcached.wrapper.type.BehaviorType;
 import libmemcached.wrapper.type.DistributionType;
 import temperance.lock.impl.CountDownLock;
@@ -24,15 +21,13 @@ public class ConnectionPool {
     
     protected final int maxPoolSize;
     
-    protected final AtomicReference<MemcachedPool> refPool = new AtomicReference<MemcachedPool>();
-    
     protected final MemcachedClient rootClient;
     
+    protected final ExecutorService executor = Executors.newCachedThreadPool();
+    
+    protected final BlockingQueue<MemcachedClient> pool;
+    
     protected final CountDownLock lock;
-    
-    protected final ExecutorService executor = Executors.newFixedThreadPool(2);
-    
-    protected final BlockingQueue<MemcachedClient> releaseQueue = new LinkedBlockingQueue<MemcachedClient>();
     
     public ConnectionPool(Context context){
         this.context = context;
@@ -41,9 +36,11 @@ public class ConnectionPool {
             maxPoolSize = INITIAL_POOL_SIZE;
         }
         this.maxPoolSize = maxPoolSize;
+        this.pool = new LinkedBlockingQueue<MemcachedClient>(maxPoolSize);
         
         MemcachedClient client = new MemcachedClient();
         client.getServerList().parse(context.getMemcached()).push();
+        
         MemcachedBehavior behavior = client.getBehavior();
         behavior.setDistribution(DistributionType.CONSISTENT);
         behavior.set(BehaviorType.SUPPORT_CAS, true);
@@ -55,40 +52,26 @@ public class ConnectionPool {
         this.lock = new CountDownLock((int) Math.round(maxPoolSize * 0.9));
     }
     
-    protected void resetPool(){
-        MemcachedPool pool = rootClient.createPool(INITIAL_POOL_SIZE, maxPoolSize);
-        pool.setBehavior(BehaviorType.DISTRIBUTION, DistributionType.CONSISTENT);
-        pool.setBehavior(BehaviorType.SUPPORT_CAS, true);
-        pool.setBehavior(BehaviorType.BUFFER_REQUESTS, true);
-        pool.setBehavior(BehaviorType.TCP_KEEPALIVE, true);
-        //pool.setBehavior(BehaviorType.TCP_NODELAY, true);
-        this.refPool.set(pool);
-    }
-    
     public void init(){
-        resetPool();
+        for(int i = 0; i < INITIAL_POOL_SIZE; ++i){
+            pool.offer(new MemcachedClient(rootClient));
+        }
         
         executor.execute(new Runnable(){
             public void run(){
                 try {
-                    // infinite rendezvous
+                    // infinite loop
                     while(true){
                         // rendezvous
                         lock.await();
                         
-                        resetPool();
-                    }
-                } catch(InterruptedException e){
-                    //
-                }
-            }
-        });
-        executor.execute(new Runnable(){
-            public void run(){
-                try {
-                    while(true){
-                        MemcachedClient client = releaseQueue.take();
-                        client.quit();
+                        int capacity = pool.remainingCapacity();
+                        int count = capacity - INITIAL_POOL_SIZE;
+                        for(int i = 0; i < count; ++i){
+                            if(!pool.offer(new MemcachedClient(rootClient))){
+                                break;
+                            }
+                        }
                     }
                 } catch(InterruptedException e){
                     //
@@ -108,23 +91,20 @@ public class ConnectionPool {
         try {
             lock.countDown();
             
-            return refPool.get().pop(false);
-        } catch(MaximumPoolException e){
-            // temporary connection
-            return rootClient;
-        } catch(LibMemcachedException e){
+            MemcachedClient connection = pool.poll(10, TimeUnit.MILLISECONDS);
+            if(null != connection){
+                return connection;
+            }
+            return pool.take();
+        } catch(InterruptedException e){
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
     
     public void release(MemcachedClient client){
-        if(client == rootClient){
-            // non pool release: root client
-            return;
-        }
-        
-        // TODO: reuse pool
-        releaseQueue.offer(client);
+        client.quit();
+        pool.offer(new MemcachedClient(client));
     }
 
 }
