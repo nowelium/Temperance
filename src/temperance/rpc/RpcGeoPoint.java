@@ -5,7 +5,7 @@ import java.util.List;
 import temperance.exception.RpcException;
 import temperance.util.Lists;
 
-public interface RpcGeoPoint {
+public interface RpcGeoPoint extends Rpc {
 
     public Response.Add add(Request.Add request) throws RpcException;
     

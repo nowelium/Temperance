@@ -14,6 +14,7 @@ import temperance.ft.MecabNodeFilter;
 import temperance.hash.Hash;
 import temperance.hash.HashFunction;
 import temperance.rpc.Context;
+import temperance.server.MsgPackServer;
 import temperance.server.Server;
 import temperance.server.ProtobufServer;
 
@@ -39,6 +40,10 @@ public class StartStop {
             if(cli.hasOption("ft_hash_sha1")){
                 fullTextHashFunction = Hash.SHA1;
             }
+            ServerFactory factory = ServerFactory.Protobuf;
+            if(cli.hasOption("rpc_msgpack")){
+                factory = ServerFactory.Msgpack;
+            }
             
             String port = cli.getOptionValue("p", "17001");
             boolean daemonize = cli.hasOption("daemonize");
@@ -50,7 +55,7 @@ public class StartStop {
             ctx.setFullTextHashFunction(fullTextHashFunction);
             ctx.setNodeFilter(nodeFilter);
             
-            Server server = createServer(ctx, daemonize, Integer.parseInt(port));
+            Server server = factory.createServer(ctx, daemonize, Integer.parseInt(port));
             server.start();
         } catch (ParseException e) {
             HelpFormatter formatter = new HelpFormatter();
@@ -59,14 +64,29 @@ public class StartStop {
         }
     }
     
-    protected void stop(){
-        Context nullobj = new Context();
-        Server server = createServer(nullobj, false, 0);
-        server.shutdown();
+    protected void stop(String...args){
+        Options options = new Options();
+        options.addOptionGroup(rpcServer());
+        start(options, new GnuParser(), args);
     }
     
-    protected Server createServer(Context ctx, boolean daemonize, int port) {
-        return new ProtobufServer(ctx, daemonize, port);
+    protected void stop(Options options, Parser parser, String...args){
+        try {
+            CommandLine cli = parser.parse(options, args, true);
+
+            ServerFactory factory = ServerFactory.Protobuf;
+            if(cli.hasOption("rpc_msgpack")){
+                factory = ServerFactory.Msgpack;
+            }
+        
+            Context nullobj = new Context();
+            Server server = factory.createServer(nullobj, false, 0);
+            server.shutdown();
+        } catch(ParseException e){
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp(StartStop.class.getSimpleName(), options);
+            System.exit(0);
+        }
     }
     
     protected static Options createCliOptions(){
@@ -82,11 +102,14 @@ public class StartStop {
         OptionGroup mecabNodeFilter = new OptionGroup();
         mecabNodeFilter.addOption(new Option("mecab_node_filter_none", false, "none filter"));
         mecabNodeFilter.addOption(new Option("mecab_node_filter_nouns", false, "nouns node filter(default)"));
+        mecabNodeFilter.setRequired(false);
         
         OptionGroup hashFunction = new OptionGroup();
         hashFunction.addOption(new Option("ft_hash_md5", false, "fulltext hash function MD5"));
         hashFunction.addOption(new Option("ft_hash_sha1", false, "fulltext hash function SHA1"));
         hashFunction.setRequired(false);
+
+        OptionGroup rpcServer = rpcServer();
 
         Option port = new Option("p", "port", true, "server port");
         port.setRequired(false);
@@ -98,9 +121,34 @@ public class StartStop {
         options.addOption(memcached);
         options.addOption(memcachedPoolSize);
         options.addOption(mecabrc);
+        options.addOptionGroup(mecabNodeFilter);
         options.addOptionGroup(hashFunction);
+        options.addOptionGroup(rpcServer);
         options.addOption(port);
         options.addOption(daemonize);
         return options;
+    }
+    
+    protected static OptionGroup rpcServer(){
+        OptionGroup rpcServer = new OptionGroup();
+        rpcServer.addOption(new Option("rpc_protobuf", false, "protouf rpc(default)"));
+        rpcServer.addOption(new Option("rpc_msgpack", false, "msgpack rpc"));
+        rpcServer.setRequired(false);
+        return rpcServer;
+    }
+    
+    protected static enum ServerFactory {
+        Protobuf {
+            public Server createServer(Context ctx, boolean daemonize, int port){
+                return new ProtobufServer(ctx, daemonize, port);
+            }
+        },
+        Msgpack {
+            public Server createServer(Context ctx, boolean daemonize, int port){
+                return new MsgPackServer(ctx, daemonize, port);
+            }
+        },
+        ;
+        public abstract Server createServer(Context ctx, boolean daemonize, int port);
     }
 }

@@ -2,7 +2,7 @@ package temperance.rpc;
 
 import temperance.exception.RpcException;
 
-public interface RpcMap {
+public interface RpcMap extends Rpc {
     
     public Response.Set set(Request.Set request) throws RpcException;
     
@@ -10,9 +10,11 @@ public interface RpcMap {
     
     public static abstract class Request {
         public static class Set {
+            public static final int DEFAULT_EXPIRE = 86400;
+            
             public String key;
             public String value;
-            public int expire = 86400;
+            public int expire = DEFAULT_EXPIRE;
             
             private Set(){
                 // nop

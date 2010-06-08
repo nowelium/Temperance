@@ -5,7 +5,7 @@ import java.util.List;
 import temperance.exception.RpcException;
 import temperance.util.Lists;
 
-public interface RpcList {
+public interface RpcList extends Rpc {
 
     public Response.Add add(Request.Add request) throws RpcException;
     
@@ -15,9 +15,11 @@ public interface RpcList {
     
     public static abstract class Request {
         public static class Add {
+            public static final int DEFAULT_EXPIRE = 86400;
+            
             public String key;
             public String value;
-            public int expire = 86400;
+            public int expire = DEFAULT_EXPIRE;
             
             private Add(){
                 // nop
@@ -27,9 +29,12 @@ public interface RpcList {
             }
         }
         public static class Get {
+            public static final long DEFAULT_OFFSET = 0;
+            public static final long DEFAULT_LIMIT = 1000;
+            
             public String key;
-            public long offset = 0;
-            public long limit = 1000;
+            public long offset = DEFAULT_OFFSET;
+            public long limit = DEFAULT_LIMIT;
             
             private Get(){
                 // nop

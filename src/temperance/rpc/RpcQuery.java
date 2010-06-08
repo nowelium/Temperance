@@ -5,7 +5,7 @@ import java.util.List;
 import temperance.exception.RpcException;
 import temperance.util.Lists;
 
-public interface RpcQuery {
+public interface RpcQuery extends Rpc {
     
     public Response.Select select(Request.Select request) throws RpcException;
     

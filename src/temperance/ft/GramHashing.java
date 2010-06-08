@@ -30,7 +30,7 @@ public class GramHashing implements Hashing {
                 limit = i + 1;
             }
             String substr = str.substring(i, limit);
-            if(substr.length() < 1){
+            if(substr.length() < 2){
                 continue;
             }
             

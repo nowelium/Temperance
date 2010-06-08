@@ -5,7 +5,7 @@ import java.util.List;
 import temperance.exception.RpcException;
 import temperance.util.Lists;
 
-public interface RpcFullText {
+public interface RpcFullText extends Rpc {
     
     public Response.Set set(Request.Set request) throws RpcException;
     
@@ -13,15 +13,36 @@ public interface RpcFullText {
     
     public static abstract class Request {
         public static enum Parser {
-            MECAB,
-            BIGRAM,
-            PREFIX
+            MECAB(0),
+            BIGRAM(1),
+            PREFIX(2),
+            ;
+            private final int value;
+            private Parser(int value){
+                this.value = value;
+            }
+            public int getValue(){
+                return value;
+            }
+            public static Parser get(int num){
+                switch(num){
+                case 0:
+                    return MECAB;
+                case 1:
+                    return BIGRAM;
+                case 2:
+                    return PREFIX;
+                }
+                throw new IllegalArgumentException("no such parser:" + num);
+            }
         }
         public static class Set {
+            public static final int DEFAULT_EXPIRE = 86400;
+            
             public String key;
             public String str;
             public String value;
-            public int expire = 86400;
+            public int expire = DEFAULT_EXPIRE;
             public Parser parser = Parser.MECAB;
             
             private Set(){

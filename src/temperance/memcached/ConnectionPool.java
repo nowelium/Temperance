@@ -10,6 +10,7 @@ import libmemcached.wrapper.MemcachedBehavior;
 import libmemcached.wrapper.MemcachedClient;
 import libmemcached.wrapper.type.BehaviorType;
 import libmemcached.wrapper.type.DistributionType;
+import libmemcached.wrapper.type.ReturnType;
 import temperance.lock.impl.CountDownLock;
 import temperance.rpc.Context;
 
@@ -52,9 +53,17 @@ public class ConnectionPool {
         this.lock = new CountDownLock((int) Math.round(maxPoolSize * 0.9));
     }
     
+    protected MemcachedClient clone(){
+        try {
+            return rootClient.clone();
+        } catch(CloneNotSupportedException e){
+            throw new RuntimeException(e);
+        }
+    }
+    
     public void init(){
         for(int i = 0; i < INITIAL_POOL_SIZE; ++i){
-            pool.offer(new MemcachedClient(rootClient));
+            pool.offer(clone());
         }
         
         executor.execute(new Runnable(){
@@ -68,7 +77,7 @@ public class ConnectionPool {
                         int capacity = pool.remainingCapacity();
                         int count = capacity - INITIAL_POOL_SIZE;
                         for(int i = 0; i < count; ++i){
-                            if(!pool.offer(new MemcachedClient(rootClient))){
+                            if(!pool.offer(rootClient)){
                                 break;
                             }
                         }
@@ -81,15 +90,25 @@ public class ConnectionPool {
         
         MemcachedClient client = get();
         try {
-            client.version();
+            ReturnType rt = client.version();
+            if(!ReturnType.SUCCESS.equals(rt)){
+                throw new RuntimeException("connection failure");
+            }
         } finally {
             release(client);
         }
     }
     
-    public MemcachedClient get(){
+    public synchronized MemcachedClient get(){
         try {
             lock.countDown();
+            
+            try {
+                // TODO: await when: libmemcached becomes segfault by excessive access
+                TimeUnit.MICROSECONDS.sleep(1250);
+            } catch(InterruptedException e){
+                // nop
+            }
             
             MemcachedClient connection = pool.poll(10, TimeUnit.MILLISECONDS);
             if(null != connection){
@@ -104,7 +123,7 @@ public class ConnectionPool {
     
     public void release(MemcachedClient client){
         client.quit();
-        pool.offer(new MemcachedClient(client));
+        pool.offer(clone());
     }
 
 }

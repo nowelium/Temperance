@@ -5,7 +5,7 @@ import java.util.List;
 import temperance.exception.RpcException;
 import temperance.util.Lists;
 
-public interface RpcMecab {
+public interface RpcMecab extends Rpc {
     
     public Response.Parse parse(Request.Parse request) throws RpcException;
     
