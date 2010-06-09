@@ -1,9 +1,10 @@
 package temperance.function;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import temperance.exception.ExecutionException;
+import temperance.exception.CommandExecutionException;
 import temperance.ft.Hashing;
 import temperance.memcached.FullTextCommand;
 import temperance.storage.MemcachedFullText;
@@ -34,23 +35,23 @@ public abstract class AbstractTaggerFunction implements InternalFunction {
     }
     
     protected class Delete implements InternalFunction.Command {
-        public List<String> and(String key, List<String> args) throws ExecutionException {
-            throw new ExecutionException("not yet implemented");
+        public List<String> and(String key, List<String> args) throws CommandExecutionException {
+            throw new CommandExecutionException("not yet implemented");
         }
 
-        public List<String> not(String key, List<String> args) throws ExecutionException {
-            throw new ExecutionException("not yet implemented");
+        public List<String> not(String key, List<String> args) throws CommandExecutionException {
+            throw new CommandExecutionException("not yet implemented");
         }
 
-        public List<String> or(String key, List<String> args) throws ExecutionException {
-            throw new ExecutionException("not yet implemented");
+        public List<String> or(String key, List<String> args) throws CommandExecutionException {
+            throw new CommandExecutionException("not yet implemented");
         }
     }
     
     protected class Select implements InternalFunction.Command {
-        public List<String> and(String key, List<String> args) throws ExecutionException {
+        public List<String> and(String key, List<String> args) throws CommandExecutionException {
             if(args.isEmpty()){
-                throw new ExecutionException("arguments was empty");
+                throw new CommandExecutionException("arguments was empty");
             }
             
             final String str = args.get(0);
@@ -66,17 +67,17 @@ public abstract class AbstractTaggerFunction implements InternalFunction {
                     returnValue.intersect(results);
                 }
                 
-                return returnValue;
+                return returnValue.getValues();
             } catch (InterruptedException e) {
-                throw new ExecutionException(e);
-            } catch (java.util.concurrent.ExecutionException e) {
-                throw new ExecutionException(e);
+                throw new CommandExecutionException(e);
+            } catch (ExecutionException e) {
+                throw new CommandExecutionException(e);
             }
         }
 
-        public List<String> not(String key, List<String> args) throws ExecutionException {
+        public List<String> not(String key, List<String> args) throws CommandExecutionException {
             if(args.isEmpty()){
-                throw new ExecutionException("arguments was empty");
+                throw new CommandExecutionException("arguments was empty");
             }
             
             final String str = args.get(0);
@@ -97,14 +98,14 @@ public abstract class AbstractTaggerFunction implements InternalFunction {
                 }
                 return returnValue;
             } catch (InterruptedException e) {
-                throw new ExecutionException(e);
-            } catch (java.util.concurrent.ExecutionException e) {
-                throw new ExecutionException(e);
+                throw new CommandExecutionException(e);
+            } catch (ExecutionException e) {
+                throw new CommandExecutionException(e);
             }
         }
 
-        public List<String> or(String key, List<String> args) throws ExecutionException {
-            throw new ExecutionException("not yet implemented");
+        public List<String> or(String key, List<String> args) throws CommandExecutionException {
+            throw new CommandExecutionException("not yet implemented");
         }
     }
     

@@ -1,9 +1,11 @@
 package temperance.function;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import libmemcached.exception.LibMemcachedException;
+import libmemcached.wrapper.type.BehaviorType;
 
 import org.chasen.mecab.wrapper.Tagger;
 import org.junit.After;
@@ -11,7 +13,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import temperance.exception.ExecutionException;
+import temperance.exception.CommandExecutionException;
 import temperance.ft.MecabHashing;
 import temperance.hash.Hash;
 import temperance.memcached.ConnectionPool;
@@ -34,6 +36,15 @@ public class DataFunctionTest {
         context.setMemcached("localhost:11211");
         context.setMemcachedPoolSize(10);
         context.setNodeFilter(MecabHashing.Filter.Nouns);
+        context.setPoolBehaviors(new HashMap<BehaviorType, Boolean>() {
+            private static final long serialVersionUID = 1L;
+            {
+                put(BehaviorType.SUPPORT_CAS, Boolean.TRUE);
+                put(BehaviorType.TCP_KEEPALIVE, Boolean.TRUE);
+                put(BehaviorType.TCP_NODELAY, Boolean.TRUE);
+                put(BehaviorType.BUFFER_REQUESTS, Boolean.FALSE);
+            }
+        });
         
         pool = new ConnectionPool(context);
         pool.init();
@@ -62,14 +73,14 @@ public class DataFunctionTest {
     }
     
     @Test
-    public void selectIn() throws ExecutionException {
+    public void selectIn() throws CommandExecutionException {
         DataFunction df = new DataFunction(ctx);
         List<String> result = df.createSelect().and("A", Arrays.asList("B"));
         Assert.assertEquals(result, Arrays.asList("4", "5", "6", "7"));
     }
     
     @Test
-    public void selectNot() throws ExecutionException, LibMemcachedException {
+    public void selectNot() throws CommandExecutionException, LibMemcachedException {
         DataFunction df = new DataFunction(ctx);
         List<String> result = df.createSelect().not("A", Arrays.asList("B"));
         Assert.assertEquals(result, Arrays.asList("1", "2", "3", "8", "9", "10"));

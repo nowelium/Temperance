@@ -1,5 +1,9 @@
 package temperance.rpc;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import libmemcached.wrapper.type.BehaviorType;
 import temperance.ft.MecabNodeFilter;
 import temperance.hash.HashFunction;
 
@@ -14,6 +18,8 @@ public class Context {
     private HashFunction fullTextHashFunction;
     
     private MecabNodeFilter nodeFilter;
+    
+    private Map<BehaviorType, Boolean> poolBehaviors = new HashMap<BehaviorType, Boolean>();
     
     public String getMemcached(){
         return memcached;
@@ -53,6 +59,14 @@ public class Context {
 
     public void setNodeFilter(MecabNodeFilter nodeFilter) {
         this.nodeFilter = nodeFilter;
+    }
+
+    public Map<BehaviorType, Boolean> getPoolBehaviors() {
+        return poolBehaviors;
+    }
+
+    public void setPoolBehaviors(Map<BehaviorType, Boolean> poolBehaviors) {
+        this.poolBehaviors = poolBehaviors;
     }
 
 }

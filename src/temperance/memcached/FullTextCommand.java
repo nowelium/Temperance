@@ -68,7 +68,7 @@ public class FullTextCommand implements Command {
         public List<String> call() throws Exception {
             final MemcachedFullText ft = new MemcachedFullText(pool);
             final List<String> returnValue = Lists.newArrayList();
-            long targetCount = ft.count(key, hash);
+            final long targetCount = ft.count(key, hash);
             for(long i = 0; i < targetCount; i += SPLIT){
                 List<String> results = ft.get(key, hash, i, SPLIT);
                 returnValue.addAll(results);

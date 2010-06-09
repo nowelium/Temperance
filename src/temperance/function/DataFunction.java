@@ -3,7 +3,7 @@ package temperance.function;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import temperance.exception.ExecutionException;
+import temperance.exception.CommandExecutionException;
 import temperance.memcached.ListCommand;
 
 public class DataFunction implements InternalFunction {
@@ -23,16 +23,16 @@ public class DataFunction implements InternalFunction {
     }
     
     protected class Delete implements InternalFunction.Command {
-        public List<String> and(String key, List<String> args) throws ExecutionException {
-            throw new ExecutionException("not yet implemented");
+        public List<String> and(String key, List<String> args) throws CommandExecutionException {
+            throw new CommandExecutionException("not yet implemented");
         }
 
-        public List<String> not(String key, List<String> args) throws ExecutionException {
-            throw new ExecutionException("not yet implemented");
+        public List<String> not(String key, List<String> args) throws CommandExecutionException {
+            throw new CommandExecutionException("not yet implemented");
         }
 
-        public List<String> or(String key, List<String> args) throws ExecutionException {
-            throw new ExecutionException("not yet implemented");
+        public List<String> or(String key, List<String> args) throws CommandExecutionException {
+            throw new CommandExecutionException("not yet implemented");
         }
     }
     
@@ -40,7 +40,7 @@ public class DataFunction implements InternalFunction {
         /**
          * DATA(1, 2, 3, 4, 5) in DATA(2, 3, 5) => results(2, 3, 5)
          */
-        public List<String> and(String key, List<String> args) throws ExecutionException {
+        public List<String> and(String key, List<String> args) throws CommandExecutionException {
             final ListCommand command = new ListCommand(context.getPool());
             
             final Future<List<String>> fromFuture = command.getAll(key);
@@ -56,16 +56,16 @@ public class DataFunction implements InternalFunction {
                 }
                 return returnValues;
             } catch (InterruptedException e) {
-                throw new ExecutionException(e);
+                throw new CommandExecutionException(e);
             } catch (java.util.concurrent.ExecutionException e) {
-                throw new ExecutionException(e);
+                throw new CommandExecutionException(e);
             }
         }
 
         /**
          * DATA(1, 2, 3, 4, 5) not DATA(2, 3, 5) => results(1, 4)
          */
-        public List<String> not(String key, List<String> args) throws ExecutionException {
+        public List<String> not(String key, List<String> args) throws CommandExecutionException {
             final ListCommand command = new ListCommand(context.getPool());
             
             final Future<List<String>> fromFuture = command.getAll(key);
@@ -81,16 +81,16 @@ public class DataFunction implements InternalFunction {
                 }
                 return returnValues;
             } catch (InterruptedException e) {
-                throw new ExecutionException(e);
+                throw new CommandExecutionException(e);
             } catch (java.util.concurrent.ExecutionException e) {
-                throw new ExecutionException(e);
+                throw new CommandExecutionException(e);
             }
         }
 
         /**
          * DATA(1, 2, 3, 4, 5) or DATA(4, 5, 6, 7) => result(1, 2, 3, 4, 5, 6, 7)
          */
-        public List<String> or(String key, List<String> args) throws ExecutionException {
+        public List<String> or(String key, List<String> args) throws CommandExecutionException {
             final ListCommand command = new ListCommand(context.getPool());
             
             final Future<List<String>> fromFuture = command.getAll(key);
@@ -103,9 +103,9 @@ public class DataFunction implements InternalFunction {
                 }
                 return returnValue;
             } catch (InterruptedException e) {
-                throw new ExecutionException(e);
+                throw new CommandExecutionException(e);
             } catch (java.util.concurrent.ExecutionException e) {
-                throw new ExecutionException(e);
+                throw new CommandExecutionException(e);
             }
         }
     }

@@ -1,10 +1,12 @@
 package temperance.function;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import libmemcached.exception.LibMemcachedException;
 import libmemcached.wrapper.MemcachedClient;
+import libmemcached.wrapper.type.BehaviorType;
 
 import org.chasen.mecab.wrapper.Tagger;
 import org.junit.After;
@@ -12,11 +14,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import temperance.exception.ExecutionException;
+import temperance.exception.CommandExecutionException;
 import temperance.ft.MecabHashing;
 import temperance.ft.MecabNodeFilter;
-import temperance.function.FunctionContext;
-import temperance.function.MecabFunction;
 import temperance.hash.Hash;
 import temperance.hash.HashFunction;
 import temperance.memcached.ConnectionPool;
@@ -50,9 +50,20 @@ public class MecabFunctionTest {
     
     public void setupPool(){
         Context c = new Context();
-        c.setMemcachedPoolSize(1);
+        c.setMemcachedPoolSize(10);
         c.setMemcached("localhost:11211");
+        c.setPoolBehaviors(new HashMap<BehaviorType, Boolean>() {
+            private static final long serialVersionUID = 1L;
+            {
+                put(BehaviorType.SUPPORT_CAS, Boolean.TRUE);
+                put(BehaviorType.TCP_KEEPALIVE, Boolean.TRUE);
+                put(BehaviorType.TCP_NODELAY, Boolean.TRUE);
+                put(BehaviorType.BUFFER_REQUESTS, Boolean.FALSE);
+            }
+        });
+        
         pool = new ConnectionPool(c);
+        pool.init();
     }
     
     public void setupData() throws LibMemcachedException {
@@ -64,7 +75,7 @@ public class MecabFunctionTest {
             List<Long> hashes = mecab.parse("本日は晴天");
             for(int i = 0; i < hashes.size(); ++i){
                 Long hash = hashes.get(i);
-                ft.add("test-key", hash, value, 10);
+                ft.add("test-key", hash, value, 600);
             }
         }
         {
@@ -72,7 +83,7 @@ public class MecabFunctionTest {
             List<Long> hashes = mecab.parse("本日は快晴");
             for(int i = 0; i < hashes.size(); ++i){
                 Long hash = hashes.get(i);
-                ft.add("test-key", hash, value, 10);
+                ft.add("test-key", hash, value, 600);
             }
         }
     }
@@ -90,17 +101,25 @@ public class MecabFunctionTest {
     }
 
     @Test
-    public void selectIn() throws ExecutionException {
+    public void selectIn() throws CommandExecutionException {
         MecabFunction function = new MecabFunction(ctx);
-        List<String> results = function.createSelect().and("test-key", Arrays.asList("本日"));
-        System.out.println(results);
-        Assert.assertEquals(results.size(), 2);
-        Assert.assertEquals(results.get(0), "test-value-a");
-        Assert.assertEquals(results.get(1), "test-value-b");
+        {
+            List<String> results = function.createSelect().and("test-key", Arrays.asList("本日"));
+            System.out.println(results);
+            Assert.assertEquals(results.size(), 2);
+            Assert.assertEquals(results.get(0), "test-value-a");
+            Assert.assertEquals(results.get(1), "test-value-b");
+        }
+        {
+            List<String> results = function.createSelect().and("test-key", Arrays.asList("晴天"));
+            System.out.println(results);
+            Assert.assertEquals(results.size(), 1);
+            Assert.assertEquals(results.get(0), "test-value-a");
+        }
     }
 
     @Test
-    public void selectIn_refine() throws ExecutionException {
+    public void selectIn_refine() throws CommandExecutionException {
         MecabFunction function = new MecabFunction(ctx);
         List<String> results = function.createSelect().and("test-key", Arrays.asList("本日 晴天"));
         Assert.assertEquals(results.size(), 1);
@@ -108,7 +127,7 @@ public class MecabFunctionTest {
     }
     
     @Test
-    public void selectIn_refine_mecab_tag() throws ExecutionException {
+    public void selectIn_refine_mecab_tag() throws CommandExecutionException {
         MecabFunction function = new MecabFunction(ctx);
         List<String> results = function.createSelect().and("test-key", Arrays.asList("本日は晴天なり"));
         Assert.assertEquals(results.size(), 1);

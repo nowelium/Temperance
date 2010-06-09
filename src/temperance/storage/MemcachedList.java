@@ -42,7 +42,7 @@ public class MemcachedList {
     }
     
     public long add(String key, String value, int expire) throws LibMemcachedException {
-        MemcachedClient client = pool.get();
+        final MemcachedClient client = pool.get();
         final long nextId = generateId(client, key);
         try {
             client.getStorage().set(indexKey(key, nextId), value, expire, DEFAULT_VALUE_FLAG);
@@ -85,7 +85,8 @@ public class MemcachedList {
             if(null == result){
                 return 0L;
             }
-            return Long.valueOf(result).longValue();
+            // result -> 0 are once value, see #generateId
+            return Long.valueOf(result).longValue() + 1;
         } finally {
             pool.release(client);
         }
@@ -95,7 +96,7 @@ public class MemcachedList {
         final MemcachedStorage storage = client.getStorage();
         final String incrementKey = incrementKey(key);
         
-        long begin = System.currentTimeMillis();
+        final long begin = System.currentTimeMillis();
         while(true){
             long diff = System.currentTimeMillis() - begin;
             if(LOCK_TIMEOUT < diff){
@@ -104,6 +105,7 @@ public class MemcachedList {
             
             MemcachedResult result = storage.gets(incrementKey);
             if(null == result){
+                // start value was 0
                 storage.set(incrementKey, "0", INCREMENT_VALUE_EXPIRE, INCREMENT_VALUE_FLAG);
                 return 0L;
             }

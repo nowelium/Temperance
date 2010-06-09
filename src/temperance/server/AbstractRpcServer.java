@@ -1,5 +1,6 @@
 package temperance.server;
 
+import temperance.exception.InitializationException;
 import temperance.memcached.ConnectionPool;
 import temperance.rpc.Context;
 import temperance.rpc.RpcFullText;
@@ -29,7 +30,13 @@ public abstract class AbstractRpcServer extends AbstractDaemon {
     
     @Override
     public final void init() {
-        pool.init();
+        try {
+            pool.init();
+        } catch(InitializationException e){
+            logError(e);
+            stop();
+            System.exit(1);
+        }
     }
     
     protected RpcFullText createRpcFullText(){

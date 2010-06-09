@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.chasen.mecab.wrapper.Tagger;
 
-import temperance.exception.ExecutionException;
+import temperance.exception.CommandExecutionException;
 import temperance.exception.RpcException;
 import temperance.ft.MecabNodeFilter;
 import temperance.function.FunctionContext;
@@ -177,7 +177,7 @@ public class RpcQueryImpl implements RpcQuery {
         public List<String> caseAnd(InternalFunction.Command command) {
             try {
                 return command.and(key, args);
-            } catch(ExecutionException e){
+            } catch(CommandExecutionException e){
                 e.printStackTrace();
                 return Collections.emptyList();
             }
@@ -186,7 +186,7 @@ public class RpcQueryImpl implements RpcQuery {
         public List<String> caseNot(InternalFunction.Command command) {
             try {
                 return command.not(key, args);
-            } catch(ExecutionException e){
+            } catch(CommandExecutionException e){
                 e.printStackTrace();
                 return Collections.emptyList();
             }
@@ -195,7 +195,7 @@ public class RpcQueryImpl implements RpcQuery {
         public List<String> caseOr(InternalFunction.Command command) {
             try {
                 return command.or(key, args);
-            } catch(ExecutionException e){
+            } catch(CommandExecutionException e){
                 e.printStackTrace();
                 return Collections.emptyList();
             }

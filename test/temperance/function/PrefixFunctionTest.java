@@ -1,17 +1,19 @@
 package temperance.function;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import libmemcached.exception.LibMemcachedException;
 import libmemcached.wrapper.MemcachedClient;
+import libmemcached.wrapper.type.BehaviorType;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import temperance.exception.ExecutionException;
+import temperance.exception.CommandExecutionException;
 import temperance.ft.PrefixHashing;
 import temperance.function.FunctionContext;
 import temperance.function.PrefixFunction;
@@ -45,7 +47,18 @@ public class PrefixFunctionTest {
         Context c = new Context();
         c.setMemcachedPoolSize(1);
         c.setMemcached("localhost:11211");
+        c.setPoolBehaviors(new HashMap<BehaviorType, Boolean>() {
+            private static final long serialVersionUID = 1L;
+            {
+                put(BehaviorType.SUPPORT_CAS, Boolean.TRUE);
+                put(BehaviorType.TCP_KEEPALIVE, Boolean.TRUE);
+                put(BehaviorType.TCP_NODELAY, Boolean.TRUE);
+                put(BehaviorType.BUFFER_REQUESTS, Boolean.FALSE);
+            }
+        });
+        
         pool = new ConnectionPool(c);
+        pool.init();
     }
     
     public void setupData() throws LibMemcachedException {
@@ -81,7 +94,7 @@ public class PrefixFunctionTest {
     }
 
     @Test
-    public void selectIn() throws ExecutionException {
+    public void selectIn() throws CommandExecutionException {
         PrefixFunction function = new PrefixFunction(ctx);
         List<String> results = function.createSelect().and("test-key", Arrays.asList("本日"));
         System.out.println(results);
@@ -91,7 +104,7 @@ public class PrefixFunctionTest {
     }
     
     @Test
-    public void selectIn_prefix() throws ExecutionException {
+    public void selectIn_prefix() throws CommandExecutionException {
         PrefixFunction function = new PrefixFunction(ctx);
         List<String> results = function.createSelect().and("test-key", Arrays.asList("本日は晴"));
         System.out.println(results);

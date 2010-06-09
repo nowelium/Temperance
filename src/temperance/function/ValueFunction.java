@@ -3,7 +3,7 @@ package temperance.function;
 import java.util.List;
 
 import libmemcached.exception.LibMemcachedException;
-import temperance.exception.ExecutionException;
+import temperance.exception.CommandExecutionException;
 import temperance.storage.MemcachedList;
 import temperance.util.Lists;
 
@@ -25,7 +25,7 @@ public class ValueFunction implements InternalFunction {
         return new Select();
     }
     
-    protected List<String> select(final String key, final Condition condition) throws ExecutionException {
+    protected List<String> select(final String key, final Condition condition) throws CommandExecutionException {
         return select(key, new Filter() {
             public List<String> execute(List<String> results){
                 List<String> returnValue = Lists.newArrayList();
@@ -40,7 +40,7 @@ public class ValueFunction implements InternalFunction {
         });
     }
     
-    protected List<String> select(final String key, final Filter filter) throws ExecutionException {
+    protected List<String> select(final String key, final Filter filter) throws CommandExecutionException {
         try {
             final MemcachedList list = new MemcachedList(context.getPool());
             List<String> returnValue = Lists.newArrayList();
@@ -57,21 +57,21 @@ public class ValueFunction implements InternalFunction {
             }
             return returnValue;
         } catch(LibMemcachedException e){
-            throw new ExecutionException(e);
+            throw new CommandExecutionException(e);
         }
     }
     
     protected class Delete implements InternalFunction.Command {
-        public List<String> and(String key, List<String> args) throws ExecutionException {
-            throw new ExecutionException("not yet implemented");
+        public List<String> and(String key, List<String> args) throws CommandExecutionException {
+            throw new CommandExecutionException("not yet implemented");
         }
 
-        public List<String> not(String key, List<String> args) throws ExecutionException {
-            throw new ExecutionException("not yet implemented");
+        public List<String> not(String key, List<String> args) throws CommandExecutionException {
+            throw new CommandExecutionException("not yet implemented");
         }
 
-        public List<String> or(String key, List<String> args) throws ExecutionException {
-            throw new ExecutionException("not yet implemented");
+        public List<String> or(String key, List<String> args) throws CommandExecutionException {
+            throw new CommandExecutionException("not yet implemented");
         }
     }
     
@@ -79,7 +79,7 @@ public class ValueFunction implements InternalFunction {
         /**
          * [1, 2, 3, 4, 5] in arg(1, 2) => results(1, 2)
          */
-        public List<String> and(final String key, final List<String> args) throws ExecutionException {
+        public List<String> and(final String key, final List<String> args) throws CommandExecutionException {
             return select(key, new Condition(){
                 public boolean reject(String value){
                     // not contains reject
@@ -94,7 +94,7 @@ public class ValueFunction implements InternalFunction {
         /**
          * [1, 2, 3, 4, 5] not arg(1, 2) => results(3, 4, 5)
          */
-        public List<String> not(final String key, final List<String> args) throws ExecutionException {
+        public List<String> not(final String key, final List<String> args) throws CommandExecutionException {
             return select(key, new Condition(){
                 public boolean reject(String value){
                     // contains reject
@@ -106,7 +106,7 @@ public class ValueFunction implements InternalFunction {
         /**
          * [1, 2, 3, 4, 5] or arg(4, 5, 6) => results(1, 2, 3, 4, 5)
          */
-        public List<String> or(final String key, final List<String> args) throws ExecutionException {
+        public List<String> or(final String key, final List<String> args) throws CommandExecutionException {
             return select(key, new Filter(){
                 public List<String> execute(List<String> results){
                     // no filter
