@@ -2,6 +2,7 @@ package temperance.storage;
 
 import libmemcached.exception.LibMemcachedException;
 import libmemcached.wrapper.MemcachedClient;
+import libmemcached.wrapper.type.ReturnType;
 import temperance.memcached.ConnectionPool;
 
 public class MemcachedMap {
@@ -14,10 +15,11 @@ public class MemcachedMap {
         this.pool = pool;
     }
     
-    public void set(String key, String value, int expire) throws LibMemcachedException {
+    public boolean set(String key, String value, int expire) throws LibMemcachedException {
         final MemcachedClient client = pool.get();
         try {
-            client.getStorage().set(key, value, expire, flag);
+            ReturnType rt = client.getStorage().set(key, value, expire, flag);
+            return ReturnType.SUCCESS.equals(rt);
         } finally {
             pool.release(client);
         }

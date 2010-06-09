@@ -27,7 +27,7 @@ import temperance.ql.node.ParameterNode;
 import temperance.ql.node.Statement;
 import temperance.rpc.Context;
 import temperance.rpc.RpcQuery;
-import temperance.util.ListUtils;
+import temperance.util.Lists;
 
 public class RpcQueryImpl implements RpcQuery {
 
@@ -151,7 +151,7 @@ public class RpcQueryImpl implements RpcQuery {
             node.getFunction().accept(this, data);
             List<String> result = node.getMenge().accept(this, data);
             if(node.isDistinct()){
-                return ListUtils.unique(result);
+                return Lists.unique(result);
             }
             return result;
         }

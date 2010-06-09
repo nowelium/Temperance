@@ -1,6 +1,5 @@
 package temperance.storage;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -19,7 +18,7 @@ import temperance.util.SoftReferenceMap;
 
 public class MemcachedList {
     
-    protected static final Map<String, String> incrementKeyCache = new SoftReferenceMap<String, String>();
+    protected static final SoftReferenceMap<String, String> incrementKeyCache = new SoftReferenceMap<String, String>();
     
     protected static final KeyCache<String> indexKeyCache = new KeyCache<String>();
     
@@ -43,8 +42,8 @@ public class MemcachedList {
     }
     
     public long add(String key, String value, int expire) throws LibMemcachedException {
-        final long nextId = generateId(key);
         MemcachedClient client = pool.get();
+        final long nextId = generateId(client, key);
         try {
             client.getStorage().set(indexKey(key, nextId), value, expire, DEFAULT_VALUE_FLAG);
             return nextId;
@@ -55,7 +54,7 @@ public class MemcachedList {
     
     public List<String> get(String key, long offset, long limit) throws LibMemcachedException {
         final List<String> keys = Lists.newArrayList();
-        for(long i = offset; i <= (offset + limit); ++i){
+        for(long i = offset; i < (offset + limit); ++i){
             keys.add(indexKey(key, i));
         }
         
@@ -72,12 +71,6 @@ public class MemcachedList {
                 }, keys.toArray(new String[keys.size()]));
                 return returnValue;
             }
-        } catch(LibMemcachedException e){
-            if(ReturnType.NOTFOUND.equals(e.getReturnType())){
-                return Collections.emptyList();
-            }
-            
-            throw e;
         } finally {
             pool.release(client);
         }
@@ -98,56 +91,55 @@ public class MemcachedList {
         }
     }
     
-    private long generateId(String key) throws LibMemcachedException {
-        final MemcachedClient client = pool.get();
-        try {
-            final MemcachedStorage storage = client.getStorage();
-            final String incrementKey = incrementKey(key);
-            
-            long begin = System.currentTimeMillis();
-            while(true){
-                long diff = System.currentTimeMillis() - begin;
-                if(LOCK_TIMEOUT < diff){
-                    throw new MemcachedOperationRuntimeException("incremental lock timeout");
-                }
-                
-                MemcachedResult result = storage.gets(incrementKey);
-                if(null == result){
-                    storage.set(incrementKey, "1", INCREMENT_VALUE_EXPIRE, INCREMENT_VALUE_FLAG);
-                    return 1L;
-                }
-                
-                final long increment = Long.valueOf(result.getValue()).longValue() + 1L;
-                String incrementValue = Long.toString(increment);
-                ReturnType rt = storage.cas(incrementKey, incrementValue, INCREMENT_VALUE_EXPIRE, INCREMENT_VALUE_FLAG, result.getCAS());
-                if(!ReturnType.SUCCESS.equals(rt)){
-                    continue;
-                }
-                return increment;
+    private long generateId(final MemcachedClient client, final String key) throws LibMemcachedException {
+        final MemcachedStorage storage = client.getStorage();
+        final String incrementKey = incrementKey(key);
+        
+        long begin = System.currentTimeMillis();
+        while(true){
+            long diff = System.currentTimeMillis() - begin;
+            if(LOCK_TIMEOUT < diff){
+                throw new MemcachedOperationRuntimeException("incremental lock timeout");
             }
-        } finally {
-            pool.release(client);
+            
+            MemcachedResult result = storage.gets(incrementKey);
+            if(null == result){
+                storage.set(incrementKey, "0", INCREMENT_VALUE_EXPIRE, INCREMENT_VALUE_FLAG);
+                return 0L;
+            }
+            
+            final long increment = Long.valueOf(result.getValue()).longValue() + 1L;
+            String incrementValue = Long.toString(increment);
+            ReturnType rt = storage.cas(incrementKey, incrementValue, INCREMENT_VALUE_EXPIRE, INCREMENT_VALUE_FLAG, result.getCAS());
+            if(!ReturnType.SUCCESS.equals(rt)){
+                continue;
+            }
+            return increment;
         }
     }
     
     protected static String incrementKey(String key){
-        if(incrementKeyCache.containsKey(key)){
-            return incrementKeyCache.get(key);
+        synchronized(incrementKeyCache){
+            if(incrementKeyCache.containsKey(key)){
+                return incrementKeyCache.get(key);
+            }
+            
+            String incrementKey = new StringBuilder(key).append(INCREMENT_SUFFIX).toString();
+            incrementKeyCache.put(key, incrementKey);
+            return incrementKey;
         }
-        
-        String incrementKey = new StringBuilder(key).append(INCREMENT_SUFFIX).toString();
-        incrementKeyCache.put(key, incrementKey);
-        return incrementKey;
     }
     
     protected static String indexKey(String key, long index){
-        if(indexKeyCache.contains(key, index)){
-            return indexKeyCache.get(key, index);
+        synchronized(indexKeyCache){
+            if(indexKeyCache.contains(key, index)){
+                return indexKeyCache.get(key, index);
+            }
+            
+            String indexKey = new StringBuilder(key).append(KEY_SEPARATOR).append(index).toString();
+            indexKeyCache.put(key, index, indexKey);
+            return indexKey;
         }
-        
-        String indexKey = new StringBuilder(key).append(KEY_SEPARATOR).append(index).toString();
-        indexKeyCache.put(key, index, indexKey);
-        return indexKey;
     }
     
     protected static class KeyCache<V> {

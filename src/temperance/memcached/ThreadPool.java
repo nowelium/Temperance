@@ -4,17 +4,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class ThreadPool {
     
     private static ThreadPool instance = null;
     
-    private final ExecutorService executor;
+    private final ExecutorService executor = new ThreadPoolExecutor(5, 10, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     
     private ThreadPool(){
-        this.executor = Executors.newCachedThreadPool();
+        // nop
     }
     
     public static ThreadPool getInstance(){

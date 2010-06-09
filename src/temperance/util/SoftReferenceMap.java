@@ -1,5 +1,7 @@
 package temperance.util;
 
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.util.Collection;
 import java.util.HashMap;
@@ -10,11 +12,27 @@ import java.util.Map;
 import java.util.Set;
 
 public class SoftReferenceMap<K, V> implements Map<K, V> {
+    
+    protected final ReferenceQueue<V> queue = new ReferenceQueue<V>();
 
-    protected final Map<K, SoftReference<V>> map = new HashMap<K, SoftReference<V>>();
+    protected final Map<K, SoftReference<V>> cache = new HashMap<K, SoftReference<V>>();
+    
+    protected final Map<SoftReference<V>, K> refMap = new HashMap<SoftReference<V>, K>();
+    
+    protected void clean(){
+        Reference<? extends V> ref = null;
+        while((ref = queue.poll()) != null){
+            K key = refMap.remove(ref);
+            cache.remove(key);
+        }
+    }
     
     public V put(K key, V value){
-        SoftReference<V> result = map.put(key, new SoftReference<V>(value));
+        clean();
+        
+        SoftReference<V> ref = new SoftReference<V>(value, queue);
+        refMap.put(ref, key);
+        SoftReference<V> result = cache.put(key, ref);
         if(null != result){
             return result.get();
         }
@@ -22,7 +40,9 @@ public class SoftReferenceMap<K, V> implements Map<K, V> {
     }
     
     public V get(Object key){
-        SoftReference<V> result = map.get(key);
+        clean();
+        
+        SoftReference<V> result = cache.get(key);
         if(null != result){
             return result.get();
         }
@@ -30,11 +50,15 @@ public class SoftReferenceMap<K, V> implements Map<K, V> {
     }
     
     public boolean containsKey(Object key){
-        return map.containsKey(key);
+        clean();
+        
+        return cache.containsKey(key);
     }
 
     public boolean containsValue(Object value) {
-        if(!map.containsValue(value)){
+        clean();
+        
+        if(!cache.containsValue(value)){
             return false;
         }
         Collection<V> collection = values();
@@ -45,19 +69,22 @@ public class SoftReferenceMap<K, V> implements Map<K, V> {
     }
 
     public void clear() {
-        map.clear();
+        cache.clear();
+        refMap.clear();
     }
     
     public boolean isEmpty() {
-        return map.isEmpty();
+        return cache.isEmpty();
     }
 
     public int size() {
-        return map.size();
+        return cache.size();
     }
     
     public V remove(Object key) {
-        SoftReference<V> result = map.remove(key);
+        clean();
+        
+        SoftReference<V> result = cache.remove(key);
         if(null != result){
             return result.get();
         }
@@ -65,15 +92,22 @@ public class SoftReferenceMap<K, V> implements Map<K, V> {
     }
     
     public void putAll(Map<? extends K, ? extends V> t) {
+        clean();
+        
         Iterator<? extends Map.Entry<? extends K, ? extends V>> it = t.entrySet().iterator();
         while(it.hasNext()){
             Map.Entry<? extends K, ? extends V> entry = it.next();
-            map.put(entry.getKey(), new SoftReference<V>(entry.getValue()));
+            
+            SoftReference<V> ref = new SoftReference<V>(entry.getValue(), queue);
+            refMap.put(ref, entry.getKey());
+            cache.put(entry.getKey(), ref);
         }
     }
 
     public Collection<V> values() {
-        Collection<SoftReference<V>> values = map.values();
+        clean();
+        
+        Collection<SoftReference<V>> values = cache.values();
         List<V> result = Lists.newArrayList();
         // FIXME: clear referent
         for(SoftReference<V> ref: values){
@@ -83,8 +117,10 @@ public class SoftReferenceMap<K, V> implements Map<K, V> {
     }
 
     public Set<K> keySet() {
+        clean();
+        
         Set<K> set = new HashSet<K>();
-        Iterator<Map.Entry<K, SoftReference<V>>> it = map.entrySet().iterator();
+        Iterator<Map.Entry<K, SoftReference<V>>> it = cache.entrySet().iterator();
         while(it.hasNext()){
             Map.Entry<K, SoftReference<V>> entry = it.next();
             K key = entry.getKey();
@@ -94,8 +130,10 @@ public class SoftReferenceMap<K, V> implements Map<K, V> {
     }
     
     public Set<Map.Entry<K, V>> entrySet() {
+        clean();
+        
         Set<Map.Entry<K, V>> set = new HashSet<Map.Entry<K,V>>();
-        Iterator<Map.Entry<K, SoftReference<V>>> it = map.entrySet().iterator();
+        Iterator<Map.Entry<K, SoftReference<V>>> it = cache.entrySet().iterator();
         while(it.hasNext()){
             Map.Entry<K, SoftReference<V>> entry = it.next();
             K key = entry.getKey();

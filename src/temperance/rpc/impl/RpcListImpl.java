@@ -1,10 +1,13 @@
 package temperance.rpc.impl;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import libmemcached.exception.LibMemcachedException;
 import temperance.exception.RpcException;
 import temperance.memcached.ConnectionPool;
+import temperance.memcached.ListCommand;
 import temperance.rpc.Context;
 import temperance.rpc.RpcList;
 import temperance.storage.MemcachedList;
@@ -64,11 +67,17 @@ public class RpcListImpl implements RpcList {
                 limit = count;
             }
             
-            List<String> values = list.get(key, offset, limit);
+            ListCommand command = new ListCommand(pool);
+            Future<List<String>> future = command.get(key, offset, limit);
+            
             Response.Get response = Response.Get.newInstance();
-            response.values = values;
+            response.values = future.get();
             return response;
         } catch(LibMemcachedException e){
+            throw new RpcException(e);
+        } catch (InterruptedException e) {
+            throw new RpcException(e);
+        } catch (ExecutionException e) {
             throw new RpcException(e);
         }
     }

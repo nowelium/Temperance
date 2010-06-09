@@ -1,10 +1,12 @@
 package temperance.memcached;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 import libmemcached.wrapper.MemcachedBehavior;
 import libmemcached.wrapper.MemcachedClient;
@@ -16,7 +18,7 @@ import temperance.rpc.Context;
 
 public class ConnectionPool {
     
-    protected static final int INITIAL_POOL_SIZE = 100;
+    protected static final int INITIAL_POOL_SIZE = 30;
     
     protected final Context context;
     
@@ -24,9 +26,17 @@ public class ConnectionPool {
     
     protected final MemcachedClient rootClient;
     
-    protected final ExecutorService executor = Executors.newCachedThreadPool();
+    protected final ScheduledExecutorService executor = Executors.newScheduledThreadPool(3);
     
     protected final BlockingQueue<MemcachedClient> pool;
+    
+    protected final BlockingQueue<MemcachedClient> release = new LinkedBlockingQueue<MemcachedClient>();
+    
+    protected final AtomicBoolean fillPool = new AtomicBoolean(false);
+    
+    protected final AtomicLong lastAccess = new AtomicLong(0L);
+    
+    protected final long keepAliveTime = TimeUnit.SECONDS.toMillis(60);
     
     protected final CountDownLock lock;
     
@@ -66,7 +76,8 @@ public class ConnectionPool {
             pool.offer(clone());
         }
         
-        executor.execute(new Runnable(){
+        // fill pool
+        executor.execute(new Runnable() {
             public void run(){
                 try {
                     // infinite loop
@@ -74,19 +85,50 @@ public class ConnectionPool {
                         // rendezvous
                         lock.await();
                         
+                        if(fillPool.get()){
+                            continue;
+                        }
+                        
+                        // TODO: max pool size
                         int capacity = pool.remainingCapacity();
                         int count = capacity - INITIAL_POOL_SIZE;
                         for(int i = 0; i < count; ++i){
-                            if(!pool.offer(rootClient)){
+                            if(!pool.offer(ConnectionPool.this.clone())){
                                 break;
                             }
                         }
+                        fillPool.set(true);
                     }
                 } catch(InterruptedException e){
                     //
                 }
             }
         });
+        // reduce pool
+        executor.scheduleWithFixedDelay(new Runnable() {
+            public void run(){
+                final long current = System.currentTimeMillis();
+                final long last = lastAccess.get();
+                if(keepAliveTime < (current - last)){
+                    while(INITIAL_POOL_SIZE < pool.size()){
+                        pool.poll();
+                    }
+                    fillPool.set(false);
+                }
+            }
+        }, 10, 10, TimeUnit.SECONDS);
+        // reuse pool
+        executor.scheduleWithFixedDelay(new Runnable() {
+            public void run(){
+                MemcachedClient client = release.poll();
+                if(null == client){
+                    return;
+                }
+                
+                client.quit();
+                pool.offer(ConnectionPool.this.clone());
+            }
+        }, 0, 5000, TimeUnit.MICROSECONDS); // TODO: await when: libmemcached becomes segfault by excessive access
         
         MemcachedClient client = get();
         try {
@@ -99,16 +141,11 @@ public class ConnectionPool {
         }
     }
     
-    public synchronized MemcachedClient get(){
+    public MemcachedClient get(){
+        lastAccess.set(System.currentTimeMillis());
+        
         try {
             lock.countDown();
-            
-            try {
-                // TODO: await when: libmemcached becomes segfault by excessive access
-                TimeUnit.MICROSECONDS.sleep(1250);
-            } catch(InterruptedException e){
-                // nop
-            }
             
             MemcachedClient connection = pool.poll(10, TimeUnit.MILLISECONDS);
             if(null != connection){
@@ -122,8 +159,7 @@ public class ConnectionPool {
     }
     
     public void release(MemcachedClient client){
-        client.quit();
-        pool.offer(clone());
+        release.offer(client);
     }
 
 }

@@ -8,7 +8,7 @@ import temperance.ft.Hashing;
 import temperance.memcached.FullTextCommand;
 import temperance.storage.MemcachedFullText;
 import temperance.util.Lists;
-import temperance.util.Lists.IntersectList;
+import temperance.util.Lists.IntersectalList;
 
 public abstract class AbstractTaggerFunction implements InternalFunction {
     
@@ -56,7 +56,7 @@ public abstract class AbstractTaggerFunction implements InternalFunction {
             final String str = args.get(0);
             final Hashing hashing = createHashing(args);
             try {
-                IntersectList<String> returnValue = Lists.newIntersectList();
+                IntersectalList<String> returnValue = Lists.newIntersectList();
                 List<Long> allHashes = hashing.parse(str);
                 
                 FullTextCommand command = new FullTextCommand(context.getPool());

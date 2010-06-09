@@ -13,6 +13,7 @@
 	<classpathentry kind="lib" path="lib/msgpack/msgpack-0.3.jar"/>
 	<classpathentry kind="lib" path="lib/protobuf/protobuf-java-2.2.0.jar"/>
 	<classpathentry kind="lib" path="lib/protobuf/protobuf-socket-rpc.jar"/>
+	<classpathentry kind="lib" path="lib/msgpack/msgpack-rpc-0.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/msgpack/netty-3.2.0.CR1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
