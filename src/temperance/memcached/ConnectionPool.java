@@ -89,7 +89,6 @@ public class ConnectionPool {
                             continue;
                         }
                         
-                        // TODO: max pool size
                         int capacity = pool.remainingCapacity();
                         int count = capacity - INITIAL_POOL_SIZE;
                         for(int i = 0; i < count; ++i){
