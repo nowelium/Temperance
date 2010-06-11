@@ -123,8 +123,8 @@ public class ConnectionPool implements LifeCycle {
         // free pool: every 10 sec
         executor.scheduleWithFixedDelay(new FreePoolTask(), 10, 10, TimeUnit.SECONDS);
         // release pool: every 5000 usec
-        // TODO: 5000 usec await when: libmemcached becomes segfault by excessive access
-        executor.scheduleWithFixedDelay(new ReleasePoolTask(), 0, 5000, TimeUnit.MICROSECONDS);
+        // TODO: 2000 usec await when: libmemcached becomes segfault by excessive access
+        executor.scheduleWithFixedDelay(new ReleasePoolTask(), 0, 2000, TimeUnit.MICROSECONDS);
     }
     
     public void destroy(){

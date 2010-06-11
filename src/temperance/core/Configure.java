@@ -23,7 +23,7 @@ public class Configure {
     
     private int initialThreadPoolSize = 10;
     
-    private int maxThreadPoolSize = 50;
+    private int maxThreadPoolSize = 100;
     
     private long threadKeepAlive = 60L;
     
