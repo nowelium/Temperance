@@ -1,10 +1,11 @@
 package temperance.function;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import temperance.core.ListCommand;
 import temperance.exception.CommandExecutionException;
-import temperance.memcached.ListCommand;
 
 public class DataFunction implements InternalFunction {
     
@@ -41,23 +42,24 @@ public class DataFunction implements InternalFunction {
          * DATA(1, 2, 3, 4, 5) in DATA(2, 3, 5) => results(2, 3, 5)
          */
         public List<String> and(String key, List<String> args) throws CommandExecutionException {
-            final ListCommand command = new ListCommand(context.getPool());
+            final ListCommand command = new ListCommand(context.getPooling());
             
             final Future<List<String>> fromFuture = command.getAll(key);
             try {
-                List<String> returnValues = fromFuture.get();
-                List<Future<List<String>>> futures = command.getAll(args);
-                for(Future<List<String>> future: futures){
-                    List<String> results = future.get();
-                    
-                    // narrow
-                    // fromValues contains all(only) tagetValues
-                    returnValues.retainAll(results);
-                }
+                final List<String> returnValues = fromFuture.get();
+                command.filterAll(args, new ListCommand.Filter(){
+                    public void execute(List<String> values){
+                        synchronized(returnValues){
+                            // narrow
+                            // fromValues contains all(only) tagetValues
+                            returnValues.retainAll(values);
+                        }
+                    }
+                });
                 return returnValues;
             } catch (InterruptedException e) {
                 throw new CommandExecutionException(e);
-            } catch (java.util.concurrent.ExecutionException e) {
+            } catch (ExecutionException e) {
                 throw new CommandExecutionException(e);
             }
         }
@@ -66,23 +68,24 @@ public class DataFunction implements InternalFunction {
          * DATA(1, 2, 3, 4, 5) not DATA(2, 3, 5) => results(1, 4)
          */
         public List<String> not(String key, List<String> args) throws CommandExecutionException {
-            final ListCommand command = new ListCommand(context.getPool());
+            final ListCommand command = new ListCommand(context.getPooling());
             
             final Future<List<String>> fromFuture = command.getAll(key);
             try {
-                List<String> returnValues = fromFuture.get();
-                List<Future<List<String>>> futures = command.getAll(args);
-                for(Future<List<String>> future: futures){
-                    List<String> results = future.get();
-                    for(String result: results){
-                        // contains remove
-                        returnValues.remove(result);
+                final List<String> returnValues = fromFuture.get();
+                command.filterAll(args, new ListCommand.Filter(){
+                    public void execute(List<String> values){
+                        synchronized(returnValues){
+                            for(String value: values){
+                                returnValues.remove(value);
+                            }
+                        }
                     }
-                }
+                });
                 return returnValues;
             } catch (InterruptedException e) {
                 throw new CommandExecutionException(e);
-            } catch (java.util.concurrent.ExecutionException e) {
+            } catch (ExecutionException e) {
                 throw new CommandExecutionException(e);
             }
         }
@@ -91,7 +94,7 @@ public class DataFunction implements InternalFunction {
          * DATA(1, 2, 3, 4, 5) or DATA(4, 5, 6, 7) => result(1, 2, 3, 4, 5, 6, 7)
          */
         public List<String> or(String key, List<String> args) throws CommandExecutionException {
-            final ListCommand command = new ListCommand(context.getPool());
+            final ListCommand command = new ListCommand(context.getPooling());
             
             final Future<List<String>> fromFuture = command.getAll(key);
             try {
@@ -104,7 +107,7 @@ public class DataFunction implements InternalFunction {
                 return returnValue;
             } catch (InterruptedException e) {
                 throw new CommandExecutionException(e);
-            } catch (java.util.concurrent.ExecutionException e) {
+            } catch (ExecutionException e) {
                 throw new CommandExecutionException(e);
             }
         }

@@ -1,5 +1,4 @@
-package temperance.memcached;
-
+package temperance.core;
 
 public interface Command {
     

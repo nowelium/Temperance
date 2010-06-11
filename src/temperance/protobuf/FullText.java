@@ -98,28 +98,28 @@ public final class FullText {
       }
     }
     
-    public static final class Set extends
+    public static final class Add extends
         com.google.protobuf.GeneratedMessage {
-      // Use Set.newBuilder() to construct.
-      private Set() {}
+      // Use Add.newBuilder() to construct.
+      private Add() {}
       
-      private static final Set defaultInstance = new Set();
-      public static Set getDefaultInstance() {
+      private static final Add defaultInstance = new Add();
+      public static Add getDefaultInstance() {
         return defaultInstance;
       }
       
-      public Set getDefaultInstanceForType() {
+      public Add getDefaultInstanceForType() {
         return defaultInstance;
       }
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return temperance.protobuf.FullText.internal_static_temperance_protobuf_Request_Set_descriptor;
+        return temperance.protobuf.FullText.internal_static_temperance_protobuf_Request_Add_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return temperance.protobuf.FullText.internal_static_temperance_protobuf_Request_Set_fieldAccessorTable;
+        return temperance.protobuf.FullText.internal_static_temperance_protobuf_Request_Add_fieldAccessorTable;
       }
       
       // required string key = 1;
@@ -215,57 +215,57 @@ public final class FullText {
         return size;
       }
       
-      public static temperance.protobuf.FullText.Request.Set parseFrom(
+      public static temperance.protobuf.FullText.Request.Add parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data).buildParsed();
       }
-      public static temperance.protobuf.FullText.Request.Set parseFrom(
+      public static temperance.protobuf.FullText.Request.Add parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.FullText.Request.Set parseFrom(byte[] data)
+      public static temperance.protobuf.FullText.Request.Add parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data).buildParsed();
       }
-      public static temperance.protobuf.FullText.Request.Set parseFrom(
+      public static temperance.protobuf.FullText.Request.Add parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.FullText.Request.Set parseFrom(java.io.InputStream input)
+      public static temperance.protobuf.FullText.Request.Add parseFrom(java.io.InputStream input)
           throws java.io.IOException {
         return newBuilder().mergeFrom(input).buildParsed();
       }
-      public static temperance.protobuf.FullText.Request.Set parseFrom(
+      public static temperance.protobuf.FullText.Request.Add parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return newBuilder().mergeFrom(input, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.FullText.Request.Set parseDelimitedFrom(java.io.InputStream input)
+      public static temperance.protobuf.FullText.Request.Add parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
         return newBuilder().mergeDelimitedFrom(input).buildParsed();
       }
-      public static temperance.protobuf.FullText.Request.Set parseDelimitedFrom(
+      public static temperance.protobuf.FullText.Request.Add parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return newBuilder().mergeDelimitedFrom(input, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.FullText.Request.Set parseFrom(
+      public static temperance.protobuf.FullText.Request.Add parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
         return newBuilder().mergeFrom(input).buildParsed();
       }
-      public static temperance.protobuf.FullText.Request.Set parseFrom(
+      public static temperance.protobuf.FullText.Request.Add parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -275,25 +275,25 @@ public final class FullText {
       
       public static Builder newBuilder() { return Builder.create(); }
       public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(temperance.protobuf.FullText.Request.Set prototype) {
+      public static Builder newBuilder(temperance.protobuf.FullText.Request.Add prototype) {
         return newBuilder().mergeFrom(prototype);
       }
       public Builder toBuilder() { return newBuilder(this); }
       
       public static final class Builder extends
           com.google.protobuf.GeneratedMessage.Builder<Builder> {
-        private temperance.protobuf.FullText.Request.Set result;
+        private temperance.protobuf.FullText.Request.Add result;
         
-        // Construct using temperance.protobuf.FullText.Request.Set.newBuilder()
+        // Construct using temperance.protobuf.FullText.Request.Add.newBuilder()
         private Builder() {}
         
         private static Builder create() {
           Builder builder = new Builder();
-          builder.result = new temperance.protobuf.FullText.Request.Set();
+          builder.result = new temperance.protobuf.FullText.Request.Add();
           return builder;
         }
         
-        protected temperance.protobuf.FullText.Request.Set internalGetResult() {
+        protected temperance.protobuf.FullText.Request.Add internalGetResult() {
           return result;
         }
         
@@ -302,7 +302,7 @@ public final class FullText {
             throw new IllegalStateException(
               "Cannot call clear() after build().");
           }
-          result = new temperance.protobuf.FullText.Request.Set();
+          result = new temperance.protobuf.FullText.Request.Add();
           return this;
         }
         
@@ -312,24 +312,24 @@ public final class FullText {
         
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return temperance.protobuf.FullText.Request.Set.getDescriptor();
+          return temperance.protobuf.FullText.Request.Add.getDescriptor();
         }
         
-        public temperance.protobuf.FullText.Request.Set getDefaultInstanceForType() {
-          return temperance.protobuf.FullText.Request.Set.getDefaultInstance();
+        public temperance.protobuf.FullText.Request.Add getDefaultInstanceForType() {
+          return temperance.protobuf.FullText.Request.Add.getDefaultInstance();
         }
         
         public boolean isInitialized() {
           return result.isInitialized();
         }
-        public temperance.protobuf.FullText.Request.Set build() {
+        public temperance.protobuf.FullText.Request.Add build() {
           if (result != null && !isInitialized()) {
             throw newUninitializedMessageException(result);
           }
           return buildPartial();
         }
         
-        private temperance.protobuf.FullText.Request.Set buildParsed()
+        private temperance.protobuf.FullText.Request.Add buildParsed()
             throws com.google.protobuf.InvalidProtocolBufferException {
           if (!isInitialized()) {
             throw newUninitializedMessageException(
@@ -338,27 +338,27 @@ public final class FullText {
           return buildPartial();
         }
         
-        public temperance.protobuf.FullText.Request.Set buildPartial() {
+        public temperance.protobuf.FullText.Request.Add buildPartial() {
           if (result == null) {
             throw new IllegalStateException(
               "build() has already been called on this Builder.");
           }
-          temperance.protobuf.FullText.Request.Set returnMe = result;
+          temperance.protobuf.FullText.Request.Add returnMe = result;
           result = null;
           return returnMe;
         }
         
         public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof temperance.protobuf.FullText.Request.Set) {
-            return mergeFrom((temperance.protobuf.FullText.Request.Set)other);
+          if (other instanceof temperance.protobuf.FullText.Request.Add) {
+            return mergeFrom((temperance.protobuf.FullText.Request.Add)other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
         
-        public Builder mergeFrom(temperance.protobuf.FullText.Request.Set other) {
-          if (other == temperance.protobuf.FullText.Request.Set.getDefaultInstance()) return this;
+        public Builder mergeFrom(temperance.protobuf.FullText.Request.Add other) {
+          if (other == temperance.protobuf.FullText.Request.Add.getDefaultInstance()) return this;
           if (other.hasKey()) {
             setKey(other.getKey());
           }
@@ -1132,28 +1132,28 @@ public final class FullText {
       return temperance.protobuf.FullText.internal_static_temperance_protobuf_Response_fieldAccessorTable;
     }
     
-    public static final class Set extends
+    public static final class Add extends
         com.google.protobuf.GeneratedMessage {
-      // Use Set.newBuilder() to construct.
-      private Set() {}
+      // Use Add.newBuilder() to construct.
+      private Add() {}
       
-      private static final Set defaultInstance = new Set();
-      public static Set getDefaultInstance() {
+      private static final Add defaultInstance = new Add();
+      public static Add getDefaultInstance() {
         return defaultInstance;
       }
       
-      public Set getDefaultInstanceForType() {
+      public Add getDefaultInstanceForType() {
         return defaultInstance;
       }
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return temperance.protobuf.FullText.internal_static_temperance_protobuf_Response_Set_descriptor;
+        return temperance.protobuf.FullText.internal_static_temperance_protobuf_Response_Add_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return temperance.protobuf.FullText.internal_static_temperance_protobuf_Response_Set_fieldAccessorTable;
+        return temperance.protobuf.FullText.internal_static_temperance_protobuf_Response_Add_fieldAccessorTable;
       }
       
       // required bool succeed = 1;
@@ -1191,57 +1191,57 @@ public final class FullText {
         return size;
       }
       
-      public static temperance.protobuf.FullText.Response.Set parseFrom(
+      public static temperance.protobuf.FullText.Response.Add parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data).buildParsed();
       }
-      public static temperance.protobuf.FullText.Response.Set parseFrom(
+      public static temperance.protobuf.FullText.Response.Add parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.FullText.Response.Set parseFrom(byte[] data)
+      public static temperance.protobuf.FullText.Response.Add parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data).buildParsed();
       }
-      public static temperance.protobuf.FullText.Response.Set parseFrom(
+      public static temperance.protobuf.FullText.Response.Add parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return newBuilder().mergeFrom(data, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.FullText.Response.Set parseFrom(java.io.InputStream input)
+      public static temperance.protobuf.FullText.Response.Add parseFrom(java.io.InputStream input)
           throws java.io.IOException {
         return newBuilder().mergeFrom(input).buildParsed();
       }
-      public static temperance.protobuf.FullText.Response.Set parseFrom(
+      public static temperance.protobuf.FullText.Response.Add parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return newBuilder().mergeFrom(input, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.FullText.Response.Set parseDelimitedFrom(java.io.InputStream input)
+      public static temperance.protobuf.FullText.Response.Add parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
         return newBuilder().mergeDelimitedFrom(input).buildParsed();
       }
-      public static temperance.protobuf.FullText.Response.Set parseDelimitedFrom(
+      public static temperance.protobuf.FullText.Response.Add parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return newBuilder().mergeDelimitedFrom(input, extensionRegistry)
                  .buildParsed();
       }
-      public static temperance.protobuf.FullText.Response.Set parseFrom(
+      public static temperance.protobuf.FullText.Response.Add parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
         return newBuilder().mergeFrom(input).buildParsed();
       }
-      public static temperance.protobuf.FullText.Response.Set parseFrom(
+      public static temperance.protobuf.FullText.Response.Add parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -1251,25 +1251,25 @@ public final class FullText {
       
       public static Builder newBuilder() { return Builder.create(); }
       public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(temperance.protobuf.FullText.Response.Set prototype) {
+      public static Builder newBuilder(temperance.protobuf.FullText.Response.Add prototype) {
         return newBuilder().mergeFrom(prototype);
       }
       public Builder toBuilder() { return newBuilder(this); }
       
       public static final class Builder extends
           com.google.protobuf.GeneratedMessage.Builder<Builder> {
-        private temperance.protobuf.FullText.Response.Set result;
+        private temperance.protobuf.FullText.Response.Add result;
         
-        // Construct using temperance.protobuf.FullText.Response.Set.newBuilder()
+        // Construct using temperance.protobuf.FullText.Response.Add.newBuilder()
         private Builder() {}
         
         private static Builder create() {
           Builder builder = new Builder();
-          builder.result = new temperance.protobuf.FullText.Response.Set();
+          builder.result = new temperance.protobuf.FullText.Response.Add();
           return builder;
         }
         
-        protected temperance.protobuf.FullText.Response.Set internalGetResult() {
+        protected temperance.protobuf.FullText.Response.Add internalGetResult() {
           return result;
         }
         
@@ -1278,7 +1278,7 @@ public final class FullText {
             throw new IllegalStateException(
               "Cannot call clear() after build().");
           }
-          result = new temperance.protobuf.FullText.Response.Set();
+          result = new temperance.protobuf.FullText.Response.Add();
           return this;
         }
         
@@ -1288,24 +1288,24 @@ public final class FullText {
         
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return temperance.protobuf.FullText.Response.Set.getDescriptor();
+          return temperance.protobuf.FullText.Response.Add.getDescriptor();
         }
         
-        public temperance.protobuf.FullText.Response.Set getDefaultInstanceForType() {
-          return temperance.protobuf.FullText.Response.Set.getDefaultInstance();
+        public temperance.protobuf.FullText.Response.Add getDefaultInstanceForType() {
+          return temperance.protobuf.FullText.Response.Add.getDefaultInstance();
         }
         
         public boolean isInitialized() {
           return result.isInitialized();
         }
-        public temperance.protobuf.FullText.Response.Set build() {
+        public temperance.protobuf.FullText.Response.Add build() {
           if (result != null && !isInitialized()) {
             throw newUninitializedMessageException(result);
           }
           return buildPartial();
         }
         
-        private temperance.protobuf.FullText.Response.Set buildParsed()
+        private temperance.protobuf.FullText.Response.Add buildParsed()
             throws com.google.protobuf.InvalidProtocolBufferException {
           if (!isInitialized()) {
             throw newUninitializedMessageException(
@@ -1314,27 +1314,27 @@ public final class FullText {
           return buildPartial();
         }
         
-        public temperance.protobuf.FullText.Response.Set buildPartial() {
+        public temperance.protobuf.FullText.Response.Add buildPartial() {
           if (result == null) {
             throw new IllegalStateException(
               "build() has already been called on this Builder.");
           }
-          temperance.protobuf.FullText.Response.Set returnMe = result;
+          temperance.protobuf.FullText.Response.Add returnMe = result;
           result = null;
           return returnMe;
         }
         
         public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof temperance.protobuf.FullText.Response.Set) {
-            return mergeFrom((temperance.protobuf.FullText.Response.Set)other);
+          if (other instanceof temperance.protobuf.FullText.Response.Add) {
+            return mergeFrom((temperance.protobuf.FullText.Response.Add)other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
         
-        public Builder mergeFrom(temperance.protobuf.FullText.Response.Set other) {
-          if (other == temperance.protobuf.FullText.Response.Set.getDefaultInstance()) return this;
+        public Builder mergeFrom(temperance.protobuf.FullText.Response.Add other) {
+          if (other == temperance.protobuf.FullText.Response.Add.getDefaultInstance()) return this;
           if (other.hasSucceed()) {
             setSucceed(other.getSucceed());
           }
@@ -1915,10 +1915,10 @@ public final class FullText {
     protected FullTextService() {}
     
     public interface Interface {
-      public abstract void set(
+      public abstract void add(
           com.google.protobuf.RpcController controller,
-          temperance.protobuf.FullText.Request.Set request,
-          com.google.protobuf.RpcCallback<temperance.protobuf.FullText.Response.Set> done);
+          temperance.protobuf.FullText.Request.Add request,
+          com.google.protobuf.RpcCallback<temperance.protobuf.FullText.Response.Add> done);
       
       public abstract void search(
           com.google.protobuf.RpcController controller,
@@ -1931,11 +1931,11 @@ public final class FullText {
         final Interface impl) {
       return new FullTextService() {
         @Override
-        public  void set(
+        public  void add(
             com.google.protobuf.RpcController controller,
-            temperance.protobuf.FullText.Request.Set request,
-            com.google.protobuf.RpcCallback<temperance.protobuf.FullText.Response.Set> done) {
-          impl.set(controller, request, done);
+            temperance.protobuf.FullText.Request.Add request,
+            com.google.protobuf.RpcCallback<temperance.protobuf.FullText.Response.Add> done) {
+          impl.add(controller, request, done);
         }
         
         @Override
@@ -1969,7 +1969,7 @@ public final class FullText {
           }
           switch(method.getIndex()) {
             case 0:
-              return impl.set(controller, (temperance.protobuf.FullText.Request.Set)request);
+              return impl.add(controller, (temperance.protobuf.FullText.Request.Add)request);
             case 1:
               return impl.search(controller, (temperance.protobuf.FullText.Request.Search)request);
             default:
@@ -1987,7 +1987,7 @@ public final class FullText {
           }
           switch(method.getIndex()) {
             case 0:
-              return temperance.protobuf.FullText.Request.Set.getDefaultInstance();
+              return temperance.protobuf.FullText.Request.Add.getDefaultInstance();
             case 1:
               return temperance.protobuf.FullText.Request.Search.getDefaultInstance();
             default:
@@ -2005,7 +2005,7 @@ public final class FullText {
           }
           switch(method.getIndex()) {
             case 0:
-              return temperance.protobuf.FullText.Response.Set.getDefaultInstance();
+              return temperance.protobuf.FullText.Response.Add.getDefaultInstance();
             case 1:
               return temperance.protobuf.FullText.Response.Search.getDefaultInstance();
             default:
@@ -2016,10 +2016,10 @@ public final class FullText {
       };
     }
     
-    public abstract void set(
+    public abstract void add(
         com.google.protobuf.RpcController controller,
-        temperance.protobuf.FullText.Request.Set request,
-        com.google.protobuf.RpcCallback<temperance.protobuf.FullText.Response.Set> done);
+        temperance.protobuf.FullText.Request.Add request,
+        com.google.protobuf.RpcCallback<temperance.protobuf.FullText.Response.Add> done);
     
     public abstract void search(
         com.google.protobuf.RpcController controller,
@@ -2049,8 +2049,8 @@ public final class FullText {
       }
       switch(method.getIndex()) {
         case 0:
-          this.set(controller, (temperance.protobuf.FullText.Request.Set)request,
-            com.google.protobuf.RpcUtil.<temperance.protobuf.FullText.Response.Set>specializeCallback(
+          this.add(controller, (temperance.protobuf.FullText.Request.Add)request,
+            com.google.protobuf.RpcUtil.<temperance.protobuf.FullText.Response.Add>specializeCallback(
               done));
           return;
         case 1:
@@ -2073,7 +2073,7 @@ public final class FullText {
       }
       switch(method.getIndex()) {
         case 0:
-          return temperance.protobuf.FullText.Request.Set.getDefaultInstance();
+          return temperance.protobuf.FullText.Request.Add.getDefaultInstance();
         case 1:
           return temperance.protobuf.FullText.Request.Search.getDefaultInstance();
         default:
@@ -2091,7 +2091,7 @@ public final class FullText {
       }
       switch(method.getIndex()) {
         case 0:
-          return temperance.protobuf.FullText.Response.Set.getDefaultInstance();
+          return temperance.protobuf.FullText.Response.Add.getDefaultInstance();
         case 1:
           return temperance.protobuf.FullText.Response.Search.getDefaultInstance();
         default:
@@ -2115,19 +2115,19 @@ public final class FullText {
         return channel;
       }
       
-      public  void set(
+      public  void add(
           com.google.protobuf.RpcController controller,
-          temperance.protobuf.FullText.Request.Set request,
-          com.google.protobuf.RpcCallback<temperance.protobuf.FullText.Response.Set> done) {
+          temperance.protobuf.FullText.Request.Add request,
+          com.google.protobuf.RpcCallback<temperance.protobuf.FullText.Response.Add> done) {
         channel.callMethod(
           getDescriptor().getMethods().get(0),
           controller,
           request,
-          temperance.protobuf.FullText.Response.Set.getDefaultInstance(),
+          temperance.protobuf.FullText.Response.Add.getDefaultInstance(),
           com.google.protobuf.RpcUtil.generalizeCallback(
             done,
-            temperance.protobuf.FullText.Response.Set.class,
-            temperance.protobuf.FullText.Response.Set.getDefaultInstance()));
+            temperance.protobuf.FullText.Response.Add.class,
+            temperance.protobuf.FullText.Response.Add.getDefaultInstance()));
       }
       
       public  void search(
@@ -2152,9 +2152,9 @@ public final class FullText {
     }
     
     public interface BlockingInterface {
-      public temperance.protobuf.FullText.Response.Set set(
+      public temperance.protobuf.FullText.Response.Add add(
           com.google.protobuf.RpcController controller,
-          temperance.protobuf.FullText.Request.Set request)
+          temperance.protobuf.FullText.Request.Add request)
           throws com.google.protobuf.ServiceException;
       
       public temperance.protobuf.FullText.Response.Search search(
@@ -2170,15 +2170,15 @@ public final class FullText {
       
       private final com.google.protobuf.BlockingRpcChannel channel;
       
-      public temperance.protobuf.FullText.Response.Set set(
+      public temperance.protobuf.FullText.Response.Add add(
           com.google.protobuf.RpcController controller,
-          temperance.protobuf.FullText.Request.Set request)
+          temperance.protobuf.FullText.Request.Add request)
           throws com.google.protobuf.ServiceException {
-        return (temperance.protobuf.FullText.Response.Set) channel.callBlockingMethod(
+        return (temperance.protobuf.FullText.Response.Add) channel.callBlockingMethod(
           getDescriptor().getMethods().get(0),
           controller,
           request,
-          temperance.protobuf.FullText.Response.Set.getDefaultInstance());
+          temperance.protobuf.FullText.Response.Add.getDefaultInstance());
       }
       
       
@@ -2202,10 +2202,10 @@ public final class FullText {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_temperance_protobuf_Request_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_temperance_protobuf_Request_Set_descriptor;
+    internal_static_temperance_protobuf_Request_Add_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_temperance_protobuf_Request_Set_fieldAccessorTable;
+      internal_static_temperance_protobuf_Request_Add_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_temperance_protobuf_Request_Search_descriptor;
   private static
@@ -2217,10 +2217,10 @@ public final class FullText {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_temperance_protobuf_Response_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_temperance_protobuf_Response_Set_descriptor;
+    internal_static_temperance_protobuf_Response_Add_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_temperance_protobuf_Response_Set_fieldAccessorTable;
+      internal_static_temperance_protobuf_Response_Add_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_temperance_protobuf_Response_Search_descriptor;
   private static
@@ -2236,17 +2236,17 @@ public final class FullText {
   static {
     java.lang.String[] descriptorData = {
       "\n\016FullText.proto\022\023temperance.protobuf\"\232\002" +
-      "\n\007Request\032\201\001\n\003Set\022\013\n\003key\030\001 \002(\t\022\013\n\003str\030\002 " +
+      "\n\007Request\032\201\001\n\003Add\022\013\n\003key\030\001 \002(\t\022\013\n\003str\030\002 " +
       "\002(\t\022\r\n\005value\030\003 \002(\t\022\025\n\006expire\030\004 \001(\r:\0058640" +
       "0\022:\n\006parser\030\005 \001(\0162#.temperance.protobuf." +
       "Request.Parser:\005MECAB\032^\n\006Search\022\013\n\003key\030\001" +
       " \002(\t\022\013\n\003str\030\002 \002(\t\022:\n\006parser\030\003 \001(\0162#.temp" +
       "erance.protobuf.Request.Parser:\005MECAB\"+\n" +
       "\006Parser\022\t\n\005MECAB\020\000\022\n\n\006BIGRAM\020\001\022\n\n\006PREFIX" +
-      "\020\002\"<\n\010Response\032\026\n\003Set\022\017\n\007succeed\030\001 \002(\010\032\030" +
+      "\020\002\"<\n\010Response\032\026\n\003Add\022\017\n\007succeed\030\001 \002(\010\032\030" +
       "\n\006Search\022\016\n\006values\030\001 \003(\t2\262\001\n\017FullTextSer",
-      "vice\022J\n\003set\022 .temperance.protobuf.Reques" +
-      "t.Set\032!.temperance.protobuf.Response.Set" +
+      "vice\022J\n\003add\022 .temperance.protobuf.Reques" +
+      "t.Add\032!.temperance.protobuf.Response.Add" +
       "\022S\n\006search\022#.temperance.protobuf.Request" +
       ".Search\032$.temperance.protobuf.Response.S" +
       "earchB\002H\001"
@@ -2264,14 +2264,14 @@ public final class FullText {
               new java.lang.String[] { },
               temperance.protobuf.FullText.Request.class,
               temperance.protobuf.FullText.Request.Builder.class);
-          internal_static_temperance_protobuf_Request_Set_descriptor =
+          internal_static_temperance_protobuf_Request_Add_descriptor =
             internal_static_temperance_protobuf_Request_descriptor.getNestedTypes().get(0);
-          internal_static_temperance_protobuf_Request_Set_fieldAccessorTable = new
+          internal_static_temperance_protobuf_Request_Add_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_temperance_protobuf_Request_Set_descriptor,
+              internal_static_temperance_protobuf_Request_Add_descriptor,
               new java.lang.String[] { "Key", "Str", "Value", "Expire", "Parser", },
-              temperance.protobuf.FullText.Request.Set.class,
-              temperance.protobuf.FullText.Request.Set.Builder.class);
+              temperance.protobuf.FullText.Request.Add.class,
+              temperance.protobuf.FullText.Request.Add.Builder.class);
           internal_static_temperance_protobuf_Request_Search_descriptor =
             internal_static_temperance_protobuf_Request_descriptor.getNestedTypes().get(1);
           internal_static_temperance_protobuf_Request_Search_fieldAccessorTable = new
@@ -2288,14 +2288,14 @@ public final class FullText {
               new java.lang.String[] { },
               temperance.protobuf.FullText.Response.class,
               temperance.protobuf.FullText.Response.Builder.class);
-          internal_static_temperance_protobuf_Response_Set_descriptor =
+          internal_static_temperance_protobuf_Response_Add_descriptor =
             internal_static_temperance_protobuf_Response_descriptor.getNestedTypes().get(0);
-          internal_static_temperance_protobuf_Response_Set_fieldAccessorTable = new
+          internal_static_temperance_protobuf_Response_Add_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_temperance_protobuf_Response_Set_descriptor,
+              internal_static_temperance_protobuf_Response_Add_descriptor,
               new java.lang.String[] { "Succeed", },
-              temperance.protobuf.FullText.Response.Set.class,
-              temperance.protobuf.FullText.Response.Set.Builder.class);
+              temperance.protobuf.FullText.Response.Add.class,
+              temperance.protobuf.FullText.Response.Add.Builder.class);
           internal_static_temperance_protobuf_Response_Search_descriptor =
             internal_static_temperance_protobuf_Response_descriptor.getNestedTypes().get(1);
           internal_static_temperance_protobuf_Response_Search_fieldAccessorTable = new

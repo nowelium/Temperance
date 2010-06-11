@@ -5,25 +5,22 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import libmemcached.exception.LibMemcachedException;
+import temperance.core.Configure;
+import temperance.core.ListCommand;
+import temperance.core.Pooling;
 import temperance.exception.RpcException;
-import temperance.memcached.ConnectionPool;
-import temperance.memcached.ListCommand;
-import temperance.rpc.Context;
 import temperance.rpc.RpcList;
 import temperance.storage.MemcachedList;
 
 public class RpcListImpl implements RpcList {
     
-    protected final Context context;
+    protected final Configure configure;
     
-    protected final ConnectionPool pool;
+    protected final Pooling pooling;
     
-    protected final MemcachedList list;
-    
-    public RpcListImpl(Context context, ConnectionPool pool){
-        this.context = context;
-        this.pool = pool;
-        this.list = new MemcachedList(pool);
+    public RpcListImpl(Configure configure, Pooling pooling){
+        this.configure = configure;
+        this.pooling = pooling;
     }
 
     public Response.Add add(Request.Add request) throws RpcException {
@@ -31,6 +28,7 @@ public class RpcListImpl implements RpcList {
         final String value = request.value;
         final int expire = request.expire;
         
+        final MemcachedList list = new MemcachedList(pooling.getConnectionPool());
         try {
             list.add(key, value, expire);
             Response.Add response = Response.Add.newInstance();
@@ -46,8 +44,9 @@ public class RpcListImpl implements RpcList {
     public Response.Count count(Request.Count request) throws RpcException {
         final String key = request.key;
         
+        final MemcachedList list = new MemcachedList(pooling.getConnectionPool());
         try {
-            long count = list.count(key);
+            final long count = list.count(key);
             Response.Count response = Response.Count.newInstance();
             response.count = count;
             return response;
@@ -61,20 +60,13 @@ public class RpcListImpl implements RpcList {
         final long offset = request.offset;
         long limit = request.limit;
         
+        final ListCommand command = new ListCommand(pooling);
         try {
-            long count = list.count(key);
-            if(count < limit){
-                limit = count;
-            }
-            
-            ListCommand command = new ListCommand(pool);
             Future<List<String>> future = command.get(key, offset, limit);
             
             Response.Get response = Response.Get.newInstance();
             response.values = future.get();
             return response;
-        } catch(LibMemcachedException e){
-            throw new RpcException(e);
         } catch (InterruptedException e) {
             throw new RpcException(e);
         } catch (ExecutionException e) {

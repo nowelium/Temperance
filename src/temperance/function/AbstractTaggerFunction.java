@@ -4,24 +4,18 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import temperance.core.FullTextCommand;
 import temperance.exception.CommandExecutionException;
 import temperance.ft.Hashing;
-import temperance.memcached.FullTextCommand;
-import temperance.storage.MemcachedFullText;
 import temperance.util.Lists;
 import temperance.util.Lists.IntersectalList;
 
 public abstract class AbstractTaggerFunction implements InternalFunction {
     
-    protected static final int SPLIT = 3000;
-
     protected final FunctionContext context;
-    
-    protected final MemcachedFullText ft;
     
     public AbstractTaggerFunction(FunctionContext context){
         this.context = context;
-        this.ft = new MemcachedFullText(context.getPool());
     }
     
     protected abstract Hashing createHashing(List<String> args);
@@ -60,7 +54,7 @@ public abstract class AbstractTaggerFunction implements InternalFunction {
                 IntersectalList<String> returnValue = Lists.newIntersectList();
                 List<Long> allHashes = hashing.parse(str);
                 
-                FullTextCommand command = new FullTextCommand(context.getPool());
+                FullTextCommand command = new FullTextCommand(context.getPooling());
                 List<Future<List<String>>> futures = command.getAll(key, allHashes);
                 for(Future<List<String>> future: futures){
                     List<String> results = future.get();
@@ -84,7 +78,7 @@ public abstract class AbstractTaggerFunction implements InternalFunction {
             final Hashing hashing = createHashing(args);
             try {
                 List<Long> ignoreHashes = hashing.parse(str);
-                FullTextCommand command = new FullTextCommand(context.getPool());
+                FullTextCommand command = new FullTextCommand(context.getPooling());
                 
                 List<Long> allKeys = command.getAll(key).get();
                 // remove ignore keys

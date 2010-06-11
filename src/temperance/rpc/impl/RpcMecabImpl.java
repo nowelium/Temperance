@@ -5,16 +5,16 @@ import org.chasen.mecab.wrapper.Node;
 import org.chasen.mecab.wrapper.Path;
 import org.chasen.mecab.wrapper.Tagger;
 
+import temperance.core.Configure;
 import temperance.exception.RpcException;
 import temperance.ft.MecabHashing;
 import temperance.ft.MecabNodeFilter;
 import temperance.hash.HashFunction;
-import temperance.rpc.Context;
 import temperance.rpc.RpcMecab;
 
 public class RpcMecabImpl implements RpcMecab {
 
-    protected final Context context;
+    protected final Configure configure;
     
     protected final HashFunction hashFunction;
     
@@ -22,11 +22,11 @@ public class RpcMecabImpl implements RpcMecab {
 
     protected final Tagger tagger;
     
-    public RpcMecabImpl(Context context){
-        this.context = context;
-        this.hashFunction = context.getFullTextHashFunction();
-        this.nodeFilter = context.getNodeFilter();
-        this.tagger = Tagger.create("-r", context.getMecabrc());
+    public RpcMecabImpl(Configure configure){
+        this.configure = configure;
+        this.hashFunction = configure.getFullTextHashFunction();
+        this.nodeFilter = configure.getNodeFilter();
+        this.tagger = Tagger.create("-r", configure.getMecabrc());
     }
     
     public Response.Parse parse(Request.Parse request) throws RpcException {

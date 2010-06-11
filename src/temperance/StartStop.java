@@ -9,11 +9,11 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.Parser;
 
+import temperance.core.Configure;
 import temperance.ft.MecabHashing;
 import temperance.ft.MecabNodeFilter;
 import temperance.hash.Hash;
 import temperance.hash.HashFunction;
-import temperance.rpc.Context;
 import temperance.server.MsgPackServer;
 import temperance.server.Server;
 import temperance.server.ProtobufServer;
@@ -30,7 +30,7 @@ public class StartStop {
             
             String memcached = cli.getOptionValue("memc");
             String memcachedPoolSize = cli.getOptionValue("memc_pool", "300");
-            String mecabrc = cli.getOptionValue("mecabrc", "/opt/local/etc/mecabrc");
+            String mecabrc = cli.getOptionValue("mecabrc", "/etc/mecabrc");
             
             MecabNodeFilter nodeFilter = MecabHashing.Filter.Nouns;
             if(cli.hasOption("mecab_node_filter_nouns")){
@@ -45,17 +45,20 @@ public class StartStop {
                 factory = ServerFactory.Msgpack;
             }
             
+            String maxThreads = cli.getOptionValue("maxThreads", "50");
+            
             String port = cli.getOptionValue("p", "17001");
             boolean daemonize = cli.hasOption("daemonize");
             
-            Context ctx = new Context();
-            ctx.setMemcached(memcached);
-            ctx.setMemcachedPoolSize(Integer.parseInt(memcachedPoolSize));
-            ctx.setMecabrc(mecabrc);
-            ctx.setFullTextHashFunction(fullTextHashFunction);
-            ctx.setNodeFilter(nodeFilter);
+            Configure configure = new Configure();
+            configure.setMemcached(memcached);
+            configure.setMaxConnectionPoolSize(Integer.parseInt(memcachedPoolSize));
+            configure.setMecabrc(mecabrc);
+            configure.setFullTextHashFunction(fullTextHashFunction);
+            configure.setNodeFilter(nodeFilter);
+            configure.setMaxThreadPoolSize(Integer.parseInt(maxThreads));
             
-            Server server = factory.createServer(ctx, daemonize, Integer.parseInt(port));
+            Server server = factory.createServer(configure, daemonize, Integer.parseInt(port));
             server.start();
         } catch (ParseException e) {
             HelpFormatter formatter = new HelpFormatter();
@@ -79,7 +82,7 @@ public class StartStop {
                 factory = ServerFactory.Msgpack;
             }
         
-            Context nullobj = new Context();
+            Configure nullobj = new Configure();
             Server server = factory.createServer(nullobj, false, 0);
             server.shutdown();
         } catch(ParseException e){
@@ -93,10 +96,10 @@ public class StartStop {
         Option memcached = new Option("memc", "memcached", true, "memcached server string(ex. host01:11211,host02:11211)");
         memcached.setRequired(true);
         
-        Option memcachedPoolSize = new Option("memc_pool", "memcached_pool", true, "memcached connection poolsize");
+        Option memcachedPoolSize = new Option("memc_pool", "memcached_pool", true, "memcached connection poolsize(default: 300)");
         memcachedPoolSize.setRequired(false);
         
-        Option mecabrc = new Option("mecabrc", "mecabrc", true, "mecabrc path(ex. /etc/mecabrc)");
+        Option mecabrc = new Option("mecabrc", "mecabrc", true, "mecabrc path(default /etc/mecabrc)");
         mecabrc.setRequired(false);
         
         OptionGroup mecabNodeFilter = new OptionGroup();
@@ -105,11 +108,14 @@ public class StartStop {
         mecabNodeFilter.setRequired(false);
         
         OptionGroup hashFunction = new OptionGroup();
-        hashFunction.addOption(new Option("ft_hash_md5", false, "fulltext hash function MD5"));
+        hashFunction.addOption(new Option("ft_hash_md5", false, "fulltext hash function MD5(default)"));
         hashFunction.addOption(new Option("ft_hash_sha1", false, "fulltext hash function SHA1"));
         hashFunction.setRequired(false);
 
         OptionGroup rpcServer = rpcServer();
+        
+        Option maxThreads = new Option("maxThreads", true, "max thread size(default 50)");
+        maxThreads.setRequired(false);
 
         Option port = new Option("p", "port", true, "server port");
         port.setRequired(false);
@@ -124,6 +130,7 @@ public class StartStop {
         options.addOptionGroup(mecabNodeFilter);
         options.addOptionGroup(hashFunction);
         options.addOptionGroup(rpcServer);
+        options.addOption(maxThreads);
         options.addOption(port);
         options.addOption(daemonize);
         return options;
@@ -139,16 +146,16 @@ public class StartStop {
     
     protected static enum ServerFactory {
         Protobuf {
-            public Server createServer(Context ctx, boolean daemonize, int port){
+            public Server createServer(Configure ctx, boolean daemonize, int port){
                 return new ProtobufServer(ctx, daemonize, port);
             }
         },
         Msgpack {
-            public Server createServer(Context ctx, boolean daemonize, int port){
+            public Server createServer(Configure ctx, boolean daemonize, int port){
                 return new MsgPackServer(ctx, daemonize, port);
             }
         },
         ;
-        public abstract Server createServer(Context ctx, boolean daemonize, int port);
+        public abstract Server createServer(Configure ctx, boolean daemonize, int port);
     }
 }

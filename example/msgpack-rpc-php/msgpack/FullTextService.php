@@ -14,7 +14,7 @@ class Temperance_FulltextService extends MessagePackRPC_Client {
     public function search($key, $str, $parser = self::PARSER_MECAB){
         return $this->call(self::SERVICE_NAME . '#search', array($key, $str, $parser));
     }
-    public function set($key, $str, $value, $expire = 86400, $parser = self::PARSER_MECAB){
-        return $this->call(self::SERVICE_NAME . '#set', array($key, $str, $value, $expire, $parser));
+    public function add($key, $str, $value, $expire = 86400, $parser = self::PARSER_MECAB){
+        return $this->call(self::SERVICE_NAME . '#add', array($key, $str, $value, $expire, $parser));
     }
 }

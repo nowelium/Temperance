@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.chasen.mecab.wrapper.Tagger;
 
+import temperance.core.Configure;
+import temperance.core.Pooling;
 import temperance.exception.CommandExecutionException;
 import temperance.exception.RpcException;
 import temperance.ft.MecabNodeFilter;
@@ -12,7 +14,6 @@ import temperance.function.FunctionContext;
 import temperance.function.FunctionFactory;
 import temperance.function.InternalFunction;
 import temperance.hash.HashFunction;
-import temperance.memcached.ConnectionPool;
 import temperance.ql.FunctionType;
 import temperance.ql.MengeType;
 import temperance.ql.QueryParser;
@@ -25,7 +26,6 @@ import temperance.ql.node.KeyNode;
 import temperance.ql.node.MengeNode;
 import temperance.ql.node.ParameterNode;
 import temperance.ql.node.Statement;
-import temperance.rpc.Context;
 import temperance.rpc.RpcQuery;
 import temperance.util.Lists;
 
@@ -33,7 +33,7 @@ public class RpcQueryImpl implements RpcQuery {
 
     protected final QueryParser parser = new QueryParser();
     
-    protected final Context context;
+    protected final Configure configure;
     
     protected final HashFunction hashFunction;
     
@@ -41,14 +41,14 @@ public class RpcQueryImpl implements RpcQuery {
 
     protected final Tagger tagger;
     
-    protected final ConnectionPool pool;
+    protected final Pooling pooling;
     
-    public RpcQueryImpl(Context context, ConnectionPool pool){
-        this.context = context;
-        this.hashFunction = context.getFullTextHashFunction();
-        this.nodeFilter = context.getNodeFilter();
-        this.tagger = Tagger.create("-r", context.getMecabrc());
-        this.pool = pool;
+    public RpcQueryImpl(Configure configure, Pooling pooling){
+        this.configure = configure;
+        this.hashFunction = configure.getFullTextHashFunction();
+        this.nodeFilter = configure.getNodeFilter();
+        this.tagger = Tagger.create("-r", configure.getMecabrc());
+        this.pooling = pooling;
     }
     
     public Response.Delete delete(Request.Delete request) throws RpcException {
@@ -60,7 +60,7 @@ public class RpcQueryImpl implements RpcQuery {
         
         try {
             FunctionContext ctx = new FunctionContext();
-            ctx.setPool(pool);
+            ctx.setPooling(pooling);
             ctx.setHashFunction(hashFunction);
             ctx.setTagger(tagger);
             ctx.setNodeFilter(nodeFilter);

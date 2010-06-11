@@ -2,14 +2,11 @@ package temperance.function;
 
 import java.util.List;
 
-import libmemcached.exception.LibMemcachedException;
+import temperance.core.ListCommand;
 import temperance.exception.CommandExecutionException;
-import temperance.storage.MemcachedList;
 import temperance.util.Lists;
 
 public class ValueFunction implements InternalFunction {
-    
-    protected static final int SPLIT = 1000;
     
     protected final FunctionContext context;
     
@@ -42,21 +39,17 @@ public class ValueFunction implements InternalFunction {
     
     protected List<String> select(final String key, final Filter filter) throws CommandExecutionException {
         try {
-            final MemcachedList list = new MemcachedList(context.getPool());
-            List<String> returnValue = Lists.newArrayList();
-            
-            final long count = list.count(key);
-            for(long i = 0; i < count; i += SPLIT){
-                long limit = SPLIT;
-                if(count < SPLIT){
-                    limit = count;
+            final ListCommand command = new ListCommand(context.getPooling());
+            final List<String> returnValue = Lists.newArrayList();
+            command.filterAll(key, new ListCommand.Filter(){
+                public void execute(List<String> values){
+                    synchronized(returnValue){
+                        returnValue.addAll(filter.execute(values));
+                    }
                 }
-                
-                final List<String> results = list.get(key, i, limit);
-                returnValue.addAll(filter.execute(results));
-            }
+            });
             return returnValue;
-        } catch(LibMemcachedException e){
+        } catch (InterruptedException e) {
             throw new CommandExecutionException(e);
         }
     }
@@ -98,7 +91,10 @@ public class ValueFunction implements InternalFunction {
             return select(key, new Condition(){
                 public boolean reject(String value){
                     // contains reject
-                    return args.contains(value);
+                    if(args.contains(value)){
+                        return true;
+                    }
+                    return false;
                 }
             });
         }

@@ -1,15 +1,15 @@
 package temperance.rpc.impl;
 
+import temperance.core.Configure;
 import temperance.exception.RpcException;
-import temperance.rpc.Context;
 import temperance.rpc.RpcGeoPoint;
 
 public class RpcGeoPointImpl implements RpcGeoPoint {
     
-    protected final Context context;
+    protected final Configure configure;
     
-    public RpcGeoPointImpl(Context context){
-        this.context = context;
+    public RpcGeoPointImpl(Configure configure){
+        this.configure = configure;
     }
 
     public Response.Add add(Request.Add request) throws RpcException {

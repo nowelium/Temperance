@@ -13,16 +13,16 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import temperance.core.Configure;
+import temperance.core.ConnectionPool;
+import temperance.core.Pooling;
 import temperance.exception.CommandExecutionException;
 import temperance.ft.MecabHashing;
 import temperance.hash.Hash;
-import temperance.memcached.ConnectionPool;
-import temperance.rpc.Context;
 import temperance.storage.MemcachedList;
 
 
 public class DataFunctionTest {
-    protected Context context;
     
     protected ConnectionPool pool;
     
@@ -30,13 +30,13 @@ public class DataFunctionTest {
     
     @Before
     public void setup() throws LibMemcachedException {
-        context = new Context();
-        context.setFullTextHashFunction(Hash.MD5);
-        context.setMecabrc("/opt/local/etc/mecabrc");
-        context.setMemcached("localhost:11211");
-        context.setMemcachedPoolSize(10);
-        context.setNodeFilter(MecabHashing.Filter.Nouns);
-        context.setPoolBehaviors(new HashMap<BehaviorType, Boolean>() {
+        Configure configure = new Configure();
+        configure.setFullTextHashFunction(Hash.MD5);
+        configure.setMecabrc("/opt/local/etc/mecabrc");
+        configure.setMemcached("localhost:11211");
+        configure.setMaxConnectionPoolSize(10);
+        configure.setNodeFilter(MecabHashing.Filter.Nouns);
+        configure.setPoolBehaviors(new HashMap<BehaviorType, Boolean>() {
             private static final long serialVersionUID = 1L;
             {
                 put(BehaviorType.SUPPORT_CAS, Boolean.TRUE);
@@ -46,14 +46,14 @@ public class DataFunctionTest {
             }
         });
         
-        pool = new ConnectionPool(context);
-        pool.init();
+        Pooling pooling = new Pooling(configure);
+        pooling.init();
         
         ctx = new FunctionContext();
-        ctx.setHashFunction(context.getFullTextHashFunction());
-        ctx.setNodeFilter(context.getNodeFilter());
-        ctx.setPool(pool);
-        ctx.setTagger(Tagger.create("-r " + context.getMecabrc()));
+        ctx.setHashFunction(configure.getFullTextHashFunction());
+        ctx.setNodeFilter(configure.getNodeFilter());
+        ctx.setPooling(pooling);
+        ctx.setTagger(Tagger.create("-r " + configure.getMecabrc()));
         
         MemcachedList a = new MemcachedList(pool);
         for(int i = 0; i < 10; ++i){

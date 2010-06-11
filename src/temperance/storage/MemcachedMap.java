@@ -3,7 +3,7 @@ package temperance.storage;
 import libmemcached.exception.LibMemcachedException;
 import libmemcached.wrapper.MemcachedClient;
 import libmemcached.wrapper.type.ReturnType;
-import temperance.memcached.ConnectionPool;
+import temperance.core.ConnectionPool;
 
 public class MemcachedMap {
     
@@ -19,7 +19,10 @@ public class MemcachedMap {
         final MemcachedClient client = pool.get();
         try {
             ReturnType rt = client.getStorage().set(key, value, expire, flag);
-            return ReturnType.SUCCESS.equals(rt);
+            if(ReturnType.BUFFERED.equals(rt) || ReturnType.SUCCESS.equals(rt)){
+                return true;
+            }
+            return false;
         } finally {
             pool.release(client);
         }

@@ -14,13 +14,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import temperance.core.Configure;
+import temperance.core.Pooling;
 import temperance.exception.CommandExecutionException;
 import temperance.ft.MecabHashing;
 import temperance.ft.MecabNodeFilter;
 import temperance.hash.Hash;
 import temperance.hash.HashFunction;
-import temperance.memcached.ConnectionPool;
-import temperance.rpc.Context;
 import temperance.storage.MemcachedFullText;
 
 
@@ -32,7 +32,7 @@ public class MecabFunctionTest {
     
     protected static MecabNodeFilter filter = MecabHashing.Filter.Nouns;
     
-    protected ConnectionPool pool;
+    protected Pooling pooling;
     
     protected FunctionContext ctx = new FunctionContext();
     
@@ -49,8 +49,8 @@ public class MecabFunctionTest {
     }
     
     public void setupPool(){
-        Context c = new Context();
-        c.setMemcachedPoolSize(10);
+        Configure c = new Configure();
+        c.setMaxConnectionPoolSize(10);
         c.setMemcached("localhost:11211");
         c.setPoolBehaviors(new HashMap<BehaviorType, Boolean>() {
             private static final long serialVersionUID = 1L;
@@ -62,12 +62,12 @@ public class MecabFunctionTest {
             }
         });
         
-        pool = new ConnectionPool(c);
-        pool.init();
+        pooling = new Pooling(c);
+        pooling.init();
     }
     
     public void setupData() throws LibMemcachedException {
-        MemcachedFullText ft = new MemcachedFullText(pool);
+        MemcachedFullText ft = new MemcachedFullText(pooling.getConnectionPool());
         MecabHashing mecab = new MecabHashing(hashFunction, tagger, filter);
         
         {
@@ -89,14 +89,14 @@ public class MecabFunctionTest {
     }
     
     public void setupFunctionContext() {
-        ctx.setPool(pool);
+        ctx.setPooling(pooling);
         ctx.setHashFunction(hashFunction);
         ctx.setNodeFilter(filter);
         ctx.setTagger(tagger);
     }
     
     public void cleanupData(){
-        MemcachedClient client = pool.get();
+        MemcachedClient client = pooling.getConnectionPool().get();
         client.getStorage().flush(0);
     }
 

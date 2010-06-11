@@ -9,7 +9,7 @@ message Request {
         PREFIX = 2;
     }
 
-    message Set {
+    message Add {
         required string key = 1;
         required string str = 2;
         required string value = 3;
@@ -23,7 +23,7 @@ message Request {
     }
 }
 message Response {
-    message Set {
+    message Add {
         required bool succeed = 1;
     }
     message Search {
@@ -32,6 +32,6 @@ message Response {
 }
 
 service FullTextService {
-    rpc set(Request.Set) returns(Response.Set);
+    rpc add(Request.Add) returns(Response.Add);
     rpc search(Request.Search) returns(Response.Search);
 }

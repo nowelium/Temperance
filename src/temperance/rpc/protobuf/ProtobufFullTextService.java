@@ -46,8 +46,8 @@ public class ProtobufFullTextService implements FullTextService.BlockingInterfac
         }
     }
 
-    public Response.Set set(RpcController controller, Request.Set set) throws ServiceException {
-        RpcFullText.Request.Set request = RpcFullText.Request.Set.newInstance();
+    public Response.Add add(RpcController controller, Request.Add set) throws ServiceException {
+        RpcFullText.Request.Add request = RpcFullText.Request.Add.newInstance();
         request.key = set.getKey();
         request.str = set.getStr();
         request.value = set.getValue();
@@ -55,9 +55,9 @@ public class ProtobufFullTextService implements FullTextService.BlockingInterfac
         request.parser = convert(set.getParser());
         
         try {
-            RpcFullText.Response.Set response = rpc.set(request);
+            RpcFullText.Response.Add response = rpc.add(request);
             
-            Response.Set.Builder builder = Response.Set.newBuilder();
+            Response.Add.Builder builder = Response.Add.newBuilder();
             builder.setSucceed(response.succeed);
             return builder.build();
         } catch(RpcException e){

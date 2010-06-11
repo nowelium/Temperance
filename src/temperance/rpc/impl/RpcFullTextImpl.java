@@ -8,6 +8,9 @@ import libmemcached.exception.LibMemcachedException;
 
 import org.chasen.mecab.wrapper.Tagger;
 
+import temperance.core.Configure;
+import temperance.core.FullTextCommand;
+import temperance.core.Pooling;
 import temperance.exception.RpcException;
 import temperance.ft.GramHashing;
 import temperance.ft.Hashing;
@@ -15,16 +18,13 @@ import temperance.ft.MecabHashing;
 import temperance.ft.MecabNodeFilter;
 import temperance.ft.PrefixHashing;
 import temperance.hash.HashFunction;
-import temperance.memcached.FullTextCommand;
-import temperance.memcached.ConnectionPool;
-import temperance.rpc.Context;
 import temperance.rpc.RpcFullText;
 import temperance.rpc.RpcFullText.Request.Parser;
 import temperance.storage.MemcachedFullText;
 
 public class RpcFullTextImpl implements RpcFullText {
 
-    protected final Context context;
+    protected final Configure configure;
     
     protected final HashFunction hashFunction;
     
@@ -32,17 +32,14 @@ public class RpcFullTextImpl implements RpcFullText {
 
     protected final Tagger tagger;
     
-    protected final ConnectionPool pool;
+    protected final Pooling pooling;
     
-    protected final MemcachedFullText fulltext;
-    
-    public RpcFullTextImpl(Context context, ConnectionPool pool){
-        this.context = context;
-        this.hashFunction = context.getFullTextHashFunction();
-        this.nodeFilter = context.getNodeFilter();
-        this.tagger = Tagger.create("-r", context.getMecabrc());
-        this.pool = pool;
-        this.fulltext = new MemcachedFullText(pool);
+    public RpcFullTextImpl(Configure configure, Pooling pooling){
+        this.configure = configure;
+        this.hashFunction = configure.getFullTextHashFunction();
+        this.nodeFilter = configure.getNodeFilter();
+        this.tagger = Tagger.create("-r", configure.getMecabrc());
+        this.pooling = pooling;
     }
     
     protected Hashing createHashing(Parser parser){
@@ -60,7 +57,7 @@ public class RpcFullTextImpl implements RpcFullText {
         final String str = request.str;
         final Parser parser = request.parser;
         
-        final FullTextCommand command = new FullTextCommand(pool);
+        final FullTextCommand command = new FullTextCommand(pooling);
         try {
             Hashing hashing = createHashing(parser);
             List<Long> hashes = hashing.parse(str);
@@ -79,7 +76,7 @@ public class RpcFullTextImpl implements RpcFullText {
         }
     }
 
-    public Response.Set set(Request.Set request)  throws RpcException {
+    public Response.Add add(Request.Add request)  throws RpcException {
         final String key = request.key;
         final String str = request.str;
         final String value = request.value;
@@ -87,12 +84,13 @@ public class RpcFullTextImpl implements RpcFullText {
         final Parser parser = request.parser;
         
         try {
-            Hashing hashing = createHashing(parser);
-            List<Long> hashes = hashing.parse(str);
+            final MemcachedFullText fulltext = new MemcachedFullText(pooling.getConnectionPool());
+            final Hashing hashing = createHashing(parser);
+            final List<Long> hashes = hashing.parse(str);
             for(Long hash: hashes){
                 fulltext.add(key, hash, value, expire);
             }
-            Response.Set response = Response.Set.newInstance();
+            Response.Add response = Response.Add.newInstance();
             response.succeed = true;
             return response;
         } catch(LibMemcachedException e){

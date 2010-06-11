@@ -3,8 +3,9 @@ package temperance.memcached;
 import org.junit.Assert;
 import org.junit.Test;
 
+import temperance.core.ConnectionPool;
+import temperance.core.Configure;
 import temperance.exception.InitializationException;
-import temperance.rpc.Context;
 
 public class ConnectionPoolTest {
 
@@ -16,9 +17,9 @@ public class ConnectionPoolTest {
     @Test
     public void test1() {
         try {
-            Context ctx = new Context();
-            ctx.setMemcached("dummy");
-            new ConnectionPool(ctx).init();
+            Configure c = new Configure();
+            c.setMemcached("dummy");
+            new ConnectionPool(c).init();
             Assert.fail();
         } catch(InitializationException e){
             System.out.println(e.getMessage());

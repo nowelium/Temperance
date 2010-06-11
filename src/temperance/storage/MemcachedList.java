@@ -11,8 +11,8 @@ import libmemcached.wrapper.MemcachedResult;
 import libmemcached.wrapper.MemcachedStorage;
 import libmemcached.wrapper.SimpleResult;
 import libmemcached.wrapper.type.ReturnType;
+import temperance.core.ConnectionPool;
 import temperance.exception.MemcachedOperationRuntimeException;
-import temperance.memcached.ConnectionPool;
 import temperance.util.Lists;
 import temperance.util.SoftReferenceMap;
 
@@ -109,14 +109,18 @@ public class MemcachedList {
                 storage.set(incrementKey, "0", INCREMENT_VALUE_EXPIRE, INCREMENT_VALUE_FLAG);
                 return 0L;
             }
-            
-            final long increment = Long.valueOf(result.getValue()).longValue() + 1L;
-            String incrementValue = Long.toString(increment);
-            ReturnType rt = storage.cas(incrementKey, incrementValue, INCREMENT_VALUE_EXPIRE, INCREMENT_VALUE_FLAG, result.getCAS());
-            if(!ReturnType.SUCCESS.equals(rt)){
-                continue;
+                
+            try {
+                final long increment = Long.valueOf(result.getValue()).longValue() + 1L;
+                String incrementValue = Long.toString(increment);
+                ReturnType rt = storage.cas(incrementKey, incrementValue, INCREMENT_VALUE_EXPIRE, INCREMENT_VALUE_FLAG, result.getCAS());
+                if(!ReturnType.SUCCESS.equals(rt)){
+                    continue;
+                }
+                return increment;
+            } finally {
+                result.free();
             }
-            return increment;
         }
     }
     

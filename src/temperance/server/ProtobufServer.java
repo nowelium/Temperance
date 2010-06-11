@@ -4,12 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+import temperance.core.Configure;
 import temperance.protobuf.FullText.FullTextService;
 import temperance.protobuf.List.ListService;
 import temperance.protobuf.Map.MapService;
 import temperance.protobuf.Mecab.MecabService;
 import temperance.protobuf.Query.QueryService;
-import temperance.rpc.Context;
 import temperance.rpc.protobuf.ProtobufFullTextService;
 import temperance.rpc.protobuf.ProtobufListService;
 import temperance.rpc.protobuf.ProtobufMapService;
@@ -23,30 +23,25 @@ public class ProtobufServer extends AbstractRpcServer {
     
     protected final SocketRpcServer server;
     
-    public ProtobufServer(Context context, boolean daemonize, int rpcPort) {
-        super(context, ProtobufServer.class.getName(), daemonize);
+    public ProtobufServer(Configure configure, boolean daemonize, int rpcPort) {
+        super(configure, ProtobufServer.class.getName(), daemonize);
         this.server = new SocketRpcServer(rpcPort, Executors.newCachedThreadPool());
     }
 
     @Override
-    public void run() {
+    public void initServer(){
         for(BlockingService service: createBlockingService()){
             server.registerBlockingService(service);
         }
-
+    }
+    
+    @Override
+    public void startServer() {
         server.startServer();
-        try {
-            Object o = new Object();
-            synchronized (o) {
-                o.wait();
-            }
-        } catch(InterruptedException e){
-            //
-        }
     }
 
     @Override
-    public void stop() {
+    public void stopServer() {
         server.shutDown();
     }
     

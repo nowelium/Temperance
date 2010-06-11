@@ -6,22 +6,22 @@ require dirname(__FILE__) . '/proto/QueryService.php';
 
 $service = new Temperance_FullTextService('localhost', 17001);
 {
-    $setParam = new Temperance_FullText_Request_Set;
+    $setParam = new Temperance_FullText_Request_Add;
     $setParam->key = 'hoge';
     $setParam->str = '本日は晴天なり';
     $setParam->value = 'value-1';
     $setParam->parser = Temperance_FullText_Request_Parser::MECAB;
 
-    $service->set($setParam);
+    $service->add($setParam);
 }
 {
-    $setParam = new Temperance_FullText_Request_Set;
+    $setParam = new Temperance_FullText_Request_Add;
     $setParam->key = 'hoge';
     $setParam->str = '本日は雨天なり';
     $setParam->value = 'value-2';
     $setParam->parser = Temperance_FullText_Request_Parser::MECAB;
 
-    $service->set($setParam);
+    $service->add($setParam);
 }
 
 $service = new Temperance_QueryService('localhost', 17001);

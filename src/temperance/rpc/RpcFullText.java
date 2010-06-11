@@ -7,7 +7,7 @@ import temperance.util.Lists;
 
 public interface RpcFullText extends Rpc {
     
-    public Response.Set set(Request.Set request) throws RpcException;
+    public Response.Add add(Request.Add request) throws RpcException;
     
     public Response.Search search(Request.Search request) throws RpcException;
     
@@ -36,7 +36,7 @@ public interface RpcFullText extends Rpc {
                 throw new IllegalArgumentException("no such parser:" + num);
             }
         }
-        public static class Set {
+        public static class Add {
             public static final int DEFAULT_EXPIRE = 86400;
             
             public String key;
@@ -45,11 +45,11 @@ public interface RpcFullText extends Rpc {
             public int expire = DEFAULT_EXPIRE;
             public Parser parser = Parser.MECAB;
             
-            private Set(){
+            private Add(){
                 // nop
             }
-            public static Set newInstance(){
-                return new Set();
+            public static Add newInstance(){
+                return new Add();
             }
         }
         public static class Search {
@@ -67,14 +67,14 @@ public interface RpcFullText extends Rpc {
     }
     
     public static abstract class Response {
-        public static class Set {
+        public static class Add {
             public boolean succeed;
             
-            private Set(){
+            private Add(){
                 // nop
             }
-            public static Set newInstance(){
-                return new Set();
+            public static Add newInstance(){
+                return new Add();
             }
         }
         public static class Search {

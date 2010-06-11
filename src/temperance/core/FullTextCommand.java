@@ -1,4 +1,4 @@
-package temperance.memcached;
+package temperance.core;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -9,26 +9,27 @@ import temperance.util.Lists;
 
 public class FullTextCommand implements Command {
     
-    protected final ThreadPool thread = ThreadPool.getInstance();
+    protected final ThreadPool thread;
     
-    protected final ConnectionPool pool;
+    protected final ConnectionPool connection;
 
-    public FullTextCommand(ConnectionPool pool){
-        this.pool = pool;
+    public FullTextCommand(Pooling pooling){
+        this.thread = pooling.getThreadPool();
+        this.connection = pooling.getConnectionPool();
     }
     
     public Future<List<Long>> getAll(String key){
-        return submit(new GetAllHashes(pool, key));
+        return submit(new GetAllHashes(connection, key));
     }
 
     public Future<List<String>> getAll(String key, Long hash) {
-        return submit(new GetAllValue(pool, key, hash));
+        return submit(new GetAllValue(connection, key, hash));
     }
 
     public List<Future<List<String>>> getAll(String key, List<Long> hashes) {
         final List<Future<List<String>>> futures = Lists.newArrayList();
         for(Long hash: hashes){
-            futures.add(submit(new GetAllValue(pool, key, hash)));
+            futures.add(submit(new GetAllValue(connection, key, hash)));
         }
         return futures;
     }
@@ -47,9 +48,9 @@ public class FullTextCommand implements Command {
         public List<Long> call() throws Exception {
             final MemcachedFullText ft = new MemcachedFullText(pool);
             final List<Long> returnValue = Lists.newArrayList();
-            long targetCount = ft.count(key);
+            final long targetCount = ft.count(key);
             for(long i = 0; i < targetCount; i += SPLIT){
-                List<Long> results = ft.get(key, i, SPLIT);
+                List<Long> results = ft.getHash(key, i, SPLIT);
                 returnValue.addAll(results);
             }
             return returnValue;

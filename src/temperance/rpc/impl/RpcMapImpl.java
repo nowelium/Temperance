@@ -1,29 +1,27 @@
 package temperance.rpc.impl;
 
 import libmemcached.exception.LibMemcachedException;
+import temperance.core.Configure;
+import temperance.core.Pooling;
 import temperance.exception.RpcException;
-import temperance.memcached.ConnectionPool;
-import temperance.rpc.Context;
 import temperance.rpc.RpcMap;
 import temperance.storage.MemcachedMap;
 
 public class RpcMapImpl implements RpcMap {
     
-    protected final Context context;
+    protected final Configure context;
     
-    protected final ConnectionPool pool;
+    protected final Pooling pooling;
     
-    protected final MemcachedMap map;
-    
-    public RpcMapImpl(Context context, ConnectionPool pool){
+    public RpcMapImpl(Configure context, Pooling pooling){
         this.context = context;
-        this.pool = pool;
-        this.map = new MemcachedMap(pool);
+        this.pooling = pooling;
     }
 
     public Response.Get get(Request.Get request) throws RpcException {
         final String key = request.key;
         
+        final MemcachedMap map = new MemcachedMap(pooling.getConnectionPool());
         try {
             String result = map.get(key);
             
@@ -40,11 +38,12 @@ public class RpcMapImpl implements RpcMap {
         final String value = request.value;
         final int expire = request.expire;
         
+        final MemcachedMap map = new MemcachedMap(pooling.getConnectionPool());
         try {
-            map.set(key, value, expire);
+            boolean success = map.set(key, value, expire);
             
             Response.Set response = Response.Set.newInstance();
-            response.succeed = true;
+            response.succeed = success;
             return response;
         } catch (LibMemcachedException e) {
             Response.Set response = Response.Set.newInstance();

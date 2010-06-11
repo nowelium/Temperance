@@ -28,7 +28,7 @@ public class MsgpackFullTextService {
     }
     
     public boolean set(String key, String str, String value) throws RpcException {
-        return set(key, str, value, RpcFullText.Request.Set.DEFAULT_EXPIRE);
+        return set(key, str, value, RpcFullText.Request.Add.DEFAULT_EXPIRE);
     }
     
     public boolean set(String key, String str, String value, int expire) throws RpcException {
@@ -36,14 +36,14 @@ public class MsgpackFullTextService {
     }
     
     public boolean set(String key, String str, String value, int expire, int parser) throws RpcException {
-        RpcFullText.Request.Set request = RpcFullText.Request.Set.newInstance();
+        RpcFullText.Request.Add request = RpcFullText.Request.Add.newInstance();
         request.key = key;
         request.str = str;
         request.value = value;
         request.expire = expire;
         request.parser = RpcFullText.Request.Parser.get(parser);
         
-        RpcFullText.Response.Set response = rpc.set(request);
+        RpcFullText.Response.Add response = rpc.add(request);
         return response.succeed;
     }
     

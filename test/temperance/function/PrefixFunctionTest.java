@@ -13,21 +13,19 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import temperance.core.Configure;
+import temperance.core.Pooling;
 import temperance.exception.CommandExecutionException;
 import temperance.ft.PrefixHashing;
-import temperance.function.FunctionContext;
-import temperance.function.PrefixFunction;
 import temperance.hash.Hash;
 import temperance.hash.HashFunction;
-import temperance.memcached.ConnectionPool;
-import temperance.rpc.Context;
 import temperance.storage.MemcachedFullText;
 
 public class PrefixFunctionTest {
     
     protected static HashFunction hashFunction = Hash.MD5;
     
-    protected ConnectionPool pool;
+    protected Pooling pooling;
     
     protected FunctionContext ctx = new FunctionContext();
     
@@ -44,8 +42,8 @@ public class PrefixFunctionTest {
     }
 
     public void setupPool(){
-        Context c = new Context();
-        c.setMemcachedPoolSize(1);
+        Configure c = new Configure();
+        c.setMaxConnectionPoolSize(1);
         c.setMemcached("localhost:11211");
         c.setPoolBehaviors(new HashMap<BehaviorType, Boolean>() {
             private static final long serialVersionUID = 1L;
@@ -57,12 +55,12 @@ public class PrefixFunctionTest {
             }
         });
         
-        pool = new ConnectionPool(c);
-        pool.init();
+        pooling = new Pooling(c);
+        pooling.init();
     }
     
     public void setupData() throws LibMemcachedException {
-        MemcachedFullText ft = new MemcachedFullText(pool);
+        MemcachedFullText ft = new MemcachedFullText(pooling.getConnectionPool());
         PrefixHashing hashing = new PrefixHashing(hashFunction);
         
         {
@@ -84,12 +82,12 @@ public class PrefixFunctionTest {
     }
     
     public void setupFunctionContext() {
-        ctx.setPool(pool);
+        ctx.setPooling(pooling);
         ctx.setHashFunction(hashFunction);
     }
     
     public void cleanupData(){
-        MemcachedClient client = pool.get();
+        MemcachedClient client = pooling.getConnectionPool().get();
         client.getStorage().flush(0);
     }
 

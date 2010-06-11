@@ -16,7 +16,7 @@ import org.msgpack.rpc.server.RPCResponseEncoder;
 import org.msgpack.rpc.server.RPCServerHandler;
 import org.msgpack.rpc.server.TCPServer;
 
-import temperance.rpc.Context;
+import temperance.core.Configure;
 import temperance.rpc.msgpack.MsgpackFullTextService;
 import temperance.rpc.msgpack.MsgpackListService;
 import temperance.rpc.msgpack.MsgpackMapService;
@@ -27,36 +27,31 @@ public class MsgPackServer extends AbstractRpcServer {
     
     protected final ServiceTcpServer server;
     
-    public MsgPackServer(Context context, boolean daemonize, int rpcPort) {
-        super(context, MsgPackServer.class.getName(), daemonize);
+    public MsgPackServer(Configure configure, boolean daemonize, int rpcPort) {
+        super(configure, MsgPackServer.class.getName(), daemonize);
         this.server = new ServiceTcpServer("0.0.0.0", rpcPort);
     }
-
+    
     @Override
-    public void run() {
+    public void initServer(){
         server.registerRpc(new MsgpackFullTextService(createRpcFullText()));
         server.registerRpc(new MsgpackListService(createRpcList()));
         server.registerRpc(new MsgpackMapService(createRpcMap()));
         server.registerRpc(new MsgpackMecabService(createRpcMecab()));
         server.registerRpc(new MsgpackQueryService(createRpcQuery()));
-        
+    }
+
+    @Override
+    public void startServer() {
         try {
             server.serv();
         } catch(IOException e){
             throw new RuntimeException(e);
         }
-        try {
-            Object o = new Object();
-            synchronized (o) {
-                o.wait();
-            }
-        } catch(InterruptedException e){
-            //
-        }
     }
 
     @Override
-    public void stop() {
+    public void stopServer() {
         server.stop();
     }
     
