@@ -46,13 +46,15 @@ public class MemcachedFullText {
     }
 
     protected static String genKey(String key, Long hash){
-        if(hashKeyCache.contains(key, hash)){
-            return hashKeyCache.get(key, hash);
+        synchronized(hashKeyCache){
+            if(hashKeyCache.contains(key, hash)){
+                return hashKeyCache.get(key, hash);
+            }
+            
+            String hashKey = new StringBuffer(key).append(KEY_SEPARATOR).append(hash.toString()).toString();
+            hashKeyCache.put(key, hash, hashKey);
+            return hashKey;
         }
-        
-        String hashKey = new StringBuffer(key).append(KEY_SEPARATOR).append(hash.toString()).toString();
-        hashKeyCache.put(key, hash, hashKey);
-        return hashKey;
     }
 
 }
