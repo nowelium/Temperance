@@ -92,7 +92,7 @@ public class MemcachedList {
         }
     }
     
-    private long generateId(final MemcachedClient client, final String key) throws LibMemcachedException {
+    protected long generateId(final MemcachedClient client, final String key) throws LibMemcachedException {
         final MemcachedStorage storage = client.getStorage();
         final String incrementKey = incrementKey(key);
         

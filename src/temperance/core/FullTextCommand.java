@@ -71,7 +71,12 @@ public class FullTextCommand implements Command {
             final List<String> returnValue = Lists.newArrayList();
             final long targetCount = ft.count(key, hash);
             for(long i = 0; i < targetCount; i += SPLIT){
-                List<String> results = ft.get(key, hash, i, SPLIT);
+                long splitLimit = SPLIT;
+                if(targetCount < SPLIT){
+                    splitLimit = targetCount;
+                }
+                
+                List<String> results = ft.get(key, hash, i, splitLimit);
                 returnValue.addAll(results);
             }
             return returnValue;

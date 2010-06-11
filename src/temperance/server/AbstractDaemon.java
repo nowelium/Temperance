@@ -82,19 +82,19 @@ public abstract class AbstractDaemon implements Server {
         try {
             Daemon daemon = new Daemon();
             if(daemon.isDaemonized()){
-                daemon.init(pidFile.getAbsolutePath());
-                
-                logger.info("starting process(" + LIBC.getpid() + ":" + name + ")");
-                
                 for(Signal signal: shutdownSignals){
                     Signal.handle(signal, new ShutdownSignal());
                 }
+                
+                daemon.init(pidFile.getAbsolutePath());
             } else {
                 if(daemonize){
                     daemon.daemonize();
                     System.exit(0);
                 }
             }
+            
+            logger.info("starting process(" + LIBC.getpid() + ":" + name + ")");
             
             logger.info("init process");
             init();
