@@ -66,17 +66,24 @@ public class ConnectionPool implements LifeCycle {
     
     protected static Map<BehaviorType, Boolean> createBehaviorTypeOption(Map<BehaviorType, Boolean> userValue){
         Map<BehaviorType, Boolean> behaviors = new HashMap<BehaviorType, Boolean>(userValue);
+        // default values
         if(!behaviors.containsKey(BehaviorType.SUPPORT_CAS)){
             behaviors.put(BehaviorType.SUPPORT_CAS, Boolean.TRUE);
         }
         if(!behaviors.containsKey(BehaviorType.BUFFER_REQUESTS)){
             behaviors.put(BehaviorType.BUFFER_REQUESTS, Boolean.TRUE);
         }
+        if(!behaviors.containsKey(BehaviorType.NO_BLOCK)){
+            behaviors.put(BehaviorType.NO_BLOCK, Boolean.TRUE);
+        }
         if(!behaviors.containsKey(BehaviorType.TCP_KEEPALIVE)){
             behaviors.put(BehaviorType.TCP_KEEPALIVE, Boolean.TRUE);
         }
         if(!behaviors.containsKey(BehaviorType.TCP_NODELAY)){
             behaviors.put(BehaviorType.TCP_NODELAY, Boolean.TRUE);
+        }
+        if(!behaviors.containsKey(BehaviorType.BINARY_PROTOCOL)){
+            behaviors.put(BehaviorType.BINARY_PROTOCOL, Boolean.FALSE);
         }
         return behaviors;
     }

@@ -7,6 +7,7 @@ import org.chasen.mecab.wrapper.Node;
 import org.chasen.mecab.wrapper.Path;
 import org.chasen.mecab.wrapper.Tagger;
 
+import temperance.ft.MecabNodeFilter.CharType;
 import temperance.hash.HashFunction;
 import temperance.util.Lists;
 
@@ -41,15 +42,35 @@ public class MecabHashing implements Hashing {
     
     public List<String> parseToString(String str){
         List<String> surfaces = Lists.newArrayList();
+        StringBuilder numeric = new StringBuilder();
+        boolean beginNumeric = false;
         for(MecabNode<Node, Path> node: parseToNode(str)){
-            surfaces.add(node.getSurface());
+            String surface = node.getSurface();
+            byte charType = node.getCharType();
+            
+            // TODO: numeric* => nouns!
+            if(CharType.Numeric.equals(charType)){
+                beginNumeric = true;
+                numeric.append(surface);
+                continue;
+            }
+            if(beginNumeric){
+                beginNumeric = false;
+                surfaces.add(numeric.toString());
+                numeric = new StringBuilder();
+            }
+            surfaces.add(surface);
+        }
+        if(0 < numeric.length()){
+            surfaces.add(numeric.toString());
         }
         return surfaces;
     }
     
     public List<Long> parse(String str) {
         List<Long> hashes = Lists.newArrayList();
-        for(String surface: parseToString(str)){
+        List<String> surfaces = Lists.unique(parseToString(str));
+        for(String surface: surfaces){
             long hash = function.hash(surface);
             hashes.add(Long.valueOf(hash));
         }
@@ -74,7 +95,7 @@ public class MecabHashing implements Hashing {
                 return true;
             }
         },
-        Nouns(CharType.Alfabet, CharType.Particle, CharType.Numeric, CharType.Symbol) {
+        Nouns(CharType.Alfabet, CharType.Particle, CharType.Symbol, CharType.Symbol2, CharType.Other) {
             public boolean accept(MecabNode<Node, Path> node){
                 if(!Default.accept(node)){
                     return false;

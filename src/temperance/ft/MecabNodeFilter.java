@@ -11,8 +11,11 @@ public interface MecabNodeFilter {
     public static enum CharType {
         Alfabet((byte) 9),
         Particle((byte) 6),
-        Numeric((byte) 3),
-        Symbol((byte) 0)
+        // symbol2 => e.g.) "÷"
+        Symbol2((byte) 5),
+        Numeric((byte) 4),
+        Symbol((byte) 3),
+        Other((byte) 0)
         ;
         
         private final byte type;

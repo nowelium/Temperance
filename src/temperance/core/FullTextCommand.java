@@ -18,6 +18,14 @@ public class FullTextCommand implements Command {
         this.connection = pooling.getConnectionPool();
     }
     
+    public List<Future<Long>> addAll(final String key, final List<Long> hashes, final String value, final int expire) throws InterruptedException {
+        final List<Callable<Long>> tasks = Lists.newArrayList();
+        for(Long hash: hashes){
+            tasks.add(new AddValue(connection, key, hash, value, expire));
+        }
+        return invokeAll(tasks);
+    }
+    
     public Future<List<Long>> getAll(String key){
         return submit(new GetAllHashes(connection, key));
     }
@@ -34,8 +42,32 @@ public class FullTextCommand implements Command {
         return futures;
     }
     
-    protected <T> Future<List<T>> submit(Callable<List<T>> task){
+    protected <T> List<Future<T>> invokeAll(List<Callable<T>> tasks) throws InterruptedException {
+        return thread.invokeAll(tasks);
+    }
+    
+    protected <T> Future<T> submit(Callable<T> task){
         return thread.submit(task);
+    }
+    
+    protected static class AddValue implements Callable<Long> {
+        private final ConnectionPool pool;
+        private final String key;
+        private final Long hash;
+        private final String value;
+        private final int expiration;
+        protected AddValue(ConnectionPool pool, String key, Long hash, String value, int expiration){
+            this.pool = pool;
+            this.key = key;
+            this.hash = hash;
+            this.value = value;
+            this.expiration = expiration;
+        }
+        public Long call() throws Exception {
+            final MemcachedFullText ft = new MemcachedFullText(pool);
+            long id = ft.add(key, hash, value, expiration);
+            return Long.valueOf(id);
+        }
     }
     
     protected static class GetAllHashes implements Callable<List<Long>> {

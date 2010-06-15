@@ -41,18 +41,16 @@ public class MemcachedList {
         this.pool = pool;
     }
     
-    public long add(String key, String value, int expire) throws LibMemcachedException {
+    public long add(final String key, final String value, final int expire) throws LibMemcachedException {
         final MemcachedClient client = pool.get();
-        final long nextId = generateId(client, key);
         try {
-            client.getStorage().set(indexKey(key, nextId), value, expire, DEFAULT_VALUE_FLAG);
-            return nextId;
+            return append(client.getStorage(), key, value, expire);
         } finally {
             pool.release(client);
         }
     }
     
-    public List<String> get(String key, long offset, long limit) throws LibMemcachedException {
+    public List<String> get(final String key, final long offset, final long limit) throws LibMemcachedException {
         final List<String> keys = Lists.newArrayList();
         for(long i = offset; i < (offset + limit); ++i){
             keys.add(indexKey(key, i));
@@ -64,11 +62,11 @@ public class MemcachedList {
             final List<String> returnValue = Lists.newArrayList();
             
             synchronized(storage){
-                storage.getMulti(new Fetcher(){
+                storage.getMultiByKey(new Fetcher(){
                     public void fetch(SimpleResult result) {
                         returnValue.add(result.getValue());
                     }
-                }, keys.toArray(new String[keys.size()]));
+                }, key, keys.toArray(new String[keys.size()]));
                 return returnValue;
             }
         } finally {
@@ -76,12 +74,12 @@ public class MemcachedList {
         }
     }
     
-    public long count(String key) throws LibMemcachedException {
+    public long count(final String key) throws LibMemcachedException {
         final MemcachedClient client = pool.get();
         try {
             final MemcachedStorage storage = client.getStorage();
             
-            String result = storage.get(incrementKey(key));
+            String result = storage.getByKey(key, incrementKey(key));
             if(null == result){
                 return 0L;
             }
@@ -92,8 +90,13 @@ public class MemcachedList {
         }
     }
     
-    protected long generateId(final MemcachedClient client, final String key) throws LibMemcachedException {
-        final MemcachedStorage storage = client.getStorage();
+    protected static long append(final MemcachedStorage storage, final String key, final String value, final int expire) throws LibMemcachedException {
+        final long nextId = generateId(storage, key);
+        storage.setByKey(key, indexKey(key, nextId), value, expire, DEFAULT_VALUE_FLAG);
+        return nextId;
+    }
+    
+    protected static long generateId(final MemcachedStorage storage, final String key) throws LibMemcachedException {
         final String incrementKey = incrementKey(key);
         
         final long begin = System.currentTimeMillis();
@@ -103,17 +106,17 @@ public class MemcachedList {
                 throw new MemcachedOperationRuntimeException("incremental lock timeout");
             }
             
-            MemcachedResult result = storage.gets(incrementKey);
+            MemcachedResult result = storage.getsByKey(key, incrementKey);
             if(null == result){
                 // start value was 0
-                storage.set(incrementKey, "0", INCREMENT_VALUE_EXPIRE, INCREMENT_VALUE_FLAG);
+                storage.setByKey(key, incrementKey, "0", INCREMENT_VALUE_EXPIRE, INCREMENT_VALUE_FLAG);
                 return 0L;
             }
                 
             try {
                 final long increment = Long.valueOf(result.getValue()).longValue() + 1L;
                 String incrementValue = Long.toString(increment);
-                ReturnType rt = storage.cas(incrementKey, incrementValue, INCREMENT_VALUE_EXPIRE, INCREMENT_VALUE_FLAG, result.getCAS());
+                ReturnType rt = storage.casByKey(key, incrementKey, incrementValue, INCREMENT_VALUE_EXPIRE, INCREMENT_VALUE_FLAG, result.getCAS());
                 if(!ReturnType.SUCCESS.equals(rt)){
                     continue;
                 }
@@ -124,28 +127,22 @@ public class MemcachedList {
         }
     }
     
-    protected static String incrementKey(String key){
-        synchronized(incrementKeyCache){
-            if(incrementKeyCache.containsKey(key)){
-                return incrementKeyCache.get(key);
-            }
-            
-            String incrementKey = new StringBuilder(key).append(INCREMENT_SUFFIX).toString();
+    protected static String incrementKey(final String key){
+        String incrementKey = incrementKeyCache.get(key);
+        if(null == incrementKey){
+            incrementKey = new StringBuilder(key).append(INCREMENT_SUFFIX).toString();
             incrementKeyCache.put(key, incrementKey);
-            return incrementKey;
         }
+        return incrementKey;
     }
     
-    protected static String indexKey(String key, long index){
-        synchronized(indexKeyCache){
-            if(indexKeyCache.contains(key, index)){
-                return indexKeyCache.get(key, index);
-            }
-            
-            String indexKey = new StringBuilder(key).append(KEY_SEPARATOR).append(index).toString();
+    protected static String indexKey(final String key, final long index){
+        String indexKey = indexKeyCache.get(key, index);
+        if(null == indexKey){
+            indexKey = new StringBuilder(key).append(KEY_SEPARATOR).append(index).toString();
             indexKeyCache.put(key, index, indexKey);
-            return indexKey;
         }
+        return indexKey;
     }
     
     protected static class KeyCache<V> {
@@ -163,12 +160,12 @@ public class MemcachedList {
         }
         
         public V put(String key, Long index, V value){
-            if(cache.containsKey(key)){
-                Map<Long, V> map = cache.get(key);
+            Map<Long, V> map = cache.get(key);
+            if(null != map){
                 return map.put(index, value);
             }
             
-            SoftReferenceMap<Long, V> map = new SoftReferenceMap<Long, V>();
+            map = new SoftReferenceMap<Long, V>();
             map.put(index, value);
             cache.put(key, map);
             return null;
@@ -177,6 +174,9 @@ public class MemcachedList {
         public V get(String key, Long index){
             if(cache.containsKey(key)){
                 Map<Long, V> map = cache.get(key);
+                if(null == map){
+                    return null;
+                }
                 return map.get(index);
             }
             return null;

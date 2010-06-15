@@ -1,22 +1,23 @@
 package temperance.rpc.impl;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import libmemcached.exception.LibMemcachedException;
 
 import org.chasen.mecab.wrapper.Tagger;
 
 import temperance.core.Configure;
-import temperance.core.FullTextCommand;
 import temperance.core.Pooling;
+import temperance.exception.CommandExecutionException;
 import temperance.exception.RpcException;
 import temperance.ft.GramHashing;
 import temperance.ft.Hashing;
 import temperance.ft.MecabHashing;
 import temperance.ft.MecabNodeFilter;
 import temperance.ft.PrefixHashing;
+import temperance.function.AbstractTaggerFunction;
+import temperance.function.FunctionContext;
 import temperance.hash.HashFunction;
 import temperance.rpc.RpcFullText;
 import temperance.rpc.RpcFullText.Request.Parser;
@@ -57,21 +58,21 @@ public class RpcFullTextImpl implements RpcFullText {
         final String str = request.str;
         final Parser parser = request.parser;
         
-        final FullTextCommand command = new FullTextCommand(pooling);
+        final FunctionContext ctx = new FunctionContext();
+        ctx.setHashFunction(hashFunction);
+        ctx.setTagger(tagger);
+        ctx.setNodeFilter(nodeFilter);
+        ctx.setPooling(pooling);
+        
+        // call tagger function
+        final TaggerFunction func = new TaggerFunction(ctx, createHashing(parser));
         try {
-            Hashing hashing = createHashing(parser);
-            List<Long> hashes = hashing.parse(str);
-            List<Future<List<String>>> futures = command.getAll(key, hashes);
+            List<String> result = func.createSelect().and(key, Arrays.asList(str));
             
             Response.Search response = Response.Search.newInstance();
-            for(Future<List<String>> future: futures){
-                List<String> result = future.get();
-                response.values.addAll(result);
-            }
+            response.values = result;
             return response;
-        } catch (ExecutionException e) {
-            throw new RpcException(e);
-        } catch (InterruptedException e) {
+        } catch(CommandExecutionException e){
             throw new RpcException(e);
         }
     }
@@ -87,14 +88,24 @@ public class RpcFullTextImpl implements RpcFullText {
             final MemcachedFullText fulltext = new MemcachedFullText(pooling.getConnectionPool());
             final Hashing hashing = createHashing(parser);
             final List<Long> hashes = hashing.parse(str);
-            for(Long hash: hashes){
-                fulltext.add(key, hash, value, expire);
-            }
+            fulltext.addAll(key, hashes, value, expire);
+            
             Response.Add response = Response.Add.newInstance();
             response.succeed = true;
             return response;
-        } catch(LibMemcachedException e){
+        } catch (LibMemcachedException e) {
             throw new RpcException(e);
+        }
+    }
+    
+    protected static class TaggerFunction extends AbstractTaggerFunction {
+        protected final Hashing hashing;
+        protected TaggerFunction(FunctionContext context, Hashing hashing){
+            super(context);
+            this.hashing = hashing;
+        }
+        protected Hashing createHashing(List<String> args){
+            return hashing;
         }
     }
 
