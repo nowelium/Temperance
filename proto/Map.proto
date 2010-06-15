@@ -11,6 +11,10 @@ message Request {
     message Get {
         required string key = 1;
     }
+    message Delete {
+        required string key = 1;
+        optional uint32 expire = 2 [default = 0];
+    }
 }
 message Response {
     message Set {
@@ -19,9 +23,13 @@ message Response {
     message Get {
         required string value = 1;
     }
+    message Delete {
+        required bool succeed = 1;
+    }
 }
 
 service MapService {
     rpc set(Request.Set) returns(Response.Set);
     rpc get(Request.Get) returns(Response.Get);
+    rpc delete(Request.Delete) returns(Response.Delete);
 }

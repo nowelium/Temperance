@@ -90,6 +90,19 @@ public class MemcachedList {
         }
     }
     
+    public boolean delete(final String key, int expire) throws LibMemcachedException {
+        final MemcachedClient client = pool.get();
+        try {
+            ReturnType rt = client.getStorage().delete(key, expire);
+            if(ReturnType.SUCCESS.equals(rt)){
+                return true;
+            }
+            return false;
+        } finally {
+            pool.release(client);
+        }
+    }
+    
     protected static long append(final MemcachedStorage storage, final String key, final String value, final int expire) throws LibMemcachedException {
         final long nextId = generateId(storage, key);
         storage.setByKey(key, indexKey(key, nextId), value, expire, DEFAULT_VALUE_FLAG);

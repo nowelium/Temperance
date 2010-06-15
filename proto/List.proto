@@ -17,6 +17,10 @@ message Request {
     message Count {
         required string key = 1;
     }
+    message Delete {
+        required string key = 1;
+        optional uint32 expire = 2 [default = 0];
+    }
 }
 message Response {
     message Add {
@@ -28,10 +32,14 @@ message Response {
     message Count {
         required uint64 count = 1;
     }
+    message Delete {
+        required bool succeed = 1;
+    }
 }
 
 service ListService {
     rpc add(Request.Add) returns(Response.Add);
     rpc get(Request.Get) returns(Response.Get);
     rpc count(Request.Count) returns(Response.Count);
+    rpc delete(Request.Delete) returns(Response.Delete);
 }

@@ -8,6 +8,8 @@ public interface RpcMap extends Rpc {
     
     public Response.Get get(Request.Get request) throws RpcException;
     
+    public Response.Delete delete(Request.Delete request) throws RpcException;
+    
     public static abstract class Request {
         public static class Set {
             public static final int DEFAULT_EXPIRE = 86400;
@@ -33,6 +35,19 @@ public interface RpcMap extends Rpc {
                 return new Get();
             }
         }
+        public static class Delete {
+            public static final int DEFAULT_EXPIRE = 0;
+            
+            public String key;
+            public int expire = DEFAULT_EXPIRE;
+            
+            private Delete(){
+                // nop
+            }
+            public static Delete newInstance(){
+                return new Delete();
+            }
+        }
     }
     
     public static abstract class Response {
@@ -54,6 +69,16 @@ public interface RpcMap extends Rpc {
             }
             public static Get newInstance(){
                 return new Get();
+            }
+        }
+        public static class Delete {
+            public boolean succeed;
+            
+            private Delete(){
+                // nop
+            }
+            public static Delete newInstance(){
+                return new Delete();
             }
         }
     }

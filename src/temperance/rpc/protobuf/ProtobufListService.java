@@ -65,5 +65,21 @@ public class ProtobufListService implements ListService.BlockingInterface {
             throw new ServiceException(e.getMessage());
         }
     }
+    
+    public Response.Delete delete(RpcController controller, Request.Delete delete) throws ServiceException {
+        RpcList.Request.Delete request = RpcList.Request.Delete.newInstance();
+        request.key = delete.getKey();
+        request.expire = delete.getExpire();
+        
+        try {
+            RpcList.Response.Delete response = rpc.delete(request);
+            Response.Delete.Builder builder = Response.Delete.newBuilder();
+            builder.setSucceed(response.succeed);
+            return builder.build();
+        } catch(RpcException e){
+            throw new ServiceException(e.getMessage());
+        }
+        
+    }
 
 }

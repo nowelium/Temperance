@@ -52,4 +52,22 @@ public class RpcMapImpl implements RpcMap {
         }
     }
 
+    public Response.Delete delete(Request.Delete request) throws RpcException {
+        final String key = request.key;
+        final int expire = request.expire;
+        
+        final MemcachedMap map = new MemcachedMap(pooling.getConnectionPool());
+        try {
+            boolean success = map.delete(key, expire);
+            
+            Response.Delete response = Response.Delete.newInstance();
+            response.succeed = success;
+            return response;
+        } catch(LibMemcachedException e){
+            Response.Delete response = Response.Delete.newInstance();
+            response.succeed = false;
+            return response;
+        }
+    }
+
 }

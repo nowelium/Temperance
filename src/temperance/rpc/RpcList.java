@@ -13,6 +13,8 @@ public interface RpcList extends Rpc {
     
     public Response.Count count(Request.Count request) throws RpcException;
     
+    public Response.Delete delete(Request.Delete request) throws RpcException;
+    
     public static abstract class Request {
         public static class Add {
             public static final int DEFAULT_EXPIRE = 86400;
@@ -53,6 +55,19 @@ public interface RpcList extends Rpc {
                 return new Count();
             }
         }
+        public static class Delete {
+            public static final int DEFAULT_EXPIRE = 0;
+            
+            public String key;
+            public int expire = DEFAULT_EXPIRE;
+            
+            private Delete(){
+                // nop
+            }
+            public static Delete newInstance(){
+                return new Delete();
+            }
+        }
     }
     public static abstract class Response {
         public static class Add {
@@ -83,6 +98,16 @@ public interface RpcList extends Rpc {
             }
             public static Count newInstance(){
                 return new Count();
+            }
+        }
+        public static class Delete {
+            public boolean succeed;
+            
+            private Delete(){
+                // nop
+            }
+            public static Delete newInstance(){
+                return new Delete();
             }
         }
     }

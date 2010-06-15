@@ -655,6 +655,316 @@ public final class Map {
       }
     }
     
+    public static final class Delete extends
+        com.google.protobuf.GeneratedMessage {
+      // Use Delete.newBuilder() to construct.
+      private Delete() {}
+      
+      private static final Delete defaultInstance = new Delete();
+      public static Delete getDefaultInstance() {
+        return defaultInstance;
+      }
+      
+      public Delete getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+      
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return temperance.protobuf.Map.internal_static_temperance_protobuf_Request_Delete_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return temperance.protobuf.Map.internal_static_temperance_protobuf_Request_Delete_fieldAccessorTable;
+      }
+      
+      // required string key = 1;
+      public static final int KEY_FIELD_NUMBER = 1;
+      private boolean hasKey;
+      private java.lang.String key_ = "";
+      public boolean hasKey() { return hasKey; }
+      public java.lang.String getKey() { return key_; }
+      
+      // optional uint32 expire = 2 [default = 0];
+      public static final int EXPIRE_FIELD_NUMBER = 2;
+      private boolean hasExpire;
+      private int expire_ = 0;
+      public boolean hasExpire() { return hasExpire; }
+      public int getExpire() { return expire_; }
+      
+      public final boolean isInitialized() {
+        if (!hasKey) return false;
+        return true;
+      }
+      
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (hasKey()) {
+          output.writeString(1, getKey());
+        }
+        if (hasExpire()) {
+          output.writeUInt32(2, getExpire());
+        }
+        getUnknownFields().writeTo(output);
+      }
+      
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+      
+        size = 0;
+        if (hasKey()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeStringSize(1, getKey());
+        }
+        if (hasExpire()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeUInt32Size(2, getExpire());
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+      
+      public static temperance.protobuf.Map.Request.Delete parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.Map.Request.Delete parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.Map.Request.Delete parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.Map.Request.Delete parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.Map.Request.Delete parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.Map.Request.Delete parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.Map.Request.Delete parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.Map.Request.Delete parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.Map.Request.Delete parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.Map.Request.Delete parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(temperance.protobuf.Map.Request.Delete prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+      
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder> {
+        private temperance.protobuf.Map.Request.Delete result;
+        
+        // Construct using temperance.protobuf.Map.Request.Delete.newBuilder()
+        private Builder() {}
+        
+        private static Builder create() {
+          Builder builder = new Builder();
+          builder.result = new temperance.protobuf.Map.Request.Delete();
+          return builder;
+        }
+        
+        protected temperance.protobuf.Map.Request.Delete internalGetResult() {
+          return result;
+        }
+        
+        public Builder clear() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "Cannot call clear() after build().");
+          }
+          result = new temperance.protobuf.Map.Request.Delete();
+          return this;
+        }
+        
+        public Builder clone() {
+          return create().mergeFrom(result);
+        }
+        
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return temperance.protobuf.Map.Request.Delete.getDescriptor();
+        }
+        
+        public temperance.protobuf.Map.Request.Delete getDefaultInstanceForType() {
+          return temperance.protobuf.Map.Request.Delete.getDefaultInstance();
+        }
+        
+        public boolean isInitialized() {
+          return result.isInitialized();
+        }
+        public temperance.protobuf.Map.Request.Delete build() {
+          if (result != null && !isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return buildPartial();
+        }
+        
+        private temperance.protobuf.Map.Request.Delete buildParsed()
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          if (!isInitialized()) {
+            throw newUninitializedMessageException(
+              result).asInvalidProtocolBufferException();
+          }
+          return buildPartial();
+        }
+        
+        public temperance.protobuf.Map.Request.Delete buildPartial() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "build() has already been called on this Builder.");
+          }
+          temperance.protobuf.Map.Request.Delete returnMe = result;
+          result = null;
+          return returnMe;
+        }
+        
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof temperance.protobuf.Map.Request.Delete) {
+            return mergeFrom((temperance.protobuf.Map.Request.Delete)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+        
+        public Builder mergeFrom(temperance.protobuf.Map.Request.Delete other) {
+          if (other == temperance.protobuf.Map.Request.Delete.getDefaultInstance()) return this;
+          if (other.hasKey()) {
+            setKey(other.getKey());
+          }
+          if (other.hasExpire()) {
+            setExpire(other.getExpire());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+        
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder(
+              this.getUnknownFields());
+          while (true) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                this.setUnknownFields(unknownFields.build());
+                return this;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  this.setUnknownFields(unknownFields.build());
+                  return this;
+                }
+                break;
+              }
+              case 10: {
+                setKey(input.readString());
+                break;
+              }
+              case 16: {
+                setExpire(input.readUInt32());
+                break;
+              }
+            }
+          }
+        }
+        
+        
+        // required string key = 1;
+        public boolean hasKey() {
+          return result.hasKey();
+        }
+        public java.lang.String getKey() {
+          return result.getKey();
+        }
+        public Builder setKey(java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  result.hasKey = true;
+          result.key_ = value;
+          return this;
+        }
+        public Builder clearKey() {
+          result.hasKey = false;
+          result.key_ = getDefaultInstance().getKey();
+          return this;
+        }
+        
+        // optional uint32 expire = 2 [default = 0];
+        public boolean hasExpire() {
+          return result.hasExpire();
+        }
+        public int getExpire() {
+          return result.getExpire();
+        }
+        public Builder setExpire(int value) {
+          result.hasExpire = true;
+          result.expire_ = value;
+          return this;
+        }
+        public Builder clearExpire() {
+          result.hasExpire = false;
+          result.expire_ = 0;
+          return this;
+        }
+      }
+      
+      static {
+        temperance.protobuf.Map.getDescriptor();
+      }
+      
+      static {
+        temperance.protobuf.Map.internalForceInit();
+      }
+    }
+    
     public final boolean isInitialized() {
       return true;
     }
@@ -1422,6 +1732,274 @@ public final class Map {
       }
     }
     
+    public static final class Delete extends
+        com.google.protobuf.GeneratedMessage {
+      // Use Delete.newBuilder() to construct.
+      private Delete() {}
+      
+      private static final Delete defaultInstance = new Delete();
+      public static Delete getDefaultInstance() {
+        return defaultInstance;
+      }
+      
+      public Delete getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+      
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return temperance.protobuf.Map.internal_static_temperance_protobuf_Response_Delete_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return temperance.protobuf.Map.internal_static_temperance_protobuf_Response_Delete_fieldAccessorTable;
+      }
+      
+      // required bool succeed = 1;
+      public static final int SUCCEED_FIELD_NUMBER = 1;
+      private boolean hasSucceed;
+      private boolean succeed_ = false;
+      public boolean hasSucceed() { return hasSucceed; }
+      public boolean getSucceed() { return succeed_; }
+      
+      public final boolean isInitialized() {
+        if (!hasSucceed) return false;
+        return true;
+      }
+      
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (hasSucceed()) {
+          output.writeBool(1, getSucceed());
+        }
+        getUnknownFields().writeTo(output);
+      }
+      
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+      
+        size = 0;
+        if (hasSucceed()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBoolSize(1, getSucceed());
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+      
+      public static temperance.protobuf.Map.Response.Delete parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.Map.Response.Delete parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.Map.Response.Delete parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.Map.Response.Delete parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.Map.Response.Delete parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.Map.Response.Delete parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.Map.Response.Delete parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.Map.Response.Delete parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.Map.Response.Delete parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.Map.Response.Delete parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(temperance.protobuf.Map.Response.Delete prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+      
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder> {
+        private temperance.protobuf.Map.Response.Delete result;
+        
+        // Construct using temperance.protobuf.Map.Response.Delete.newBuilder()
+        private Builder() {}
+        
+        private static Builder create() {
+          Builder builder = new Builder();
+          builder.result = new temperance.protobuf.Map.Response.Delete();
+          return builder;
+        }
+        
+        protected temperance.protobuf.Map.Response.Delete internalGetResult() {
+          return result;
+        }
+        
+        public Builder clear() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "Cannot call clear() after build().");
+          }
+          result = new temperance.protobuf.Map.Response.Delete();
+          return this;
+        }
+        
+        public Builder clone() {
+          return create().mergeFrom(result);
+        }
+        
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return temperance.protobuf.Map.Response.Delete.getDescriptor();
+        }
+        
+        public temperance.protobuf.Map.Response.Delete getDefaultInstanceForType() {
+          return temperance.protobuf.Map.Response.Delete.getDefaultInstance();
+        }
+        
+        public boolean isInitialized() {
+          return result.isInitialized();
+        }
+        public temperance.protobuf.Map.Response.Delete build() {
+          if (result != null && !isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return buildPartial();
+        }
+        
+        private temperance.protobuf.Map.Response.Delete buildParsed()
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          if (!isInitialized()) {
+            throw newUninitializedMessageException(
+              result).asInvalidProtocolBufferException();
+          }
+          return buildPartial();
+        }
+        
+        public temperance.protobuf.Map.Response.Delete buildPartial() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "build() has already been called on this Builder.");
+          }
+          temperance.protobuf.Map.Response.Delete returnMe = result;
+          result = null;
+          return returnMe;
+        }
+        
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof temperance.protobuf.Map.Response.Delete) {
+            return mergeFrom((temperance.protobuf.Map.Response.Delete)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+        
+        public Builder mergeFrom(temperance.protobuf.Map.Response.Delete other) {
+          if (other == temperance.protobuf.Map.Response.Delete.getDefaultInstance()) return this;
+          if (other.hasSucceed()) {
+            setSucceed(other.getSucceed());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+        
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder(
+              this.getUnknownFields());
+          while (true) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                this.setUnknownFields(unknownFields.build());
+                return this;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  this.setUnknownFields(unknownFields.build());
+                  return this;
+                }
+                break;
+              }
+              case 8: {
+                setSucceed(input.readBool());
+                break;
+              }
+            }
+          }
+        }
+        
+        
+        // required bool succeed = 1;
+        public boolean hasSucceed() {
+          return result.hasSucceed();
+        }
+        public boolean getSucceed() {
+          return result.getSucceed();
+        }
+        public Builder setSucceed(boolean value) {
+          result.hasSucceed = true;
+          result.succeed_ = value;
+          return this;
+        }
+        public Builder clearSucceed() {
+          result.hasSucceed = false;
+          result.succeed_ = false;
+          return this;
+        }
+      }
+      
+      static {
+        temperance.protobuf.Map.getDescriptor();
+      }
+      
+      static {
+        temperance.protobuf.Map.internalForceInit();
+      }
+    }
+    
     public final boolean isInitialized() {
       return true;
     }
@@ -1641,6 +2219,11 @@ public final class Map {
           temperance.protobuf.Map.Request.Get request,
           com.google.protobuf.RpcCallback<temperance.protobuf.Map.Response.Get> done);
       
+      public abstract void delete(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.Map.Request.Delete request,
+          com.google.protobuf.RpcCallback<temperance.protobuf.Map.Response.Delete> done);
+      
     }
     
     public static com.google.protobuf.Service newReflectiveService(
@@ -1660,6 +2243,14 @@ public final class Map {
             temperance.protobuf.Map.Request.Get request,
             com.google.protobuf.RpcCallback<temperance.protobuf.Map.Response.Get> done) {
           impl.get(controller, request, done);
+        }
+        
+        @Override
+        public  void delete(
+            com.google.protobuf.RpcController controller,
+            temperance.protobuf.Map.Request.Delete request,
+            com.google.protobuf.RpcCallback<temperance.protobuf.Map.Response.Delete> done) {
+          impl.delete(controller, request, done);
         }
         
       };
@@ -1688,6 +2279,8 @@ public final class Map {
               return impl.set(controller, (temperance.protobuf.Map.Request.Set)request);
             case 1:
               return impl.get(controller, (temperance.protobuf.Map.Request.Get)request);
+            case 2:
+              return impl.delete(controller, (temperance.protobuf.Map.Request.Delete)request);
             default:
               throw new java.lang.AssertionError("Can't get here.");
           }
@@ -1706,6 +2299,8 @@ public final class Map {
               return temperance.protobuf.Map.Request.Set.getDefaultInstance();
             case 1:
               return temperance.protobuf.Map.Request.Get.getDefaultInstance();
+            case 2:
+              return temperance.protobuf.Map.Request.Delete.getDefaultInstance();
             default:
               throw new java.lang.AssertionError("Can't get here.");
           }
@@ -1724,6 +2319,8 @@ public final class Map {
               return temperance.protobuf.Map.Response.Set.getDefaultInstance();
             case 1:
               return temperance.protobuf.Map.Response.Get.getDefaultInstance();
+            case 2:
+              return temperance.protobuf.Map.Response.Delete.getDefaultInstance();
             default:
               throw new java.lang.AssertionError("Can't get here.");
           }
@@ -1741,6 +2338,11 @@ public final class Map {
         com.google.protobuf.RpcController controller,
         temperance.protobuf.Map.Request.Get request,
         com.google.protobuf.RpcCallback<temperance.protobuf.Map.Response.Get> done);
+    
+    public abstract void delete(
+        com.google.protobuf.RpcController controller,
+        temperance.protobuf.Map.Request.Delete request,
+        com.google.protobuf.RpcCallback<temperance.protobuf.Map.Response.Delete> done);
     
     public static final
         com.google.protobuf.Descriptors.ServiceDescriptor
@@ -1774,6 +2376,11 @@ public final class Map {
             com.google.protobuf.RpcUtil.<temperance.protobuf.Map.Response.Get>specializeCallback(
               done));
           return;
+        case 2:
+          this.delete(controller, (temperance.protobuf.Map.Request.Delete)request,
+            com.google.protobuf.RpcUtil.<temperance.protobuf.Map.Response.Delete>specializeCallback(
+              done));
+          return;
         default:
           throw new java.lang.AssertionError("Can't get here.");
       }
@@ -1792,6 +2399,8 @@ public final class Map {
           return temperance.protobuf.Map.Request.Set.getDefaultInstance();
         case 1:
           return temperance.protobuf.Map.Request.Get.getDefaultInstance();
+        case 2:
+          return temperance.protobuf.Map.Request.Delete.getDefaultInstance();
         default:
           throw new java.lang.AssertionError("Can't get here.");
       }
@@ -1810,6 +2419,8 @@ public final class Map {
           return temperance.protobuf.Map.Response.Set.getDefaultInstance();
         case 1:
           return temperance.protobuf.Map.Response.Get.getDefaultInstance();
+        case 2:
+          return temperance.protobuf.Map.Response.Delete.getDefaultInstance();
         default:
           throw new java.lang.AssertionError("Can't get here.");
       }
@@ -1860,6 +2471,21 @@ public final class Map {
             temperance.protobuf.Map.Response.Get.class,
             temperance.protobuf.Map.Response.Get.getDefaultInstance()));
       }
+      
+      public  void delete(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.Map.Request.Delete request,
+          com.google.protobuf.RpcCallback<temperance.protobuf.Map.Response.Delete> done) {
+        channel.callMethod(
+          getDescriptor().getMethods().get(2),
+          controller,
+          request,
+          temperance.protobuf.Map.Response.Delete.getDefaultInstance(),
+          com.google.protobuf.RpcUtil.generalizeCallback(
+            done,
+            temperance.protobuf.Map.Response.Delete.class,
+            temperance.protobuf.Map.Response.Delete.getDefaultInstance()));
+      }
     }
     
     public static BlockingInterface newBlockingStub(
@@ -1876,6 +2502,11 @@ public final class Map {
       public temperance.protobuf.Map.Response.Get get(
           com.google.protobuf.RpcController controller,
           temperance.protobuf.Map.Request.Get request)
+          throws com.google.protobuf.ServiceException;
+      
+      public temperance.protobuf.Map.Response.Delete delete(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.Map.Request.Delete request)
           throws com.google.protobuf.ServiceException;
     }
     
@@ -1909,6 +2540,18 @@ public final class Map {
           temperance.protobuf.Map.Response.Get.getDefaultInstance());
       }
       
+      
+      public temperance.protobuf.Map.Response.Delete delete(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.Map.Request.Delete request)
+          throws com.google.protobuf.ServiceException {
+        return (temperance.protobuf.Map.Response.Delete) channel.callBlockingMethod(
+          getDescriptor().getMethods().get(2),
+          controller,
+          request,
+          temperance.protobuf.Map.Response.Delete.getDefaultInstance());
+      }
+      
     }
   }
   
@@ -1928,6 +2571,11 @@ public final class Map {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_temperance_protobuf_Request_Get_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_temperance_protobuf_Request_Delete_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_temperance_protobuf_Request_Delete_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_temperance_protobuf_Response_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -1942,6 +2590,11 @@ public final class Map {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_temperance_protobuf_Response_Get_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_temperance_protobuf_Response_Delete_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_temperance_protobuf_Response_Delete_fieldAccessorTable;
   
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1951,15 +2604,19 @@ public final class Map {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\tMap.proto\022\023temperance.protobuf\"W\n\007Requ" +
-      "est\0328\n\003Set\022\013\n\003key\030\001 \002(\t\022\r\n\005value\030\002 \002(\t\022\025" +
-      "\n\006expire\030\003 \001(\r:\00586400\032\022\n\003Get\022\013\n\003key\030\001 \002(" +
-      "\t\"8\n\010Response\032\026\n\003Set\022\017\n\007succeed\030\001 \002(\010\032\024\n" +
-      "\003Get\022\r\n\005value\030\001 \002(\t2\244\001\n\nMapService\022J\n\003se" +
-      "t\022 .temperance.protobuf.Request.Set\032!.te" +
-      "mperance.protobuf.Response.Set\022J\n\003get\022 ." +
-      "temperance.protobuf.Request.Get\032!.temper" +
-      "ance.protobuf.Response.GetB\002H\001"
+      "\n\tMap.proto\022\023temperance.protobuf\"\201\001\n\007Req" +
+      "uest\0328\n\003Set\022\013\n\003key\030\001 \002(\t\022\r\n\005value\030\002 \002(\t\022" +
+      "\025\n\006expire\030\003 \001(\r:\00586400\032\022\n\003Get\022\013\n\003key\030\001 \002" +
+      "(\t\032(\n\006Delete\022\013\n\003key\030\001 \002(\t\022\021\n\006expire\030\002 \001(" +
+      "\r:\0010\"S\n\010Response\032\026\n\003Set\022\017\n\007succeed\030\001 \002(\010" +
+      "\032\024\n\003Get\022\r\n\005value\030\001 \002(\t\032\031\n\006Delete\022\017\n\007succ" +
+      "eed\030\001 \002(\0102\371\001\n\nMapService\022J\n\003set\022 .temper" +
+      "ance.protobuf.Request.Set\032!.temperance.p" +
+      "rotobuf.Response.Set\022J\n\003get\022 .temperance" +
+      ".protobuf.Request.Get\032!.temperance.proto",
+      "buf.Response.Get\022S\n\006delete\022#.temperance." +
+      "protobuf.Request.Delete\032$.temperance.pro" +
+      "tobuf.Response.DeleteB\002H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1990,6 +2647,14 @@ public final class Map {
               new java.lang.String[] { "Key", },
               temperance.protobuf.Map.Request.Get.class,
               temperance.protobuf.Map.Request.Get.Builder.class);
+          internal_static_temperance_protobuf_Request_Delete_descriptor =
+            internal_static_temperance_protobuf_Request_descriptor.getNestedTypes().get(2);
+          internal_static_temperance_protobuf_Request_Delete_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_temperance_protobuf_Request_Delete_descriptor,
+              new java.lang.String[] { "Key", "Expire", },
+              temperance.protobuf.Map.Request.Delete.class,
+              temperance.protobuf.Map.Request.Delete.Builder.class);
           internal_static_temperance_protobuf_Response_descriptor =
             getDescriptor().getMessageTypes().get(1);
           internal_static_temperance_protobuf_Response_fieldAccessorTable = new
@@ -2014,6 +2679,14 @@ public final class Map {
               new java.lang.String[] { "Value", },
               temperance.protobuf.Map.Response.Get.class,
               temperance.protobuf.Map.Response.Get.Builder.class);
+          internal_static_temperance_protobuf_Response_Delete_descriptor =
+            internal_static_temperance_protobuf_Response_descriptor.getNestedTypes().get(2);
+          internal_static_temperance_protobuf_Response_Delete_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_temperance_protobuf_Response_Delete_descriptor,
+              new java.lang.String[] { "Succeed", },
+              temperance.protobuf.Map.Response.Delete.class,
+              temperance.protobuf.Map.Response.Delete.Builder.class);
           return null;
         }
       };

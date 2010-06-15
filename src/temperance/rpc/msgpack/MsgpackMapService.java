@@ -34,4 +34,17 @@ public class MsgpackMapService {
         Response.Get response = rpc.get(request);
         return response.value;
     }
+    
+    public boolean delete(String key) throws RpcException {
+        return delete(key, Request.Delete.DEFAULT_EXPIRE);
+    }
+    
+    public boolean delete(String key, int expire) throws RpcException {
+        Request.Delete request = Request.Delete.newInstance();
+        request.key = key;
+        request.expire = expire;
+        
+        Response.Delete response = rpc.delete(request);
+        return response.succeed;
+    }
 }

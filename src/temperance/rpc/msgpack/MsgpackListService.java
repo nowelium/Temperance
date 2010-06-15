@@ -48,4 +48,17 @@ public class MsgpackListService {
         RpcList.Response.Count response = rpc.count(request);
         return response.count;
     }
+    
+    public boolean delete(String key) throws RpcException {
+        return delete(key, RpcList.Request.Delete.DEFAULT_EXPIRE);
+    }
+    
+    public boolean delete(String key, int expire) throws RpcException {
+        RpcList.Request.Delete request = RpcList.Request.Delete.newInstance();
+        request.key = key;
+        request.expire = expire;
+        
+        RpcList.Response.Delete response = rpc.delete(request);
+        return response.succeed;
+    }
 }

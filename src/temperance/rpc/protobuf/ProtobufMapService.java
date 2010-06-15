@@ -42,5 +42,18 @@ public class ProtobufMapService implements MapService.BlockingInterface {
             throw new ServiceException(e.getMessage());
         }
     }
+    
+    public Response.Delete delete(RpcController controller, Request.Delete delete) throws ServiceException {
+        RpcMap.Request.Delete request = RpcMap.Request.Delete.newInstance();
+        request.key = delete.getKey();
+        request.expire = delete.getExpire();
+        
+        try {
+            RpcMap.Response.Delete response = rpc.delete(request);
+            return Response.Delete.newBuilder().setSucceed(response.succeed).build();
+        } catch(RpcException e){
+            throw new ServiceException(e.getMessage());
+        }
+    }
 
 }

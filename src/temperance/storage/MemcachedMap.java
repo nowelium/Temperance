@@ -36,4 +36,17 @@ public class MemcachedMap {
             pool.release(client);
         }
     }
+    
+    public boolean delete(String key, int expire) throws LibMemcachedException {
+        final MemcachedClient client = pool.get();
+        try {
+            ReturnType rt = client.getStorage().delete(key, expire);
+            if(ReturnType.SUCCESS.equals(rt)){
+                return true;
+            }
+            return false;
+        } finally {
+            pool.release(client);
+        }
+    }
 }
