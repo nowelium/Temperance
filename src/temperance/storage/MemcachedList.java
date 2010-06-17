@@ -93,8 +93,22 @@ public class MemcachedList {
     public boolean delete(final String key, int expire) throws LibMemcachedException {
         final MemcachedClient client = pool.get();
         try {
-            ReturnType rt = client.getStorage().delete(key, expire);
-            if(ReturnType.SUCCESS.equals(rt)){
+            final MemcachedStorage storage = client.getStorage();
+            
+            final String incrementKey = incrementKey(key);
+            String result = storage.getByKey(key, incrementKey);
+            if(null != result){
+                long limit = Long.valueOf(result).longValue();
+                for(long i = 0; i < limit; ++i){
+                    // delete value
+                    ReturnType rt = storage.deleteByKey(key, indexKey(key, i), expire);
+                    if(!(ReturnType.DELETED.equals(rt) || ReturnType.BUFFERED.equals(rt))){
+                        return false;
+                    }
+                }
+            }
+            ReturnType rt = client.getStorage().delete(incrementKey, expire);
+            if(ReturnType.DELETED.equals(rt) || ReturnType.BUFFERED.equals(rt)){
                 return true;
             }
             return false;
@@ -125,7 +139,7 @@ public class MemcachedList {
                 storage.setByKey(key, incrementKey, "0", INCREMENT_VALUE_EXPIRE, INCREMENT_VALUE_FLAG);
                 return 0L;
             }
-                
+            
             try {
                 final long increment = Long.valueOf(result.getValue()).longValue() + 1L;
                 String incrementValue = Long.toString(increment);

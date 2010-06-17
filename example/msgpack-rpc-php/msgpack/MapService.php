@@ -11,4 +11,8 @@ class Temperance_MapService extends MessagePackRPC_Client {
     public function get($key){
         return $this->call(self::SERVICE_NAME . '#get', array($key));
     }
+    
+    public function delete($key, $expire = 0){
+        return $this->call(self::SERVICE_NAME . '#delete', array($key, $expire));
+    }
 }

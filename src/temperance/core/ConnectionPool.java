@@ -152,7 +152,7 @@ public class ConnectionPool implements LifeCycle {
         try {
             lock.countDown();
             
-            MemcachedClient connection = pool.poll(10, TimeUnit.MILLISECONDS);
+            MemcachedClient connection = pool.poll(5, TimeUnit.MILLISECONDS);
             if(null != connection){
                 return connection;
             }

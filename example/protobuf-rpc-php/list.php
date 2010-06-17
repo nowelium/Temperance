@@ -36,3 +36,12 @@ $getParam = new Temperance_List_Request_Get;
 $getParam->key = 'albums';
 $result = $service->get($getParam);
 var_dump($result->values);
+
+$deleteParam = new Temperance_List_Request_Delete;
+$deleteParam->key = 'albums';
+$service->delete($deleteParam);
+
+$getParam = new Temperance_List_Request_Get;
+$getParam->key = 'albums';
+$result = $service->get($getParam);
+var_dump($result->values);

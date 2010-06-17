@@ -9,8 +9,8 @@
 #    shell > export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.5/Home
 #
 
-#JVM_OPTIONS="-XX:+UseConcMarkSweepGC -XX:+UseParNewGC -XX:+CMSParallelRemarkEnabled -verbose:gc -XX:+PrintGCTimeStams -XX:+PrintGCDetails"
-JVM_OPTIONS="-server -XX:+UseConcMarkSweepGC -XX:+UseParNewGC -XX:+CMSIncrementalMode -XX:+CMSIncrementalPacing -XX:CMSIncrementalDutyCycleMin=0 -XX:+CMSParallelRemarkEnabled -verbose:gc -XX:+PrintGCTimeStamps -XX:+PrintGCDetails"
+#JVM_OPTIONS="-XX:+UseConcMarkSweepGC -XX:+UseParNewGC -XX:+CMSParallelRemarkEnabled -verbose:gc -XX:+PrintGCTimeStamps -XX:+PrintGCDetails"
+JVM_OPTIONS="-server -Xmx1024m -Xms512m -Xss512k -XX:+UseConcMarkSweepGC -XX:+UseParNewGC -XX:+CMSClassUnloadingEnabled -XX:+CMSPermGenSweepingEnabled -XX:+CMSParallelRemarkEnabled -XX:+CMSIncrementalMode -XX:+CMSIncrementalPacing -XX:CMSIncrementalDutyCycleMin=0 -XX:SurvivorRatio=8 -XX:MaxTenuringThreshold=32 -XX:TargetSurvivorRatio=90 -verbose:gc -XX:+PrintGCTimeStamps -XX:+PrintGCDetails"
 JAVA_OPTIONS="-Dfile.encoding=UTF-8 -Djna.encoding=UTF-8 -Djna.protected=false -Djna.dump_memory=true -Dtemperance.pid.dir=/tmp"
 JMX_OPTIONS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=7900 -Dcom.sun.management.jmxremote.authenticate=false"
 MEMCACHED="localhost:11211"

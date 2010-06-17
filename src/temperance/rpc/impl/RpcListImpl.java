@@ -31,6 +31,7 @@ public class RpcListImpl implements RpcList {
         final MemcachedList list = new MemcachedList(pooling.getConnectionPool());
         try {
             list.add(key, value, expire);
+            
             Response.Add response = Response.Add.newInstance();
             response.succeed = true;
             return response;
@@ -47,6 +48,7 @@ public class RpcListImpl implements RpcList {
         final MemcachedList list = new MemcachedList(pooling.getConnectionPool());
         try {
             long count = list.count(key);
+            
             Response.Count response = Response.Count.newInstance();
             response.count = count;
             return response;
@@ -81,6 +83,7 @@ public class RpcListImpl implements RpcList {
         final MemcachedList list = new MemcachedList(pooling.getConnectionPool());
         try {
             boolean success = list.delete(key, expire);
+            
             Response.Delete response = Response.Delete.newInstance();
             response.succeed = success;
             return response;

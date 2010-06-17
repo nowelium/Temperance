@@ -1,6 +1,7 @@
 package temperance.core;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -72,24 +73,23 @@ public class ListCommand implements Command {
         }
         public List<String> call() throws Exception {
             final MemcachedList list = new MemcachedList(pool);
-            if(SPLIT < limit){
-                final List<String> results = Lists.newArrayList();
-                for(long i = 0; i < limit; i += SPLIT){
-                    long splitLimit = SPLIT;
-                    if(limit < SPLIT){
-                        splitLimit = limit;
-                    }
-                    results.addAll(list.get(key, offset + i, splitLimit));
-                }
-                return results;
+            final long count = list.count(key);
+            if(count < 1){
+                return Collections.emptyList();
+            }
+            if(count < limit){
+                return list.get(key, offset, count);
             }
             
-            final long count = list.count(key);
-            long offsetLimit = limit;
-            if(count < limit){
-                offsetLimit = count;
+            final List<String> results = Lists.newArrayList();
+            for(long i = 0; i < limit; i += SPLIT){
+                long splitLimit = SPLIT;
+                if(limit < SPLIT){
+                    splitLimit = limit;
+                }
+                results.addAll(list.get(key, offset + i, splitLimit));
             }
-            return list.get(key, offset, offsetLimit);
+            return results;
         }
     }
     
@@ -103,11 +103,14 @@ public class ListCommand implements Command {
         public List<String> call() throws Exception {
             final MemcachedList list = new MemcachedList(pool);
             final List<String> returnValue = Lists.newArrayList();
-            final long targetCount = list.count(key);
-            for(long i = 0; i < targetCount; i += SPLIT){
+            final long count = list.count(key);
+            if(count < 1){
+                return Collections.emptyList();
+            }
+            for(long i = 0; i < count; i += SPLIT){
                 long limit = SPLIT;
-                if(targetCount < SPLIT){
-                    limit = targetCount;
+                if(count < SPLIT){
+                    limit = count;
                 }
                 
                 List<String> results = list.get(key, i, limit);
@@ -128,11 +131,11 @@ public class ListCommand implements Command {
         }
         public Void call() throws Exception {
             final MemcachedList list = new MemcachedList(pool);
-            final long targetCount = list.count(key);
-            for(long i = 0; i < targetCount; i += SPLIT){
+            final long count = list.count(key);
+            for(long i = 0; i < count; i += SPLIT){
                 long limit = SPLIT;
-                if(targetCount < SPLIT){
-                    limit = targetCount;
+                if(count < SPLIT){
+                    limit = count;
                 }
                 
                 List<String> results = list.get(key, i, limit);

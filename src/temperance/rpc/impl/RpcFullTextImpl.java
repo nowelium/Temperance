@@ -1,15 +1,16 @@
 package temperance.rpc.impl;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import libmemcached.exception.LibMemcachedException;
 
 import org.chasen.mecab.wrapper.Tagger;
 
 import temperance.core.Configure;
+import temperance.core.FullTextCommand;
 import temperance.core.Pooling;
-import temperance.exception.CommandExecutionException;
 import temperance.exception.RpcException;
 import temperance.ft.GramHashing;
 import temperance.ft.Hashing;
@@ -58,21 +59,21 @@ public class RpcFullTextImpl implements RpcFullText {
         final String str = request.str;
         final Parser parser = request.parser;
         
-        final FunctionContext ctx = new FunctionContext();
-        ctx.setHashFunction(hashFunction);
-        ctx.setTagger(tagger);
-        ctx.setNodeFilter(nodeFilter);
-        ctx.setPooling(pooling);
-        
-        // call tagger function
-        final TaggerFunction func = new TaggerFunction(ctx, createHashing(parser));
+        final FullTextCommand command = new FullTextCommand(pooling);
         try {
-            List<String> result = func.createSelect().and(key, Arrays.asList(str));
+            Hashing hashing = createHashing(parser);
+            List<Long> hashes = hashing.parse(str);
+            List<Future<List<String>>> futures = command.getAll(key, hashes);
             
             Response.Search response = Response.Search.newInstance();
-            response.values = result;
+            for(Future<List<String>> future: futures){
+                List<String> result = future.get();
+                response.values.addAll(result);
+            }
             return response;
-        } catch(CommandExecutionException e){
+        } catch (ExecutionException e) {
+            throw new RpcException(e);
+        } catch (InterruptedException e) {
             throw new RpcException(e);
         }
     }
