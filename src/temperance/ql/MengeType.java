@@ -9,6 +9,14 @@ public enum MengeType {
         }
     },
     
+    // alias OR
+    ANY {
+        public <RESULT, PARAMETER> RESULT each(Switch<RESULT, PARAMETER> sw, PARAMETER param){
+            // AND
+            return sw.caseOr(param);
+        }
+    },
+    
     AND {
         public <RESULT, PARAMETER> RESULT each(Switch<RESULT, PARAMETER> sw, PARAMETER param){
             // AND
