@@ -93,5 +93,9 @@ public class RpcListImpl implements RpcList {
             return response;
         }
     }
+    
+    public void deleteByValue(){
+        
+    }
 
 }

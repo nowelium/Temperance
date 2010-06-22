@@ -101,14 +101,33 @@ public class MemcachedList {
                 long limit = Long.valueOf(result).longValue();
                 for(long i = 0; i < limit; ++i){
                     // delete value
-                    ReturnType rt = storage.deleteByKey(key, indexKey(key, i), expire);
-                    if(!(ReturnType.DELETED.equals(rt) || ReturnType.BUFFERED.equals(rt))){
+                    boolean success = deleteAt(storage, key, i, expire);
+                    if(!success){
                         return false;
                     }
                 }
             }
+            
             ReturnType rt = client.getStorage().delete(incrementKey, expire);
             if(ReturnType.DELETED.equals(rt) || ReturnType.BUFFERED.equals(rt)){
+                return true;
+            }
+            return false;
+        } finally {
+            pool.release(client);
+        }
+    }
+    
+    public boolean delete(final String key, final long index, final int expire) throws LibMemcachedException {
+        final MemcachedClient client = pool.get();
+        try {
+            final MemcachedStorage storage = client.getStorage();
+            
+            if(deleteAt(storage, key, index, expire)){
+                //
+                // TODO: reindex
+                //
+                
                 return true;
             }
             return false;
@@ -121,6 +140,15 @@ public class MemcachedList {
         final long nextId = generateId(storage, key);
         storage.setByKey(key, indexKey(key, nextId), value, expire, DEFAULT_VALUE_FLAG);
         return nextId;
+    }
+    
+    protected static boolean deleteAt(final MemcachedStorage storage, final String key, long index, final int expire) throws LibMemcachedException {
+        final String indexKey = indexKey(key, index);
+        ReturnType rt = storage.deleteByKey(key, indexKey, expire);
+        if(ReturnType.DELETED.equals(rt) || ReturnType.BUFFERED.equals(rt)){
+            return true;
+        }
+        return false;
     }
     
     protected static long generateId(final MemcachedStorage storage, final String key) throws LibMemcachedException {
