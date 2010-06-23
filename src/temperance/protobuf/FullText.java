@@ -542,6 +542,669 @@ public final class FullText {
       }
     }
     
+    public static final class Delete extends
+        com.google.protobuf.GeneratedMessage {
+      // Use Delete.newBuilder() to construct.
+      private Delete() {}
+      
+      private static final Delete defaultInstance = new Delete();
+      public static Delete getDefaultInstance() {
+        return defaultInstance;
+      }
+      
+      public Delete getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+      
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return temperance.protobuf.FullText.internal_static_temperance_protobuf_Request_Delete_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return temperance.protobuf.FullText.internal_static_temperance_protobuf_Request_Delete_fieldAccessorTable;
+      }
+      
+      // required string key = 1;
+      public static final int KEY_FIELD_NUMBER = 1;
+      private boolean hasKey;
+      private java.lang.String key_ = "";
+      public boolean hasKey() { return hasKey; }
+      public java.lang.String getKey() { return key_; }
+      
+      // optional uint32 expire = 2 [default = 0];
+      public static final int EXPIRE_FIELD_NUMBER = 2;
+      private boolean hasExpire;
+      private int expire_ = 0;
+      public boolean hasExpire() { return hasExpire; }
+      public int getExpire() { return expire_; }
+      
+      public final boolean isInitialized() {
+        if (!hasKey) return false;
+        return true;
+      }
+      
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (hasKey()) {
+          output.writeString(1, getKey());
+        }
+        if (hasExpire()) {
+          output.writeUInt32(2, getExpire());
+        }
+        getUnknownFields().writeTo(output);
+      }
+      
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+      
+        size = 0;
+        if (hasKey()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeStringSize(1, getKey());
+        }
+        if (hasExpire()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeUInt32Size(2, getExpire());
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+      
+      public static temperance.protobuf.FullText.Request.Delete parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.FullText.Request.Delete parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.FullText.Request.Delete parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.FullText.Request.Delete parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.FullText.Request.Delete parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.FullText.Request.Delete parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.FullText.Request.Delete parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.FullText.Request.Delete parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.FullText.Request.Delete parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.FullText.Request.Delete parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(temperance.protobuf.FullText.Request.Delete prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+      
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder> {
+        private temperance.protobuf.FullText.Request.Delete result;
+        
+        // Construct using temperance.protobuf.FullText.Request.Delete.newBuilder()
+        private Builder() {}
+        
+        private static Builder create() {
+          Builder builder = new Builder();
+          builder.result = new temperance.protobuf.FullText.Request.Delete();
+          return builder;
+        }
+        
+        protected temperance.protobuf.FullText.Request.Delete internalGetResult() {
+          return result;
+        }
+        
+        public Builder clear() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "Cannot call clear() after build().");
+          }
+          result = new temperance.protobuf.FullText.Request.Delete();
+          return this;
+        }
+        
+        public Builder clone() {
+          return create().mergeFrom(result);
+        }
+        
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return temperance.protobuf.FullText.Request.Delete.getDescriptor();
+        }
+        
+        public temperance.protobuf.FullText.Request.Delete getDefaultInstanceForType() {
+          return temperance.protobuf.FullText.Request.Delete.getDefaultInstance();
+        }
+        
+        public boolean isInitialized() {
+          return result.isInitialized();
+        }
+        public temperance.protobuf.FullText.Request.Delete build() {
+          if (result != null && !isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return buildPartial();
+        }
+        
+        private temperance.protobuf.FullText.Request.Delete buildParsed()
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          if (!isInitialized()) {
+            throw newUninitializedMessageException(
+              result).asInvalidProtocolBufferException();
+          }
+          return buildPartial();
+        }
+        
+        public temperance.protobuf.FullText.Request.Delete buildPartial() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "build() has already been called on this Builder.");
+          }
+          temperance.protobuf.FullText.Request.Delete returnMe = result;
+          result = null;
+          return returnMe;
+        }
+        
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof temperance.protobuf.FullText.Request.Delete) {
+            return mergeFrom((temperance.protobuf.FullText.Request.Delete)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+        
+        public Builder mergeFrom(temperance.protobuf.FullText.Request.Delete other) {
+          if (other == temperance.protobuf.FullText.Request.Delete.getDefaultInstance()) return this;
+          if (other.hasKey()) {
+            setKey(other.getKey());
+          }
+          if (other.hasExpire()) {
+            setExpire(other.getExpire());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+        
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder(
+              this.getUnknownFields());
+          while (true) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                this.setUnknownFields(unknownFields.build());
+                return this;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  this.setUnknownFields(unknownFields.build());
+                  return this;
+                }
+                break;
+              }
+              case 10: {
+                setKey(input.readString());
+                break;
+              }
+              case 16: {
+                setExpire(input.readUInt32());
+                break;
+              }
+            }
+          }
+        }
+        
+        
+        // required string key = 1;
+        public boolean hasKey() {
+          return result.hasKey();
+        }
+        public java.lang.String getKey() {
+          return result.getKey();
+        }
+        public Builder setKey(java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  result.hasKey = true;
+          result.key_ = value;
+          return this;
+        }
+        public Builder clearKey() {
+          result.hasKey = false;
+          result.key_ = getDefaultInstance().getKey();
+          return this;
+        }
+        
+        // optional uint32 expire = 2 [default = 0];
+        public boolean hasExpire() {
+          return result.hasExpire();
+        }
+        public int getExpire() {
+          return result.getExpire();
+        }
+        public Builder setExpire(int value) {
+          result.hasExpire = true;
+          result.expire_ = value;
+          return this;
+        }
+        public Builder clearExpire() {
+          result.hasExpire = false;
+          result.expire_ = 0;
+          return this;
+        }
+      }
+      
+      static {
+        temperance.protobuf.FullText.getDescriptor();
+      }
+      
+      static {
+        temperance.protobuf.FullText.internalForceInit();
+      }
+    }
+    
+    public static final class DeleteByValue extends
+        com.google.protobuf.GeneratedMessage {
+      // Use DeleteByValue.newBuilder() to construct.
+      private DeleteByValue() {}
+      
+      private static final DeleteByValue defaultInstance = new DeleteByValue();
+      public static DeleteByValue getDefaultInstance() {
+        return defaultInstance;
+      }
+      
+      public DeleteByValue getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+      
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return temperance.protobuf.FullText.internal_static_temperance_protobuf_Request_DeleteByValue_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return temperance.protobuf.FullText.internal_static_temperance_protobuf_Request_DeleteByValue_fieldAccessorTable;
+      }
+      
+      // required string key = 1;
+      public static final int KEY_FIELD_NUMBER = 1;
+      private boolean hasKey;
+      private java.lang.String key_ = "";
+      public boolean hasKey() { return hasKey; }
+      public java.lang.String getKey() { return key_; }
+      
+      // required string value = 2;
+      public static final int VALUE_FIELD_NUMBER = 2;
+      private boolean hasValue;
+      private java.lang.String value_ = "";
+      public boolean hasValue() { return hasValue; }
+      public java.lang.String getValue() { return value_; }
+      
+      // optional uint32 expire = 3 [default = 0];
+      public static final int EXPIRE_FIELD_NUMBER = 3;
+      private boolean hasExpire;
+      private int expire_ = 0;
+      public boolean hasExpire() { return hasExpire; }
+      public int getExpire() { return expire_; }
+      
+      public final boolean isInitialized() {
+        if (!hasKey) return false;
+        if (!hasValue) return false;
+        return true;
+      }
+      
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (hasKey()) {
+          output.writeString(1, getKey());
+        }
+        if (hasValue()) {
+          output.writeString(2, getValue());
+        }
+        if (hasExpire()) {
+          output.writeUInt32(3, getExpire());
+        }
+        getUnknownFields().writeTo(output);
+      }
+      
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+      
+        size = 0;
+        if (hasKey()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeStringSize(1, getKey());
+        }
+        if (hasValue()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeStringSize(2, getValue());
+        }
+        if (hasExpire()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeUInt32Size(3, getExpire());
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+      
+      public static temperance.protobuf.FullText.Request.DeleteByValue parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.FullText.Request.DeleteByValue parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.FullText.Request.DeleteByValue parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.FullText.Request.DeleteByValue parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.FullText.Request.DeleteByValue parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.FullText.Request.DeleteByValue parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.FullText.Request.DeleteByValue parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.FullText.Request.DeleteByValue parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.FullText.Request.DeleteByValue parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.FullText.Request.DeleteByValue parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(temperance.protobuf.FullText.Request.DeleteByValue prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+      
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder> {
+        private temperance.protobuf.FullText.Request.DeleteByValue result;
+        
+        // Construct using temperance.protobuf.FullText.Request.DeleteByValue.newBuilder()
+        private Builder() {}
+        
+        private static Builder create() {
+          Builder builder = new Builder();
+          builder.result = new temperance.protobuf.FullText.Request.DeleteByValue();
+          return builder;
+        }
+        
+        protected temperance.protobuf.FullText.Request.DeleteByValue internalGetResult() {
+          return result;
+        }
+        
+        public Builder clear() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "Cannot call clear() after build().");
+          }
+          result = new temperance.protobuf.FullText.Request.DeleteByValue();
+          return this;
+        }
+        
+        public Builder clone() {
+          return create().mergeFrom(result);
+        }
+        
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return temperance.protobuf.FullText.Request.DeleteByValue.getDescriptor();
+        }
+        
+        public temperance.protobuf.FullText.Request.DeleteByValue getDefaultInstanceForType() {
+          return temperance.protobuf.FullText.Request.DeleteByValue.getDefaultInstance();
+        }
+        
+        public boolean isInitialized() {
+          return result.isInitialized();
+        }
+        public temperance.protobuf.FullText.Request.DeleteByValue build() {
+          if (result != null && !isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return buildPartial();
+        }
+        
+        private temperance.protobuf.FullText.Request.DeleteByValue buildParsed()
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          if (!isInitialized()) {
+            throw newUninitializedMessageException(
+              result).asInvalidProtocolBufferException();
+          }
+          return buildPartial();
+        }
+        
+        public temperance.protobuf.FullText.Request.DeleteByValue buildPartial() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "build() has already been called on this Builder.");
+          }
+          temperance.protobuf.FullText.Request.DeleteByValue returnMe = result;
+          result = null;
+          return returnMe;
+        }
+        
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof temperance.protobuf.FullText.Request.DeleteByValue) {
+            return mergeFrom((temperance.protobuf.FullText.Request.DeleteByValue)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+        
+        public Builder mergeFrom(temperance.protobuf.FullText.Request.DeleteByValue other) {
+          if (other == temperance.protobuf.FullText.Request.DeleteByValue.getDefaultInstance()) return this;
+          if (other.hasKey()) {
+            setKey(other.getKey());
+          }
+          if (other.hasValue()) {
+            setValue(other.getValue());
+          }
+          if (other.hasExpire()) {
+            setExpire(other.getExpire());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+        
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder(
+              this.getUnknownFields());
+          while (true) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                this.setUnknownFields(unknownFields.build());
+                return this;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  this.setUnknownFields(unknownFields.build());
+                  return this;
+                }
+                break;
+              }
+              case 10: {
+                setKey(input.readString());
+                break;
+              }
+              case 18: {
+                setValue(input.readString());
+                break;
+              }
+              case 24: {
+                setExpire(input.readUInt32());
+                break;
+              }
+            }
+          }
+        }
+        
+        
+        // required string key = 1;
+        public boolean hasKey() {
+          return result.hasKey();
+        }
+        public java.lang.String getKey() {
+          return result.getKey();
+        }
+        public Builder setKey(java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  result.hasKey = true;
+          result.key_ = value;
+          return this;
+        }
+        public Builder clearKey() {
+          result.hasKey = false;
+          result.key_ = getDefaultInstance().getKey();
+          return this;
+        }
+        
+        // required string value = 2;
+        public boolean hasValue() {
+          return result.hasValue();
+        }
+        public java.lang.String getValue() {
+          return result.getValue();
+        }
+        public Builder setValue(java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  result.hasValue = true;
+          result.value_ = value;
+          return this;
+        }
+        public Builder clearValue() {
+          result.hasValue = false;
+          result.value_ = getDefaultInstance().getValue();
+          return this;
+        }
+        
+        // optional uint32 expire = 3 [default = 0];
+        public boolean hasExpire() {
+          return result.hasExpire();
+        }
+        public int getExpire() {
+          return result.getExpire();
+        }
+        public Builder setExpire(int value) {
+          result.hasExpire = true;
+          result.expire_ = value;
+          return this;
+        }
+        public Builder clearExpire() {
+          result.hasExpire = false;
+          result.expire_ = 0;
+          return this;
+        }
+      }
+      
+      static {
+        temperance.protobuf.FullText.getDescriptor();
+      }
+      
+      static {
+        temperance.protobuf.FullText.internalForceInit();
+      }
+    }
+    
     public static final class Search extends
         com.google.protobuf.GeneratedMessage {
       // Use Search.newBuilder() to construct.
@@ -1132,6 +1795,73 @@ public final class FullText {
       return temperance.protobuf.FullText.internal_static_temperance_protobuf_Response_fieldAccessorTable;
     }
     
+    public enum Status
+        implements com.google.protobuf.ProtocolMessageEnum {
+      FAILURE(0, 0),
+      SUCCESS(1, 1),
+      ENQUEUE(2, 2),
+      ;
+      
+      
+      public final int getNumber() { return value; }
+      
+      public static Status valueOf(int value) {
+        switch (value) {
+          case 0: return FAILURE;
+          case 1: return SUCCESS;
+          case 2: return ENQUEUE;
+          default: return null;
+        }
+      }
+      
+      public static com.google.protobuf.Internal.EnumLiteMap<Status>
+          internalGetValueMap() {
+        return internalValueMap;
+      }
+      private static com.google.protobuf.Internal.EnumLiteMap<Status>
+          internalValueMap =
+            new com.google.protobuf.Internal.EnumLiteMap<Status>() {
+              public Status findValueByNumber(int number) {
+                return Status.valueOf(number)
+      ;        }
+            };
+      
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        return getDescriptor().getValues().get(index);
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return temperance.protobuf.FullText.Response.getDescriptor().getEnumTypes().get(0);
+      }
+      
+      private static final Status[] VALUES = {
+        FAILURE, SUCCESS, ENQUEUE, 
+      };
+      public static Status valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        return VALUES[desc.getIndex()];
+      }
+      private final int index;
+      private final int value;
+      private Status(int index, int value) {
+        this.index = index;
+        this.value = value;
+      }
+      
+      static {
+        temperance.protobuf.FullText.getDescriptor();
+      }
+    }
+    
     public static final class Add extends
         com.google.protobuf.GeneratedMessage {
       // Use Add.newBuilder() to construct.
@@ -1156,22 +1886,22 @@ public final class FullText {
         return temperance.protobuf.FullText.internal_static_temperance_protobuf_Response_Add_fieldAccessorTable;
       }
       
-      // required bool succeed = 1;
-      public static final int SUCCEED_FIELD_NUMBER = 1;
-      private boolean hasSucceed;
-      private boolean succeed_ = false;
-      public boolean hasSucceed() { return hasSucceed; }
-      public boolean getSucceed() { return succeed_; }
+      // required .temperance.protobuf.Response.Status status = 1;
+      public static final int STATUS_FIELD_NUMBER = 1;
+      private boolean hasStatus;
+      private temperance.protobuf.FullText.Response.Status status_ = temperance.protobuf.FullText.Response.Status.FAILURE;
+      public boolean hasStatus() { return hasStatus; }
+      public temperance.protobuf.FullText.Response.Status getStatus() { return status_; }
       
       public final boolean isInitialized() {
-        if (!hasSucceed) return false;
+        if (!hasStatus) return false;
         return true;
       }
       
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (hasSucceed()) {
-          output.writeBool(1, getSucceed());
+        if (hasStatus()) {
+          output.writeEnum(1, getStatus().getNumber());
         }
         getUnknownFields().writeTo(output);
       }
@@ -1182,9 +1912,9 @@ public final class FullText {
         if (size != -1) return size;
       
         size = 0;
-        if (hasSucceed()) {
+        if (hasStatus()) {
           size += com.google.protobuf.CodedOutputStream
-            .computeBoolSize(1, getSucceed());
+            .computeEnumSize(1, getStatus().getNumber());
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -1335,8 +2065,8 @@ public final class FullText {
         
         public Builder mergeFrom(temperance.protobuf.FullText.Response.Add other) {
           if (other == temperance.protobuf.FullText.Response.Add.getDefaultInstance()) return this;
-          if (other.hasSucceed()) {
-            setSucceed(other.getSucceed());
+          if (other.hasStatus()) {
+            setStatus(other.getStatus());
           }
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
@@ -1364,7 +2094,13 @@ public final class FullText {
                 break;
               }
               case 8: {
-                setSucceed(input.readBool());
+                int rawValue = input.readEnum();
+                temperance.protobuf.FullText.Response.Status value = temperance.protobuf.FullText.Response.Status.valueOf(rawValue);
+                if (value == null) {
+                  unknownFields.mergeVarintField(1, rawValue);
+                } else {
+                  setStatus(value);
+                }
                 break;
               }
             }
@@ -1372,21 +2108,578 @@ public final class FullText {
         }
         
         
-        // required bool succeed = 1;
-        public boolean hasSucceed() {
-          return result.hasSucceed();
+        // required .temperance.protobuf.Response.Status status = 1;
+        public boolean hasStatus() {
+          return result.hasStatus();
         }
-        public boolean getSucceed() {
-          return result.getSucceed();
+        public temperance.protobuf.FullText.Response.Status getStatus() {
+          return result.getStatus();
         }
-        public Builder setSucceed(boolean value) {
-          result.hasSucceed = true;
-          result.succeed_ = value;
+        public Builder setStatus(temperance.protobuf.FullText.Response.Status value) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          result.hasStatus = true;
+          result.status_ = value;
           return this;
         }
-        public Builder clearSucceed() {
-          result.hasSucceed = false;
-          result.succeed_ = false;
+        public Builder clearStatus() {
+          result.hasStatus = false;
+          result.status_ = temperance.protobuf.FullText.Response.Status.FAILURE;
+          return this;
+        }
+      }
+      
+      static {
+        temperance.protobuf.FullText.getDescriptor();
+      }
+      
+      static {
+        temperance.protobuf.FullText.internalForceInit();
+      }
+    }
+    
+    public static final class Delete extends
+        com.google.protobuf.GeneratedMessage {
+      // Use Delete.newBuilder() to construct.
+      private Delete() {}
+      
+      private static final Delete defaultInstance = new Delete();
+      public static Delete getDefaultInstance() {
+        return defaultInstance;
+      }
+      
+      public Delete getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+      
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return temperance.protobuf.FullText.internal_static_temperance_protobuf_Response_Delete_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return temperance.protobuf.FullText.internal_static_temperance_protobuf_Response_Delete_fieldAccessorTable;
+      }
+      
+      // required .temperance.protobuf.Response.Status status = 1;
+      public static final int STATUS_FIELD_NUMBER = 1;
+      private boolean hasStatus;
+      private temperance.protobuf.FullText.Response.Status status_ = temperance.protobuf.FullText.Response.Status.FAILURE;
+      public boolean hasStatus() { return hasStatus; }
+      public temperance.protobuf.FullText.Response.Status getStatus() { return status_; }
+      
+      public final boolean isInitialized() {
+        if (!hasStatus) return false;
+        return true;
+      }
+      
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (hasStatus()) {
+          output.writeEnum(1, getStatus().getNumber());
+        }
+        getUnknownFields().writeTo(output);
+      }
+      
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+      
+        size = 0;
+        if (hasStatus()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeEnumSize(1, getStatus().getNumber());
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+      
+      public static temperance.protobuf.FullText.Response.Delete parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.FullText.Response.Delete parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.FullText.Response.Delete parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.FullText.Response.Delete parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.FullText.Response.Delete parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.FullText.Response.Delete parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.FullText.Response.Delete parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.FullText.Response.Delete parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.FullText.Response.Delete parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.FullText.Response.Delete parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(temperance.protobuf.FullText.Response.Delete prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+      
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder> {
+        private temperance.protobuf.FullText.Response.Delete result;
+        
+        // Construct using temperance.protobuf.FullText.Response.Delete.newBuilder()
+        private Builder() {}
+        
+        private static Builder create() {
+          Builder builder = new Builder();
+          builder.result = new temperance.protobuf.FullText.Response.Delete();
+          return builder;
+        }
+        
+        protected temperance.protobuf.FullText.Response.Delete internalGetResult() {
+          return result;
+        }
+        
+        public Builder clear() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "Cannot call clear() after build().");
+          }
+          result = new temperance.protobuf.FullText.Response.Delete();
+          return this;
+        }
+        
+        public Builder clone() {
+          return create().mergeFrom(result);
+        }
+        
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return temperance.protobuf.FullText.Response.Delete.getDescriptor();
+        }
+        
+        public temperance.protobuf.FullText.Response.Delete getDefaultInstanceForType() {
+          return temperance.protobuf.FullText.Response.Delete.getDefaultInstance();
+        }
+        
+        public boolean isInitialized() {
+          return result.isInitialized();
+        }
+        public temperance.protobuf.FullText.Response.Delete build() {
+          if (result != null && !isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return buildPartial();
+        }
+        
+        private temperance.protobuf.FullText.Response.Delete buildParsed()
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          if (!isInitialized()) {
+            throw newUninitializedMessageException(
+              result).asInvalidProtocolBufferException();
+          }
+          return buildPartial();
+        }
+        
+        public temperance.protobuf.FullText.Response.Delete buildPartial() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "build() has already been called on this Builder.");
+          }
+          temperance.protobuf.FullText.Response.Delete returnMe = result;
+          result = null;
+          return returnMe;
+        }
+        
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof temperance.protobuf.FullText.Response.Delete) {
+            return mergeFrom((temperance.protobuf.FullText.Response.Delete)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+        
+        public Builder mergeFrom(temperance.protobuf.FullText.Response.Delete other) {
+          if (other == temperance.protobuf.FullText.Response.Delete.getDefaultInstance()) return this;
+          if (other.hasStatus()) {
+            setStatus(other.getStatus());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+        
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder(
+              this.getUnknownFields());
+          while (true) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                this.setUnknownFields(unknownFields.build());
+                return this;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  this.setUnknownFields(unknownFields.build());
+                  return this;
+                }
+                break;
+              }
+              case 8: {
+                int rawValue = input.readEnum();
+                temperance.protobuf.FullText.Response.Status value = temperance.protobuf.FullText.Response.Status.valueOf(rawValue);
+                if (value == null) {
+                  unknownFields.mergeVarintField(1, rawValue);
+                } else {
+                  setStatus(value);
+                }
+                break;
+              }
+            }
+          }
+        }
+        
+        
+        // required .temperance.protobuf.Response.Status status = 1;
+        public boolean hasStatus() {
+          return result.hasStatus();
+        }
+        public temperance.protobuf.FullText.Response.Status getStatus() {
+          return result.getStatus();
+        }
+        public Builder setStatus(temperance.protobuf.FullText.Response.Status value) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          result.hasStatus = true;
+          result.status_ = value;
+          return this;
+        }
+        public Builder clearStatus() {
+          result.hasStatus = false;
+          result.status_ = temperance.protobuf.FullText.Response.Status.FAILURE;
+          return this;
+        }
+      }
+      
+      static {
+        temperance.protobuf.FullText.getDescriptor();
+      }
+      
+      static {
+        temperance.protobuf.FullText.internalForceInit();
+      }
+    }
+    
+    public static final class DeleteByValue extends
+        com.google.protobuf.GeneratedMessage {
+      // Use DeleteByValue.newBuilder() to construct.
+      private DeleteByValue() {}
+      
+      private static final DeleteByValue defaultInstance = new DeleteByValue();
+      public static DeleteByValue getDefaultInstance() {
+        return defaultInstance;
+      }
+      
+      public DeleteByValue getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+      
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return temperance.protobuf.FullText.internal_static_temperance_protobuf_Response_DeleteByValue_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return temperance.protobuf.FullText.internal_static_temperance_protobuf_Response_DeleteByValue_fieldAccessorTable;
+      }
+      
+      // required .temperance.protobuf.Response.Status status = 1;
+      public static final int STATUS_FIELD_NUMBER = 1;
+      private boolean hasStatus;
+      private temperance.protobuf.FullText.Response.Status status_ = temperance.protobuf.FullText.Response.Status.FAILURE;
+      public boolean hasStatus() { return hasStatus; }
+      public temperance.protobuf.FullText.Response.Status getStatus() { return status_; }
+      
+      public final boolean isInitialized() {
+        if (!hasStatus) return false;
+        return true;
+      }
+      
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (hasStatus()) {
+          output.writeEnum(1, getStatus().getNumber());
+        }
+        getUnknownFields().writeTo(output);
+      }
+      
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+      
+        size = 0;
+        if (hasStatus()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeEnumSize(1, getStatus().getNumber());
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+      
+      public static temperance.protobuf.FullText.Response.DeleteByValue parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.FullText.Response.DeleteByValue parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.FullText.Response.DeleteByValue parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.FullText.Response.DeleteByValue parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.FullText.Response.DeleteByValue parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.FullText.Response.DeleteByValue parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.FullText.Response.DeleteByValue parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.FullText.Response.DeleteByValue parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.FullText.Response.DeleteByValue parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.FullText.Response.DeleteByValue parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(temperance.protobuf.FullText.Response.DeleteByValue prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+      
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder> {
+        private temperance.protobuf.FullText.Response.DeleteByValue result;
+        
+        // Construct using temperance.protobuf.FullText.Response.DeleteByValue.newBuilder()
+        private Builder() {}
+        
+        private static Builder create() {
+          Builder builder = new Builder();
+          builder.result = new temperance.protobuf.FullText.Response.DeleteByValue();
+          return builder;
+        }
+        
+        protected temperance.protobuf.FullText.Response.DeleteByValue internalGetResult() {
+          return result;
+        }
+        
+        public Builder clear() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "Cannot call clear() after build().");
+          }
+          result = new temperance.protobuf.FullText.Response.DeleteByValue();
+          return this;
+        }
+        
+        public Builder clone() {
+          return create().mergeFrom(result);
+        }
+        
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return temperance.protobuf.FullText.Response.DeleteByValue.getDescriptor();
+        }
+        
+        public temperance.protobuf.FullText.Response.DeleteByValue getDefaultInstanceForType() {
+          return temperance.protobuf.FullText.Response.DeleteByValue.getDefaultInstance();
+        }
+        
+        public boolean isInitialized() {
+          return result.isInitialized();
+        }
+        public temperance.protobuf.FullText.Response.DeleteByValue build() {
+          if (result != null && !isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return buildPartial();
+        }
+        
+        private temperance.protobuf.FullText.Response.DeleteByValue buildParsed()
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          if (!isInitialized()) {
+            throw newUninitializedMessageException(
+              result).asInvalidProtocolBufferException();
+          }
+          return buildPartial();
+        }
+        
+        public temperance.protobuf.FullText.Response.DeleteByValue buildPartial() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "build() has already been called on this Builder.");
+          }
+          temperance.protobuf.FullText.Response.DeleteByValue returnMe = result;
+          result = null;
+          return returnMe;
+        }
+        
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof temperance.protobuf.FullText.Response.DeleteByValue) {
+            return mergeFrom((temperance.protobuf.FullText.Response.DeleteByValue)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+        
+        public Builder mergeFrom(temperance.protobuf.FullText.Response.DeleteByValue other) {
+          if (other == temperance.protobuf.FullText.Response.DeleteByValue.getDefaultInstance()) return this;
+          if (other.hasStatus()) {
+            setStatus(other.getStatus());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+        
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder(
+              this.getUnknownFields());
+          while (true) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                this.setUnknownFields(unknownFields.build());
+                return this;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  this.setUnknownFields(unknownFields.build());
+                  return this;
+                }
+                break;
+              }
+              case 8: {
+                int rawValue = input.readEnum();
+                temperance.protobuf.FullText.Response.Status value = temperance.protobuf.FullText.Response.Status.valueOf(rawValue);
+                if (value == null) {
+                  unknownFields.mergeVarintField(1, rawValue);
+                } else {
+                  setStatus(value);
+                }
+                break;
+              }
+            }
+          }
+        }
+        
+        
+        // required .temperance.protobuf.Response.Status status = 1;
+        public boolean hasStatus() {
+          return result.hasStatus();
+        }
+        public temperance.protobuf.FullText.Response.Status getStatus() {
+          return result.getStatus();
+        }
+        public Builder setStatus(temperance.protobuf.FullText.Response.Status value) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          result.hasStatus = true;
+          result.status_ = value;
+          return this;
+        }
+        public Builder clearStatus() {
+          result.hasStatus = false;
+          result.status_ = temperance.protobuf.FullText.Response.Status.FAILURE;
           return this;
         }
       }
@@ -1920,6 +3213,16 @@ public final class FullText {
           temperance.protobuf.FullText.Request.Add request,
           com.google.protobuf.RpcCallback<temperance.protobuf.FullText.Response.Add> done);
       
+      public abstract void delete(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.FullText.Request.Delete request,
+          com.google.protobuf.RpcCallback<temperance.protobuf.FullText.Response.Delete> done);
+      
+      public abstract void deleteByValue(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.FullText.Request.DeleteByValue request,
+          com.google.protobuf.RpcCallback<temperance.protobuf.FullText.Response.DeleteByValue> done);
+      
       public abstract void search(
           com.google.protobuf.RpcController controller,
           temperance.protobuf.FullText.Request.Search request,
@@ -1936,6 +3239,22 @@ public final class FullText {
             temperance.protobuf.FullText.Request.Add request,
             com.google.protobuf.RpcCallback<temperance.protobuf.FullText.Response.Add> done) {
           impl.add(controller, request, done);
+        }
+        
+        @Override
+        public  void delete(
+            com.google.protobuf.RpcController controller,
+            temperance.protobuf.FullText.Request.Delete request,
+            com.google.protobuf.RpcCallback<temperance.protobuf.FullText.Response.Delete> done) {
+          impl.delete(controller, request, done);
+        }
+        
+        @Override
+        public  void deleteByValue(
+            com.google.protobuf.RpcController controller,
+            temperance.protobuf.FullText.Request.DeleteByValue request,
+            com.google.protobuf.RpcCallback<temperance.protobuf.FullText.Response.DeleteByValue> done) {
+          impl.deleteByValue(controller, request, done);
         }
         
         @Override
@@ -1971,6 +3290,10 @@ public final class FullText {
             case 0:
               return impl.add(controller, (temperance.protobuf.FullText.Request.Add)request);
             case 1:
+              return impl.delete(controller, (temperance.protobuf.FullText.Request.Delete)request);
+            case 2:
+              return impl.deleteByValue(controller, (temperance.protobuf.FullText.Request.DeleteByValue)request);
+            case 3:
               return impl.search(controller, (temperance.protobuf.FullText.Request.Search)request);
             default:
               throw new java.lang.AssertionError("Can't get here.");
@@ -1989,6 +3312,10 @@ public final class FullText {
             case 0:
               return temperance.protobuf.FullText.Request.Add.getDefaultInstance();
             case 1:
+              return temperance.protobuf.FullText.Request.Delete.getDefaultInstance();
+            case 2:
+              return temperance.protobuf.FullText.Request.DeleteByValue.getDefaultInstance();
+            case 3:
               return temperance.protobuf.FullText.Request.Search.getDefaultInstance();
             default:
               throw new java.lang.AssertionError("Can't get here.");
@@ -2007,6 +3334,10 @@ public final class FullText {
             case 0:
               return temperance.protobuf.FullText.Response.Add.getDefaultInstance();
             case 1:
+              return temperance.protobuf.FullText.Response.Delete.getDefaultInstance();
+            case 2:
+              return temperance.protobuf.FullText.Response.DeleteByValue.getDefaultInstance();
+            case 3:
               return temperance.protobuf.FullText.Response.Search.getDefaultInstance();
             default:
               throw new java.lang.AssertionError("Can't get here.");
@@ -2020,6 +3351,16 @@ public final class FullText {
         com.google.protobuf.RpcController controller,
         temperance.protobuf.FullText.Request.Add request,
         com.google.protobuf.RpcCallback<temperance.protobuf.FullText.Response.Add> done);
+    
+    public abstract void delete(
+        com.google.protobuf.RpcController controller,
+        temperance.protobuf.FullText.Request.Delete request,
+        com.google.protobuf.RpcCallback<temperance.protobuf.FullText.Response.Delete> done);
+    
+    public abstract void deleteByValue(
+        com.google.protobuf.RpcController controller,
+        temperance.protobuf.FullText.Request.DeleteByValue request,
+        com.google.protobuf.RpcCallback<temperance.protobuf.FullText.Response.DeleteByValue> done);
     
     public abstract void search(
         com.google.protobuf.RpcController controller,
@@ -2054,6 +3395,16 @@ public final class FullText {
               done));
           return;
         case 1:
+          this.delete(controller, (temperance.protobuf.FullText.Request.Delete)request,
+            com.google.protobuf.RpcUtil.<temperance.protobuf.FullText.Response.Delete>specializeCallback(
+              done));
+          return;
+        case 2:
+          this.deleteByValue(controller, (temperance.protobuf.FullText.Request.DeleteByValue)request,
+            com.google.protobuf.RpcUtil.<temperance.protobuf.FullText.Response.DeleteByValue>specializeCallback(
+              done));
+          return;
+        case 3:
           this.search(controller, (temperance.protobuf.FullText.Request.Search)request,
             com.google.protobuf.RpcUtil.<temperance.protobuf.FullText.Response.Search>specializeCallback(
               done));
@@ -2075,6 +3426,10 @@ public final class FullText {
         case 0:
           return temperance.protobuf.FullText.Request.Add.getDefaultInstance();
         case 1:
+          return temperance.protobuf.FullText.Request.Delete.getDefaultInstance();
+        case 2:
+          return temperance.protobuf.FullText.Request.DeleteByValue.getDefaultInstance();
+        case 3:
           return temperance.protobuf.FullText.Request.Search.getDefaultInstance();
         default:
           throw new java.lang.AssertionError("Can't get here.");
@@ -2093,6 +3448,10 @@ public final class FullText {
         case 0:
           return temperance.protobuf.FullText.Response.Add.getDefaultInstance();
         case 1:
+          return temperance.protobuf.FullText.Response.Delete.getDefaultInstance();
+        case 2:
+          return temperance.protobuf.FullText.Response.DeleteByValue.getDefaultInstance();
+        case 3:
           return temperance.protobuf.FullText.Response.Search.getDefaultInstance();
         default:
           throw new java.lang.AssertionError("Can't get here.");
@@ -2130,12 +3489,42 @@ public final class FullText {
             temperance.protobuf.FullText.Response.Add.getDefaultInstance()));
       }
       
+      public  void delete(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.FullText.Request.Delete request,
+          com.google.protobuf.RpcCallback<temperance.protobuf.FullText.Response.Delete> done) {
+        channel.callMethod(
+          getDescriptor().getMethods().get(1),
+          controller,
+          request,
+          temperance.protobuf.FullText.Response.Delete.getDefaultInstance(),
+          com.google.protobuf.RpcUtil.generalizeCallback(
+            done,
+            temperance.protobuf.FullText.Response.Delete.class,
+            temperance.protobuf.FullText.Response.Delete.getDefaultInstance()));
+      }
+      
+      public  void deleteByValue(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.FullText.Request.DeleteByValue request,
+          com.google.protobuf.RpcCallback<temperance.protobuf.FullText.Response.DeleteByValue> done) {
+        channel.callMethod(
+          getDescriptor().getMethods().get(2),
+          controller,
+          request,
+          temperance.protobuf.FullText.Response.DeleteByValue.getDefaultInstance(),
+          com.google.protobuf.RpcUtil.generalizeCallback(
+            done,
+            temperance.protobuf.FullText.Response.DeleteByValue.class,
+            temperance.protobuf.FullText.Response.DeleteByValue.getDefaultInstance()));
+      }
+      
       public  void search(
           com.google.protobuf.RpcController controller,
           temperance.protobuf.FullText.Request.Search request,
           com.google.protobuf.RpcCallback<temperance.protobuf.FullText.Response.Search> done) {
         channel.callMethod(
-          getDescriptor().getMethods().get(1),
+          getDescriptor().getMethods().get(3),
           controller,
           request,
           temperance.protobuf.FullText.Response.Search.getDefaultInstance(),
@@ -2155,6 +3544,16 @@ public final class FullText {
       public temperance.protobuf.FullText.Response.Add add(
           com.google.protobuf.RpcController controller,
           temperance.protobuf.FullText.Request.Add request)
+          throws com.google.protobuf.ServiceException;
+      
+      public temperance.protobuf.FullText.Response.Delete delete(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.FullText.Request.Delete request)
+          throws com.google.protobuf.ServiceException;
+      
+      public temperance.protobuf.FullText.Response.DeleteByValue deleteByValue(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.FullText.Request.DeleteByValue request)
           throws com.google.protobuf.ServiceException;
       
       public temperance.protobuf.FullText.Response.Search search(
@@ -2182,12 +3581,36 @@ public final class FullText {
       }
       
       
+      public temperance.protobuf.FullText.Response.Delete delete(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.FullText.Request.Delete request)
+          throws com.google.protobuf.ServiceException {
+        return (temperance.protobuf.FullText.Response.Delete) channel.callBlockingMethod(
+          getDescriptor().getMethods().get(1),
+          controller,
+          request,
+          temperance.protobuf.FullText.Response.Delete.getDefaultInstance());
+      }
+      
+      
+      public temperance.protobuf.FullText.Response.DeleteByValue deleteByValue(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.FullText.Request.DeleteByValue request)
+          throws com.google.protobuf.ServiceException {
+        return (temperance.protobuf.FullText.Response.DeleteByValue) channel.callBlockingMethod(
+          getDescriptor().getMethods().get(2),
+          controller,
+          request,
+          temperance.protobuf.FullText.Response.DeleteByValue.getDefaultInstance());
+      }
+      
+      
       public temperance.protobuf.FullText.Response.Search search(
           com.google.protobuf.RpcController controller,
           temperance.protobuf.FullText.Request.Search request)
           throws com.google.protobuf.ServiceException {
         return (temperance.protobuf.FullText.Response.Search) channel.callBlockingMethod(
-          getDescriptor().getMethods().get(1),
+          getDescriptor().getMethods().get(3),
           controller,
           request,
           temperance.protobuf.FullText.Response.Search.getDefaultInstance());
@@ -2207,6 +3630,16 @@ public final class FullText {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_temperance_protobuf_Request_Add_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_temperance_protobuf_Request_Delete_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_temperance_protobuf_Request_Delete_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_temperance_protobuf_Request_DeleteByValue_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_temperance_protobuf_Request_DeleteByValue_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_temperance_protobuf_Request_Search_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -2222,6 +3655,16 @@ public final class FullText {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_temperance_protobuf_Response_Add_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_temperance_protobuf_Response_Delete_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_temperance_protobuf_Response_Delete_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_temperance_protobuf_Response_DeleteByValue_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_temperance_protobuf_Response_DeleteByValue_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_temperance_protobuf_Response_Search_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -2235,21 +3678,34 @@ public final class FullText {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\016FullText.proto\022\023temperance.protobuf\"\232\002" +
+      "\n\016FullText.proto\022\023temperance.protobuf\"\204\003" +
       "\n\007Request\032\201\001\n\003Add\022\013\n\003key\030\001 \002(\t\022\013\n\003str\030\002 " +
       "\002(\t\022\r\n\005value\030\003 \002(\t\022\025\n\006expire\030\004 \001(\r:\0058640" +
       "0\022:\n\006parser\030\005 \001(\0162#.temperance.protobuf." +
-      "Request.Parser:\005MECAB\032^\n\006Search\022\013\n\003key\030\001" +
-      " \002(\t\022\013\n\003str\030\002 \002(\t\022:\n\006parser\030\003 \001(\0162#.temp" +
-      "erance.protobuf.Request.Parser:\005MECAB\"+\n" +
-      "\006Parser\022\t\n\005MECAB\020\000\022\n\n\006BIGRAM\020\001\022\n\n\006PREFIX" +
-      "\020\002\"<\n\010Response\032\026\n\003Add\022\017\n\007succeed\030\001 \002(\010\032\030" +
-      "\n\006Search\022\016\n\006values\030\001 \003(\t2\262\001\n\017FullTextSer",
-      "vice\022J\n\003add\022 .temperance.protobuf.Reques" +
-      "t.Add\032!.temperance.protobuf.Response.Add" +
-      "\022S\n\006search\022#.temperance.protobuf.Request" +
-      ".Search\032$.temperance.protobuf.Response.S" +
-      "earchB\002H\001"
+      "Request.Parser:\005MECAB\032(\n\006Delete\022\013\n\003key\030\001" +
+      " \002(\t\022\021\n\006expire\030\002 \001(\r:\0010\032>\n\rDeleteByValue" +
+      "\022\013\n\003key\030\001 \002(\t\022\r\n\005value\030\002 \002(\t\022\021\n\006expire\030\003" +
+      " \001(\r:\0010\032^\n\006Search\022\013\n\003key\030\001 \002(\t\022\013\n\003str\030\002 " +
+      "\002(\t\022:\n\006parser\030\003 \001(\0162#.temperance.protobu" +
+      "f.Request.Parser:\005MECAB\"+\n\006Parser\022\t\n\005MEC",
+      "AB\020\000\022\n\n\006BIGRAM\020\001\022\n\n\006PREFIX\020\002\"\231\002\n\010Respons" +
+      "e\032;\n\003Add\0224\n\006status\030\001 \002(\0162$.temperance.pr" +
+      "otobuf.Response.Status\032>\n\006Delete\0224\n\006stat" +
+      "us\030\001 \002(\0162$.temperance.protobuf.Response." +
+      "Status\032E\n\rDeleteByValue\0224\n\006status\030\001 \002(\0162" +
+      "$.temperance.protobuf.Response.Status\032\030\n" +
+      "\006Search\022\016\n\006values\030\001 \003(\t\"/\n\006Status\022\013\n\007FAI" +
+      "LURE\020\000\022\013\n\007SUCCESS\020\001\022\013\n\007ENQUEUE\020\0022\361\002\n\017Ful" +
+      "lTextService\022J\n\003add\022 .temperance.protobu" +
+      "f.Request.Add\032!.temperance.protobuf.Resp",
+      "onse.Add\022S\n\006delete\022#.temperance.protobuf" +
+      ".Request.Delete\032$.temperance.protobuf.Re" +
+      "sponse.Delete\022h\n\rdeleteByValue\022*.tempera" +
+      "nce.protobuf.Request.DeleteByValue\032+.tem" +
+      "perance.protobuf.Response.DeleteByValue\022" +
+      "S\n\006search\022#.temperance.protobuf.Request." +
+      "Search\032$.temperance.protobuf.Response.Se" +
+      "archB\002H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -2272,8 +3728,24 @@ public final class FullText {
               new java.lang.String[] { "Key", "Str", "Value", "Expire", "Parser", },
               temperance.protobuf.FullText.Request.Add.class,
               temperance.protobuf.FullText.Request.Add.Builder.class);
-          internal_static_temperance_protobuf_Request_Search_descriptor =
+          internal_static_temperance_protobuf_Request_Delete_descriptor =
             internal_static_temperance_protobuf_Request_descriptor.getNestedTypes().get(1);
+          internal_static_temperance_protobuf_Request_Delete_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_temperance_protobuf_Request_Delete_descriptor,
+              new java.lang.String[] { "Key", "Expire", },
+              temperance.protobuf.FullText.Request.Delete.class,
+              temperance.protobuf.FullText.Request.Delete.Builder.class);
+          internal_static_temperance_protobuf_Request_DeleteByValue_descriptor =
+            internal_static_temperance_protobuf_Request_descriptor.getNestedTypes().get(2);
+          internal_static_temperance_protobuf_Request_DeleteByValue_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_temperance_protobuf_Request_DeleteByValue_descriptor,
+              new java.lang.String[] { "Key", "Value", "Expire", },
+              temperance.protobuf.FullText.Request.DeleteByValue.class,
+              temperance.protobuf.FullText.Request.DeleteByValue.Builder.class);
+          internal_static_temperance_protobuf_Request_Search_descriptor =
+            internal_static_temperance_protobuf_Request_descriptor.getNestedTypes().get(3);
           internal_static_temperance_protobuf_Request_Search_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_temperance_protobuf_Request_Search_descriptor,
@@ -2293,11 +3765,27 @@ public final class FullText {
           internal_static_temperance_protobuf_Response_Add_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_temperance_protobuf_Response_Add_descriptor,
-              new java.lang.String[] { "Succeed", },
+              new java.lang.String[] { "Status", },
               temperance.protobuf.FullText.Response.Add.class,
               temperance.protobuf.FullText.Response.Add.Builder.class);
-          internal_static_temperance_protobuf_Response_Search_descriptor =
+          internal_static_temperance_protobuf_Response_Delete_descriptor =
             internal_static_temperance_protobuf_Response_descriptor.getNestedTypes().get(1);
+          internal_static_temperance_protobuf_Response_Delete_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_temperance_protobuf_Response_Delete_descriptor,
+              new java.lang.String[] { "Status", },
+              temperance.protobuf.FullText.Response.Delete.class,
+              temperance.protobuf.FullText.Response.Delete.Builder.class);
+          internal_static_temperance_protobuf_Response_DeleteByValue_descriptor =
+            internal_static_temperance_protobuf_Response_descriptor.getNestedTypes().get(2);
+          internal_static_temperance_protobuf_Response_DeleteByValue_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_temperance_protobuf_Response_DeleteByValue_descriptor,
+              new java.lang.String[] { "Status", },
+              temperance.protobuf.FullText.Response.DeleteByValue.class,
+              temperance.protobuf.FullText.Response.DeleteByValue.Builder.class);
+          internal_static_temperance_protobuf_Response_Search_descriptor =
+            internal_static_temperance_protobuf_Response_descriptor.getNestedTypes().get(3);
           internal_static_temperance_protobuf_Response_Search_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_temperance_protobuf_Response_Search_descriptor,

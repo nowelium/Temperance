@@ -2,8 +2,8 @@ package temperance.function;
 
 import java.util.List;
 
-import temperance.ft.Hashing;
-import temperance.ft.MecabHashing;
+import temperance.hashing.Hashing;
+import temperance.hashing.MecabHashing;
 
 
 public class MecabFunction extends AbstractTaggerFunction {

@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import temperance.hash.Hash;
+import temperance.hashing.MecabHashing;
 
 public class MecabTest {
 

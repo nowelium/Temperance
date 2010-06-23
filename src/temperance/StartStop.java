@@ -10,10 +10,10 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.Parser;
 
 import temperance.core.Configure;
-import temperance.ft.MecabHashing;
-import temperance.ft.MecabNodeFilter;
 import temperance.hash.Hash;
 import temperance.hash.HashFunction;
+import temperance.hashing.MecabHashing;
+import temperance.hashing.MecabNodeFilter;
 import temperance.server.MsgPackServer;
 import temperance.server.Server;
 import temperance.server.ProtobufServer;
@@ -29,7 +29,7 @@ public class StartStop {
             CommandLine cli = parser.parse(options, args, true);
             
             String memcached = cli.getOptionValue("memc");
-            String memcachedPoolSize = cli.getOptionValue("memc_pool", "300");
+            String memcachedPoolSize = cli.getOptionValue("memc_pool", "500");
             String mecabrc = cli.getOptionValue("mecabrc", "/etc/mecabrc");
             
             MecabNodeFilter nodeFilter = MecabHashing.Filter.Nouns;
@@ -96,7 +96,7 @@ public class StartStop {
         Option memcached = new Option("memc", "memcached", true, "memcached server string(ex. host01:11211,host02:11211)");
         memcached.setRequired(true);
         
-        Option memcachedPoolSize = new Option("memc_pool", "memcached_pool", true, "memcached connection poolsize(default: 300)");
+        Option memcachedPoolSize = new Option("memc_pool", "memcached_pool", true, "memcached connection poolsize(default: 500)");
         memcachedPoolSize.setRequired(false);
         
         Option mecabrc = new Option("mecabrc", "mecabrc", true, "mecabrc path(default /etc/mecabrc)");

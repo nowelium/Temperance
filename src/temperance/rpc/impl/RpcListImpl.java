@@ -6,11 +6,11 @@ import java.util.concurrent.Future;
 
 import libmemcached.exception.LibMemcachedException;
 import temperance.core.Configure;
-import temperance.core.ListCommand;
+import temperance.core.SequenceCommand;
 import temperance.core.Pooling;
 import temperance.exception.RpcException;
 import temperance.rpc.RpcList;
-import temperance.storage.MemcachedList;
+import temperance.storage.impl.MemcachedSequence;
 
 public class RpcListImpl implements RpcList {
     
@@ -28,7 +28,7 @@ public class RpcListImpl implements RpcList {
         final String value = request.value;
         final int expire = request.expire;
         
-        final MemcachedList list = new MemcachedList(pooling.getConnectionPool());
+        final MemcachedSequence list = new MemcachedSequence(pooling.getConnectionPool());
         try {
             list.add(key, value, expire);
             
@@ -45,7 +45,7 @@ public class RpcListImpl implements RpcList {
     public Response.Count count(Request.Count request) throws RpcException {
         final String key = request.key;
         
-        final MemcachedList list = new MemcachedList(pooling.getConnectionPool());
+        final MemcachedSequence list = new MemcachedSequence(pooling.getConnectionPool());
         try {
             long count = list.count(key);
             
@@ -62,7 +62,7 @@ public class RpcListImpl implements RpcList {
         final long offset = request.offset;
         final long limit = request.limit;
         
-        final ListCommand command = new ListCommand(pooling);
+        final SequenceCommand command = new SequenceCommand(pooling);
         try {
             Future<List<String>> future = command.get(key, offset, limit);
             
@@ -80,7 +80,7 @@ public class RpcListImpl implements RpcList {
         final String key = request.key;
         final int expire = request.expire;
         
-        final MemcachedList list = new MemcachedList(pooling.getConnectionPool());
+        final MemcachedSequence list = new MemcachedSequence(pooling.getConnectionPool());
         try {
             boolean success = list.delete(key, expire);
             

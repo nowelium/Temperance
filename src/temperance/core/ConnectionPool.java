@@ -10,6 +10,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Logger;
 
 import libmemcached.wrapper.MemcachedBehavior;
 import libmemcached.wrapper.MemcachedClient;
@@ -42,6 +43,8 @@ public class ConnectionPool implements LifeCycle {
     protected final long keepAliveTime = TimeUnit.SECONDS.toMillis(1800L);
     
     protected final CountDownLock lock;
+    
+    protected final Logger logger = Logger.getLogger(ConnectionPool.class.getName());
     
     public ConnectionPool(Configure configure){
         this.configure = configure;
@@ -89,6 +92,8 @@ public class ConnectionPool implements LifeCycle {
     }
     
     public void init(){
+        logger.info("init pool");
+        
         ReturnType pushed = client.getServerList().parse(configure.getMemcached()).push();
         if(!ReturnType.SUCCESS.equals(pushed)){
             throw new InitializationException("server list failure: " + configure.getMemcached() + " was " + pushed);
@@ -135,14 +140,18 @@ public class ConnectionPool implements LifeCycle {
     }
     
     public void destroy(){
+        logger.info("destroy pool");
         executor.shutdown();
         
         try {
-            if(!executor.awaitTermination(60, TimeUnit.SECONDS)){
+            logger.info("awaiting shutdown");
+            if(!executor.awaitTermination(30, TimeUnit.SECONDS)){
                 executor.shutdownNow();
             }
         } catch(InterruptedException e){
             // nop
+        } finally {
+            logger.info("pool destroyed");
         }
     }
     

@@ -16,6 +16,15 @@ message Request {
         optional uint32 expire = 4 [default = 86400];
         optional Parser parser = 5 [default = MECAB];
     }
+    message Delete {
+        required string key = 1;
+        optional uint32 expire = 2 [default = 0];
+    }
+    message DeleteByValue {
+        required string key = 1;
+        required string value = 2;
+        optional uint32 expire = 3 [default = 0];
+    }
     message Search {
         required string key = 1;
         required string str = 2;
@@ -23,8 +32,20 @@ message Request {
     }
 }
 message Response {
+    enum Status {
+        FAILURE = 0;
+        SUCCESS = 1;
+        ENQUEUE = 2;
+    }
+    
     message Add {
-        required bool succeed = 1;
+        required Status status = 1;
+    }
+    message Delete {
+        required Status status = 1;
+    }
+    message DeleteByValue {
+        required Status status = 1;
     }
     message Search {
         repeated string values = 1;
@@ -33,5 +54,7 @@ message Response {
 
 service FullTextService {
     rpc add(Request.Add) returns(Response.Add);
+    rpc delete(Request.Delete) returns(Response.Delete);
+    rpc deleteByValue(Request.DeleteByValue) returns(Response.DeleteByValue);
     rpc search(Request.Search) returns(Response.Search);
 }

@@ -2,8 +2,8 @@ package temperance.function;
 
 import java.util.List;
 
-import temperance.ft.GramHashing;
-import temperance.ft.Hashing;
+import temperance.hashing.GramHashing;
+import temperance.hashing.Hashing;
 
 public class GramFunction extends AbstractTaggerFunction {
     

@@ -5,7 +5,7 @@ import temperance.core.Configure;
 import temperance.core.Pooling;
 import temperance.exception.RpcException;
 import temperance.rpc.RpcMap;
-import temperance.storage.MemcachedMap;
+import temperance.storage.impl.MemcachedMap;
 
 public class RpcMapImpl implements RpcMap {
     

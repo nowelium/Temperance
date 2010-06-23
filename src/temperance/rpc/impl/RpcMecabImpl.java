@@ -7,9 +7,9 @@ import org.chasen.mecab.wrapper.Tagger;
 
 import temperance.core.Configure;
 import temperance.exception.RpcException;
-import temperance.ft.MecabHashing;
-import temperance.ft.MecabNodeFilter;
 import temperance.hash.HashFunction;
+import temperance.hashing.MecabHashing;
+import temperance.hashing.MecabNodeFilter;
 import temperance.rpc.RpcMecab;
 
 public class RpcMecabImpl implements RpcMecab {

@@ -5,13 +5,12 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import libmemcached.wrapper.type.BehaviorType;
-import temperance.ft.MecabNodeFilter;
 import temperance.hash.HashFunction;
+import temperance.hashing.MecabNodeFilter;
 
 public class Configure {
     
     private String memcached;
-    
     
     private String mecabrc;
     
@@ -31,7 +30,7 @@ public class Configure {
     
     private int initialConnectionPoolSize = 30;
     
-    private int maxConnectionPoolSize = 300;
+    private int maxConnectionPoolSize = 500;
     
     public String getMemcached(){
         return memcached;

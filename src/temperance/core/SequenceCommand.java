@@ -6,16 +6,16 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
-import temperance.storage.MemcachedList;
+import temperance.storage.impl.MemcachedSequence;
 import temperance.util.Lists;
 
-public class ListCommand implements Command {
+public class SequenceCommand implements Command {
     
     protected final ThreadPool thread;
 
     protected final ConnectionPool connection;
     
-    public ListCommand(Pooling pooling){
+    public SequenceCommand(Pooling pooling){
         this.thread = pooling.getThreadPool();
         this.connection = pooling.getConnectionPool();
     }
@@ -72,7 +72,7 @@ public class ListCommand implements Command {
             this.limit = limit;
         }
         public List<String> call() throws Exception {
-            final MemcachedList list = new MemcachedList(pool);
+            final MemcachedSequence list = new MemcachedSequence(pool);
             final long count = list.count(key);
             if(count < 1){
                 return Collections.emptyList();
@@ -101,7 +101,7 @@ public class ListCommand implements Command {
             this.key = key;
         }
         public List<String> call() throws Exception {
-            final MemcachedList list = new MemcachedList(pool);
+            final MemcachedSequence list = new MemcachedSequence(pool);
             final List<String> returnValue = Lists.newArrayList();
             final long count = list.count(key);
             if(count < 1){
@@ -130,7 +130,7 @@ public class ListCommand implements Command {
             this.filter = filter;
         }
         public Void call() throws Exception {
-            final MemcachedList list = new MemcachedList(pool);
+            final MemcachedSequence list = new MemcachedSequence(pool);
             final long count = list.count(key);
             for(long i = 0; i < count; i += SPLIT){
                 long limit = SPLIT;

@@ -16,9 +16,9 @@ import org.junit.Test;
 import temperance.core.Configure;
 import temperance.core.Pooling;
 import temperance.exception.CommandExecutionException;
-import temperance.ft.MecabHashing;
 import temperance.hash.Hash;
-import temperance.storage.MemcachedList;
+import temperance.hashing.MecabHashing;
+import temperance.storage.impl.MemcachedSequence;
 
 public class ValueFunctionTest {
     
@@ -53,7 +53,7 @@ public class ValueFunctionTest {
         ctx.setPooling(pooling);
         ctx.setTagger(Tagger.create("-r " + configure.getMecabrc()));
         
-        MemcachedList list = new MemcachedList(pooling.getConnectionPool());
+        MemcachedSequence list = new MemcachedSequence(pooling.getConnectionPool());
         for(int i = 0; i < 10; ++i){
             // value starts: 1, ends: 10
             list.add("hoge:0", Integer.toString(i + 1), 0);

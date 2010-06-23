@@ -3,8 +3,8 @@ package temperance.function;
 import org.chasen.mecab.wrapper.Tagger;
 
 import temperance.core.Pooling;
-import temperance.ft.MecabNodeFilter;
 import temperance.hash.HashFunction;
+import temperance.hashing.MecabNodeFilter;
 
 public class FunctionContext {
     

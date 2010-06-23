@@ -17,11 +17,11 @@ import org.junit.Test;
 import temperance.core.Configure;
 import temperance.core.Pooling;
 import temperance.exception.CommandExecutionException;
-import temperance.ft.MecabHashing;
-import temperance.ft.MecabNodeFilter;
 import temperance.hash.Hash;
 import temperance.hash.HashFunction;
-import temperance.storage.MemcachedFullText;
+import temperance.hashing.MecabHashing;
+import temperance.hashing.MecabNodeFilter;
+import temperance.storage.impl.MemcachedFullText;
 
 
 public class MecabFunctionTest {
