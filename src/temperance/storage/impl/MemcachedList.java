@@ -82,30 +82,34 @@ public class MemcachedList implements TpList {
     }
     
     public List<String> get(final String key, final long offset, final long limit) throws MemcachedOperationException {
-        final List<SequenceResult> results = getByResult(key, offset, limit);
+        final List<TpListResult> results = getByResult(key, offset, limit);
         final List<String> values = Lists.newArrayList();
-        for(SequenceResult result: results){
+        for(TpListResult result: results){
             values.add(result.getValue());
         }
         return values;
     }
     
-    public List<SequenceResult> getByResult(final String key, final long offset, final long limit) throws MemcachedOperationException {
-        final KeyList index = new KeyList();
-        for(long i = offset; i < (offset + limit); ++i){
-            index.add(key, i);
-        }
-        
+    public List<TpListResult> getByResult(final String key, final long offset, final long limit) throws MemcachedOperationException {
         final MemcachedClient client = pool.get();
         try {
             final MemcachedStorage storage = client.getStorage();
-            final List<SequenceResult> returnValue = Lists.newArrayList();
+            final long count = size(storage, key);
+            if(count < 1){
+                return Lists.newArrayList();
+            }
             
+            final KeyList index = new KeyList();
+            for(long i = offset; i < (offset + limit); ++i){
+                index.add(key, i);
+            }
+            
+            final List<TpListResult> returnValue = Lists.newArrayList();
             synchronized(storage){
                 storage.getMultiByKey(new Fetcher(){
                     public void fetch(SimpleResult result) {
                         final long idx = index.getIndex(result.getKey());
-                        returnValue.add(new SequenceResult(key, idx, result.getValue()));
+                        returnValue.add(new TpListResult(key, idx, result.getValue()));
                     }
                 }, key, index.toKeys());
                 return returnValue;
@@ -118,7 +122,7 @@ public class MemcachedList implements TpList {
     }
     
     public String getAt(final String key, final long index) throws MemcachedOperationException {
-        SequenceResult result = getAtByResult(key, index);
+        final TpListResult result = getAtByResult(key, index);
         if(null == result){
             return null;
         }
@@ -126,7 +130,7 @@ public class MemcachedList implements TpList {
         return result.getValue();
     }
     
-    public SequenceResult getAtByResult(final String key, final long index) throws MemcachedOperationException {
+    public TpListResult getAtByResult(final String key, final long index) throws MemcachedOperationException {
         final MemcachedClient client = pool.get();
         try {
             final MemcachedStorage storage = client.getStorage();
@@ -152,7 +156,7 @@ public class MemcachedList implements TpList {
             final MemcachedStorage storage = client.getStorage();
             checkLock(storage, key);
             
-            long limit = size(storage, key);
+            final long limit = size(storage, key);
             for(long i = 0; i < limit; ++i){
                 // delete value
                 boolean success = remove(storage, key, i, expire);
@@ -213,7 +217,7 @@ public class MemcachedList implements TpList {
                 //
                 final long limit = size(storage, key);
                 for(long i = 0; i < limit; ++i){
-                    SequenceResult result = get(storage, key, i);
+                    TpListResult result = get(storage, key, i);
                     if(null == result){
                         continue;
                     }
@@ -235,7 +239,7 @@ public class MemcachedList implements TpList {
                 // copy key from reindex
                 final long reindexSize = size(storage, reIndexKey);
                 for(long i = 0; i < reindexSize; ++i){
-                    SequenceResult result = get(storage, reIndexKey, i);
+                    TpListResult result = get(storage, reIndexKey, i);
                     append(storage, key, result.getValue(), 0);
                 }
                 // delete reindex < limit indexes
@@ -277,13 +281,13 @@ public class MemcachedList implements TpList {
         return false;
     }
     
-    protected SequenceResult get(final MemcachedStorage storage, final String key, final long index) throws MemcachedOperationException {
+    protected TpListResult get(final MemcachedStorage storage, final String key, final long index) throws MemcachedOperationException {
         try {
             final SimpleResult result = storage.getResultByKey(key, indexKey(key, index));
             if(null == result){
                 return null;
             }
-            return new SequenceResult(key, index, result.getValue());
+            return new TpListResult(key, index, result.getValue());
         } catch(LibMemcachedException e){
             throw new MemcachedOperationException(e);
         }

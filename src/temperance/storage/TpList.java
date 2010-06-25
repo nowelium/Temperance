@@ -11,11 +11,11 @@ public interface TpList {
     
     public List<String> get(String key, long offset, long limit) throws MemcachedOperationException;
     
-    public List<SequenceResult> getByResult(String key, long offset, long limit) throws MemcachedOperationException;
+    public List<TpListResult> getByResult(String key, long offset, long limit) throws MemcachedOperationException;
 
     public String getAt(String key, long index) throws MemcachedOperationException;
     
-    public SequenceResult getAtByResult(String key, long index) throws MemcachedOperationException;
+    public TpListResult getAtByResult(String key, long index) throws MemcachedOperationException;
     
     public long count(String key) throws MemcachedOperationException;
     
@@ -25,11 +25,11 @@ public interface TpList {
     
     public void reindex(String key) throws MemcachedOperationException, LockTimeoutException;
     
-    public static class SequenceResult {
+    public static class TpListResult {
         private final String key;
         private final long index;
         private final String value;
-        public SequenceResult(String key, long index, String value){
+        public TpListResult(String key, long index, String value){
             this.key = key;
             this.index = index;
             this.value = value;

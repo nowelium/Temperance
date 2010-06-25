@@ -36,4 +36,12 @@ public class ByteHash implements Hash {
         value |= temp;
         return Long.toString(value);
     }
+    
+    @Override
+    public String toString(){
+        StringBuilder buf = new StringBuilder("{");
+        buf.append("hash=").append(hexValue());
+        buf.append("}");
+        return buf.toString();
+    }
 }

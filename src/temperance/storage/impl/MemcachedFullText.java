@@ -10,7 +10,7 @@ import temperance.exception.MemcachedOperationException;
 import temperance.hash.Hash;
 import temperance.hash.StringHash;
 import temperance.storage.TpFullText;
-import temperance.storage.TpList.SequenceResult;
+import temperance.storage.TpList.TpListResult;
 import temperance.storage.impl.MemcachedList.KeyCache;
 import temperance.util.Lists;
 
@@ -35,8 +35,10 @@ public class MemcachedFullText implements TpFullText {
         final MemcachedClient client = pool.get();
         try {
             final MemcachedStorage storage = client.getStorage();
-            sequence.append(storage, key, hash.toString(), expire);
+            // add hash to key
+            sequence.append(storage, key, hash.hashValue(), expire);
             
+            // add value to _key(key, hash)
             return sequence.append(storage, genKey(key, hash), value, expire);
         } finally {
             pool.release(client);
@@ -49,8 +51,10 @@ public class MemcachedFullText implements TpFullText {
             final MemcachedStorage storage = client.getStorage();
             final List<Long> returnValue = Lists.newArrayList();
             for(Hash hash: hashes){
-                sequence.append(storage, key, hash.toString(), expire);
+                // add hash to key
+                sequence.append(storage, key, hash.hashValue(), expire);
                 
+                // add value to _key(key, hash)
                 long nexthashId = sequence.append(storage, genKey(key, hash), value, expire);
                 returnValue.add(Long.valueOf(nexthashId));
             }
@@ -61,28 +65,28 @@ public class MemcachedFullText implements TpFullText {
     }
     
     public List<Hash> getHashes(final String key, final long offset, final long limit) throws MemcachedOperationException {
-        final List<SequenceResult> hashResults = getHashesByResult(key, offset, limit);
+        final List<TpListResult> hashResults = getHashesByResult(key, offset, limit);
         final List<Hash> hashList = Lists.newArrayList();
-        for(SequenceResult result: hashResults){
+        for(TpListResult result: hashResults){
             hashList.add(new StringHash(result.getValue()));
         }
         return hashList;
     }
     
-    public List<SequenceResult> getHashesByResult(final String key, final long offset, final long limit) throws MemcachedOperationException {
+    public List<TpListResult> getHashesByResult(final String key, final long offset, final long limit) throws MemcachedOperationException {
         return sequence.getByResult(key, offset, limit);
     }
     
     public List<String> getValues(final String key, final Hash hash, final long offset, final long limit) throws MemcachedOperationException {
-        final List<SequenceResult> valueResults = getValuesByResult(key, hash, offset, limit);
+        final List<TpListResult> valueResults = getValuesByResult(key, hash, offset, limit);
         final List<String> valueList = Lists.newArrayList();
-        for(SequenceResult result: valueResults){
+        for(TpListResult result: valueResults){
             valueList.add(result.getValue());
         }
         return valueList;
     }
     
-    public List<SequenceResult> getValuesByResult(final String key, final Hash hash, final long offset, final long limit) throws MemcachedOperationException {
+    public List<TpListResult> getValuesByResult(final String key, final Hash hash, final long offset, final long limit) throws MemcachedOperationException {
         return sequence.getByResult(genKey(key, hash), offset, limit);
     }
     
@@ -94,9 +98,11 @@ public class MemcachedFullText implements TpFullText {
         return sequence.count(genKey(key, hash));
     }
     
-    public boolean delete(final String key, final int expire) throws MemcachedOperationException, LockTimeoutException {
-        return sequence.delete(key, expire);
-    }
+    // TODO: all hashes delte
+//    public boolean delete(final String key, final int expire) throws MemcachedOperationException, LockTimeoutException {
+//        // TODO: fulld elete
+//        return sequence.delete(key, expire);
+//    }
     
     public boolean deleteByHash(final String key, final Hash hash, final int expire) throws MemcachedOperationException, LockTimeoutException {
         return sequence.delete(genKey(key, hash), expire);
@@ -106,11 +112,12 @@ public class MemcachedFullText implements TpFullText {
         return sequence.deleteAt(genKey(key, hash), index, expire);
     }
     
-    public void reindex(final String key) throws MemcachedOperationException, LockTimeoutException {
-        sequence.reindex(key);
-    }
+    // TODO: all hash reindex
+//    public void reindex(final String key) throws MemcachedOperationException, LockTimeoutException {
+//        sequence.reindex(key);
+//    }
     
-    public void reindex(final String key, final Hash hash) throws MemcachedOperationException, LockTimeoutException {
+    public void reindexByHash(final String key, final Hash hash) throws MemcachedOperationException, LockTimeoutException {
         sequence.reindex(genKey(key, hash));
     }
 

@@ -12,4 +12,11 @@ public class StringHash implements Hash {
         return hash;
     }
 
+    @Override
+    public String toString(){
+        StringBuilder buf = new StringBuilder("{");
+        buf.append("hash=").append(hash);
+        buf.append("}");
+        return buf.toString();
+    }
 }

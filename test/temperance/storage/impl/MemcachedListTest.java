@@ -16,7 +16,7 @@ import temperance.core.Configure;
 import temperance.core.ConnectionPool;
 import temperance.exception.LockTimeoutException;
 import temperance.exception.MemcachedOperationException;
-import temperance.storage.TpList.SequenceResult;
+import temperance.storage.TpList.TpListResult;
 
 public class MemcachedListTest {
     
@@ -151,22 +151,22 @@ public class MemcachedListTest {
         lst.add("key-a", "value-1", 10);
         lst.add("key-a", "value-2", 10);
         
-        List<SequenceResult> results = lst.getByResult("key-a", 0, 3);
+        List<TpListResult> results = lst.getByResult("key-a", 0, 3);
         System.out.println(results);
         {
-            SequenceResult result = results.get(0);
+            TpListResult result = results.get(0);
             Assert.assertEquals(result.getKey(), "key-a");
             Assert.assertEquals(result.getIndex(), 0);
             Assert.assertEquals(result.getValue(), "value-0");
         }
         {
-            SequenceResult result = results.get(1);
+            TpListResult result = results.get(1);
             Assert.assertEquals(result.getKey(), "key-a");
             Assert.assertEquals(result.getIndex(), 1);
             Assert.assertEquals(result.getValue(), "value-1");
         }
         {
-            SequenceResult result = results.get(2);
+            TpListResult result = results.get(2);
             Assert.assertEquals(result.getKey(), "key-a");
             Assert.assertEquals(result.getIndex(), 2);
             Assert.assertEquals(result.getValue(), "value-2");

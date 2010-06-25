@@ -8,7 +8,7 @@ import temperance.exception.LockTimeoutException;
 import temperance.exception.MemcachedOperationException;
 import temperance.hash.Hash;
 import temperance.storage.TpFullText;
-import temperance.storage.TpList.SequenceResult;
+import temperance.storage.TpList.TpListResult;
 import temperance.storage.impl.MemcachedFullText;
 import temperance.util.Lists;
 
@@ -120,8 +120,8 @@ public class FullTextCommand implements Command {
             for(Hash hash: hashes){
                 long count = ft.valueCount(key, hash);
                 for(int i = 0; i < count; i += SPLIT){
-                    List<SequenceResult> results = ft.getValuesByResult(key, hash, i, SPLIT);
-                    for(SequenceResult result: results){
+                    List<TpListResult> results = ft.getValuesByResult(key, hash, i, SPLIT);
+                    for(TpListResult result: results){
                         if(!value.equals(result.getValue())){
                             continue;
                         }
