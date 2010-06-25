@@ -1,6 +1,6 @@
 <?php
 
-class Temperance_FulltextService extends MessagePackRPC_Client {
+class Temperance_FullTextService extends MessagePackRPC_Client {
     
     const SERVICE_NAME = 'temperance.rpc.msgpack.MsgpackFullTextService';
 
