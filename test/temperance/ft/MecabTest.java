@@ -6,14 +6,14 @@ import org.chasen.mecab.wrapper.Tagger;
 import org.junit.Assert;
 import org.junit.Test;
 
-import temperance.hash.Hash;
+import temperance.hash.Digest;
 import temperance.hashing.MecabHashing;
 
 public class MecabTest {
 
     @Test
     public void parseStr_default() {
-        MecabHashing mecab = new MecabHashing(Hash.MD5, Tagger.create("-r /opt/local/etc/mecabrc"));
+        MecabHashing mecab = new MecabHashing(Digest.MD5, Tagger.create("-r /opt/local/etc/mecabrc"));
         {
             List<String> surfaces = mecab.parseToString("本日は");
             Assert.assertEquals(surfaces.size(), 2); // "本日" "は"
@@ -30,7 +30,7 @@ public class MecabTest {
 
     @Test
     public void parseStr_nouns() {
-        MecabHashing mecab = new MecabHashing(Hash.MD5, Tagger.create("-r /opt/local/etc/mecabrc"), MecabHashing.Filter.Nouns);
+        MecabHashing mecab = new MecabHashing(Digest.MD5, Tagger.create("-r /opt/local/etc/mecabrc"), MecabHashing.Filter.Nouns);
         {
             List<String> surfaces = mecab.parseToString("本日は");
             Assert.assertEquals(surfaces.size(), 1); // "本日"
@@ -47,7 +47,7 @@ public class MecabTest {
     
     @Test
     public void parseStr_nouns_numeric() {
-        MecabHashing mecab = new MecabHashing(Hash.MD5, Tagger.create("-r /opt/local/etc/mecabrc"), MecabHashing.Filter.Nouns);
+        MecabHashing mecab = new MecabHashing(Digest.MD5, Tagger.create("-r /opt/local/etc/mecabrc"), MecabHashing.Filter.Nouns);
         {
             List<String> surfaces = mecab.parseToString("2010年度");
             Assert.assertEquals(surfaces.size(), 2);

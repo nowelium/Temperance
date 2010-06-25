@@ -16,9 +16,11 @@ import org.junit.Test;
 import temperance.core.Configure;
 import temperance.core.Pooling;
 import temperance.exception.CommandExecutionException;
-import temperance.hash.Hash;
+import temperance.exception.LockTimeoutException;
+import temperance.exception.MemcachedOperationException;
+import temperance.hash.Digest;
 import temperance.hashing.MecabHashing;
-import temperance.storage.impl.MemcachedSequence;
+import temperance.storage.impl.MemcachedList;
 
 
 public class DataFunctionTest {
@@ -28,9 +30,9 @@ public class DataFunctionTest {
     protected FunctionContext ctx;
     
     @Before
-    public void setup() throws LibMemcachedException {
+    public void setup() throws MemcachedOperationException, LockTimeoutException {
         Configure configure = new Configure();
-        configure.setFullTextHashFunction(Hash.MD5);
+        configure.setFullTextHashFunction(Digest.MD5);
         configure.setMecabrc("/opt/local/etc/mecabrc");
         configure.setMemcached("localhost:11211");
         configure.setMaxConnectionPoolSize(10);
@@ -54,12 +56,12 @@ public class DataFunctionTest {
         ctx.setPooling(pooling);
         ctx.setTagger(Tagger.create("-r " + configure.getMecabrc()));
         
-        MemcachedSequence a = new MemcachedSequence(pooling.getConnectionPool());
+        MemcachedList a = new MemcachedList(pooling.getConnectionPool());
         for(int i = 0; i < 10; ++i){
             // value starts: 1, ends: 10
             a.add("A", Integer.toString(i + 1), 0);
         }
-        MemcachedSequence b = new MemcachedSequence(pooling.getConnectionPool());
+        MemcachedList b = new MemcachedList(pooling.getConnectionPool());
         for(int i = 3; i < 7; ++i){
             // value starts: 4, ends: 7
             b.add("B", Integer.toString(i + 1), 0);

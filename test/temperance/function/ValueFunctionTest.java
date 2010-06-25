@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import libmemcached.exception.LibMemcachedException;
 import libmemcached.wrapper.type.BehaviorType;
 
 import org.chasen.mecab.wrapper.Tagger;
@@ -16,9 +15,11 @@ import org.junit.Test;
 import temperance.core.Configure;
 import temperance.core.Pooling;
 import temperance.exception.CommandExecutionException;
-import temperance.hash.Hash;
+import temperance.exception.LockTimeoutException;
+import temperance.exception.MemcachedOperationException;
+import temperance.hash.Digest;
 import temperance.hashing.MecabHashing;
-import temperance.storage.impl.MemcachedSequence;
+import temperance.storage.impl.MemcachedList;
 
 public class ValueFunctionTest {
     
@@ -27,9 +28,9 @@ public class ValueFunctionTest {
     protected FunctionContext ctx;
     
     @Before
-    public void setup() throws LibMemcachedException {
+    public void setup() throws MemcachedOperationException, LockTimeoutException {
         Configure configure = new Configure();
-        configure.setFullTextHashFunction(Hash.MD5);
+        configure.setFullTextHashFunction(Digest.MD5);
         configure.setMecabrc("/opt/local/etc/mecabrc");
         configure.setMemcached("localhost:11211");
         configure.setMaxConnectionPoolSize(10);
@@ -53,7 +54,7 @@ public class ValueFunctionTest {
         ctx.setPooling(pooling);
         ctx.setTagger(Tagger.create("-r " + configure.getMecabrc()));
         
-        MemcachedSequence list = new MemcachedSequence(pooling.getConnectionPool());
+        MemcachedList list = new MemcachedList(pooling.getConnectionPool());
         for(int i = 0; i < 10; ++i){
             // value starts: 1, ends: 10
             list.add("hoge:0", Integer.toString(i + 1), 0);

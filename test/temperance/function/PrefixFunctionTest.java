@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import libmemcached.exception.LibMemcachedException;
 import libmemcached.wrapper.MemcachedClient;
 import libmemcached.wrapper.type.BehaviorType;
 
@@ -16,6 +15,9 @@ import org.junit.Test;
 import temperance.core.Configure;
 import temperance.core.Pooling;
 import temperance.exception.CommandExecutionException;
+import temperance.exception.LockTimeoutException;
+import temperance.exception.MemcachedOperationException;
+import temperance.hash.Digest;
 import temperance.hash.Hash;
 import temperance.hash.HashFunction;
 import temperance.hashing.PrefixHashing;
@@ -23,14 +25,14 @@ import temperance.storage.impl.MemcachedFullText;
 
 public class PrefixFunctionTest {
     
-    protected static HashFunction hashFunction = Hash.MD5;
+    protected static HashFunction hashFunction = Digest.MD5;
     
     protected Pooling pooling;
     
     protected FunctionContext ctx = new FunctionContext();
     
     @Before
-    public void before() throws LibMemcachedException {
+    public void before() throws MemcachedOperationException, LockTimeoutException {
         setupPool();
         setupData();
         setupFunctionContext();
@@ -59,23 +61,23 @@ public class PrefixFunctionTest {
         pooling.init();
     }
     
-    public void setupData() throws LibMemcachedException {
+    public void setupData() throws MemcachedOperationException, LockTimeoutException {
         MemcachedFullText ft = new MemcachedFullText(pooling.getConnectionPool());
         PrefixHashing hashing = new PrefixHashing(hashFunction);
         
         {
             String value = "test-value-a";
-            List<Long> hashes = hashing.parse("本日は晴天");
+            List<Hash> hashes = hashing.parse("本日は晴天");
             for(int i = 0; i < hashes.size(); ++i){
-                Long hash = hashes.get(i);
+                Hash hash = hashes.get(i);
                 ft.add("test-key", hash, value, 10);
             }
         }
         {
             String value = "test-value-b";
-            List<Long> hashes = hashing.parse("本日は快晴");
+            List<Hash> hashes = hashing.parse("本日は快晴");
             for(int i = 0; i < hashes.size(); ++i){
-                Long hash = hashes.get(i);
+                Hash hash = hashes.get(i);
                 ft.add("test-key", hash, value, 10);
             }
         }

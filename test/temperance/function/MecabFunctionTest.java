@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import libmemcached.exception.LibMemcachedException;
 import libmemcached.wrapper.MemcachedClient;
 import libmemcached.wrapper.type.BehaviorType;
 
@@ -17,6 +16,9 @@ import org.junit.Test;
 import temperance.core.Configure;
 import temperance.core.Pooling;
 import temperance.exception.CommandExecutionException;
+import temperance.exception.LockTimeoutException;
+import temperance.exception.MemcachedOperationException;
+import temperance.hash.Digest;
 import temperance.hash.Hash;
 import temperance.hash.HashFunction;
 import temperance.hashing.MecabHashing;
@@ -26,7 +28,7 @@ import temperance.storage.impl.MemcachedFullText;
 
 public class MecabFunctionTest {
     
-    protected static HashFunction hashFunction = Hash.MD5;
+    protected static HashFunction hashFunction = Digest.MD5;
     
     protected static Tagger tagger = Tagger.create("-r /opt/local/etc/mecabrc");
     
@@ -37,7 +39,7 @@ public class MecabFunctionTest {
     protected FunctionContext ctx = new FunctionContext();
     
     @Before
-    public void before() throws LibMemcachedException {
+    public void before() throws MemcachedOperationException, LockTimeoutException {
         setupPool();
         setupData();
         setupFunctionContext();
@@ -66,23 +68,23 @@ public class MecabFunctionTest {
         pooling.init();
     }
     
-    public void setupData() throws LibMemcachedException {
+    public void setupData() throws MemcachedOperationException, LockTimeoutException {
         MemcachedFullText ft = new MemcachedFullText(pooling.getConnectionPool());
         MecabHashing mecab = new MecabHashing(hashFunction, tagger, filter);
         
         {
             String value = "test-value-a";
-            List<Long> hashes = mecab.parse("本日は晴天");
+            List<Hash> hashes = mecab.parse("本日は晴天");
             for(int i = 0; i < hashes.size(); ++i){
-                Long hash = hashes.get(i);
+                Hash hash = hashes.get(i);
                 ft.add("test-key", hash, value, 600);
             }
         }
         {
             String value = "test-value-b";
-            List<Long> hashes = mecab.parse("本日は快晴");
+            List<Hash> hashes = mecab.parse("本日は快晴");
             for(int i = 0; i < hashes.size(); ++i){
-                Long hash = hashes.get(i);
+                Hash hash = hashes.get(i);
                 ft.add("test-key", hash, value, 600);
             }
         }
