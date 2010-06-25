@@ -25,6 +25,12 @@ public class ProtobufFullTextService implements FullTextService.BlockingInterfac
             return RpcFullText.Request.Parser.BIGRAM;
         case PREFIX:
             return RpcFullText.Request.Parser.PREFIX;
+        case HASH_CSV:
+            return RpcFullText.Request.Parser.HASH_CSV;
+        case HASH_TSV:
+            return RpcFullText.Request.Parser.HASH_TSV;
+        case HASH_SSV:
+            return RpcFullText.Request.Parser.HASH_SSV;
         }
         throw new RuntimeException("unkown parser:" + parser);
     }

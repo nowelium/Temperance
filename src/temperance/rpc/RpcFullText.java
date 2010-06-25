@@ -20,6 +20,9 @@ public interface RpcFullText extends Rpc {
             MECAB(0),
             BIGRAM(1),
             PREFIX(2),
+            HASH_CSV(3),
+            HASH_TSV(4),
+            HASH_SSV(5)
             ;
             private final int value;
             private Parser(int value){
@@ -36,6 +39,12 @@ public interface RpcFullText extends Rpc {
                     return BIGRAM;
                 case 2:
                     return PREFIX;
+                case 3:
+                    return HASH_CSV;
+                case 4:
+                    return HASH_TSV;
+                case 5:
+                    return HASH_SSV;
                 }
                 throw new IllegalArgumentException("no such parser:" + num);
             }
