@@ -48,19 +48,19 @@ public enum FunctionType {
     
     CSV {
         public InternalFunction create(Factory factory){
-            return null;
+            return factory.createCSV();
         }
     },
     
     TSV {
         public InternalFunction create(Factory factory){
-            return null;
+            return factory.createTSV();
         }
     },
     
     SSV {
         public InternalFunction create(Factory factory){
-            return null;
+            return factory.createSSV();
         }
     },
     
