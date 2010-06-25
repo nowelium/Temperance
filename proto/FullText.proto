@@ -7,6 +7,9 @@ message Request {
         MECAB = 0;
         BIGRAM = 1;
         PREFIX = 2;
+        HASH_CSV = 3;
+        HASH_TSV = 4;
+        HASH_SSV = 5;
     }
 
     message Add {
