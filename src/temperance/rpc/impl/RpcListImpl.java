@@ -4,13 +4,15 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import libmemcached.exception.LibMemcachedException;
 import temperance.core.Configure;
-import temperance.core.SequenceCommand;
 import temperance.core.Pooling;
+import temperance.core.ListCommand;
+import temperance.exception.LockTimeoutException;
+import temperance.exception.MemcachedOperationException;
 import temperance.exception.RpcException;
 import temperance.rpc.RpcList;
-import temperance.storage.impl.MemcachedSequence;
+import temperance.storage.TpList;
+import temperance.storage.impl.MemcachedList;
 
 public class RpcListImpl implements RpcList {
     
@@ -28,14 +30,18 @@ public class RpcListImpl implements RpcList {
         final String value = request.value;
         final int expire = request.expire;
         
-        final MemcachedSequence list = new MemcachedSequence(pooling.getConnectionPool());
+        final MemcachedList list = new MemcachedList(pooling.getConnectionPool());
         try {
             list.add(key, value, expire);
             
             Response.Add response = Response.Add.newInstance();
             response.succeed = true;
             return response;
-        } catch(LibMemcachedException e){
+        } catch(MemcachedOperationException e){
+            Response.Add response = Response.Add.newInstance();
+            response.succeed = false;
+            return response;
+        } catch(LockTimeoutException e){
             Response.Add response = Response.Add.newInstance();
             response.succeed = false;
             return response;
@@ -45,14 +51,14 @@ public class RpcListImpl implements RpcList {
     public Response.Count count(Request.Count request) throws RpcException {
         final String key = request.key;
         
-        final MemcachedSequence list = new MemcachedSequence(pooling.getConnectionPool());
+        final TpList list = new MemcachedList(pooling.getConnectionPool());
         try {
             long count = list.count(key);
             
             Response.Count response = Response.Count.newInstance();
             response.count = count;
             return response;
-        } catch(LibMemcachedException e){
+        } catch(MemcachedOperationException e){
             throw new RpcException(e);
         }
     }
@@ -62,7 +68,7 @@ public class RpcListImpl implements RpcList {
         final long offset = request.offset;
         final long limit = request.limit;
         
-        final SequenceCommand command = new SequenceCommand(pooling);
+        final ListCommand command = new ListCommand(pooling);
         try {
             Future<List<String>> future = command.get(key, offset, limit);
             
@@ -80,14 +86,18 @@ public class RpcListImpl implements RpcList {
         final String key = request.key;
         final int expire = request.expire;
         
-        final MemcachedSequence list = new MemcachedSequence(pooling.getConnectionPool());
+        final TpList list = new MemcachedList(pooling.getConnectionPool());
         try {
             boolean success = list.delete(key, expire);
             
             Response.Delete response = Response.Delete.newInstance();
             response.succeed = success;
             return response;
-        } catch(LibMemcachedException e){
+        } catch(MemcachedOperationException e){
+            Response.Delete response = Response.Delete.newInstance();
+            response.succeed = false;
+            return response;
+        } catch(LockTimeoutException e){
             Response.Delete response = Response.Delete.newInstance();
             response.succeed = false;
             return response;

@@ -10,7 +10,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.Parser;
 
 import temperance.core.Configure;
-import temperance.hash.Hash;
+import temperance.hash.Digest;
 import temperance.hash.HashFunction;
 import temperance.hashing.MecabHashing;
 import temperance.hashing.MecabNodeFilter;
@@ -36,9 +36,9 @@ public class StartStop {
             if(cli.hasOption("mecab_node_filter_nouns")){
                 nodeFilter = MecabHashing.Filter.Default;
             }
-            HashFunction fullTextHashFunction = Hash.MD5;
+            HashFunction fullTextHashFunction = Digest.MD5;
             if(cli.hasOption("ft_hash_sha1")){
-                fullTextHashFunction = Hash.SHA1;
+                fullTextHashFunction = Digest.SHA1;
             }
             ServerFactory factory = ServerFactory.Protobuf;
             if(cli.hasOption("rpc_msgpack")){

@@ -2,6 +2,7 @@ package temperance.hashing;
 
 import java.util.List;
 
+import temperance.hash.Hash;
 import temperance.hash.HashFunction;
 import temperance.util.Lists;
 
@@ -20,8 +21,8 @@ public class GramHashing implements Hashing {
         this.split = split;
     }
     
-    public List<Long> parse(String str) {
-        List<Long> hashes = Lists.newArrayList();
+    public List<Hash> parse(String str) {
+        final List<Hash> hashes = Lists.newArrayList();
         
         int length = str.length();
         for(int i = 0; i < length; ++i){
@@ -34,8 +35,7 @@ public class GramHashing implements Hashing {
                 continue;
             }
             
-            long hash = function.hash(substr);
-            hashes.add(Long.valueOf(hash));
+            hashes.add(function.hash(substr));
         }
         return hashes;
     }

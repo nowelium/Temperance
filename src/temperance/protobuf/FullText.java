@@ -36,6 +36,9 @@ public final class FullText {
       MECAB(0, 0),
       BIGRAM(1, 1),
       PREFIX(2, 2),
+      HASH_CSV(3, 3),
+      HASH_TSV(4, 4),
+      HASH_SSV(5, 5),
       ;
       
       
@@ -46,6 +49,9 @@ public final class FullText {
           case 0: return MECAB;
           case 1: return BIGRAM;
           case 2: return PREFIX;
+          case 3: return HASH_CSV;
+          case 4: return HASH_TSV;
+          case 5: return HASH_SSV;
           default: return null;
         }
       }
@@ -76,7 +82,7 @@ public final class FullText {
       }
       
       private static final Parser[] VALUES = {
-        MECAB, BIGRAM, PREFIX, 
+        MECAB, BIGRAM, PREFIX, HASH_CSV, HASH_TSV, HASH_SSV, 
       };
       public static Parser valueOf(
           com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
@@ -3678,7 +3684,7 @@ public final class FullText {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\016FullText.proto\022\023temperance.protobuf\"\204\003" +
+      "\n\016FullText.proto\022\023temperance.protobuf\"\256\003" +
       "\n\007Request\032\201\001\n\003Add\022\013\n\003key\030\001 \002(\t\022\013\n\003str\030\002 " +
       "\002(\t\022\r\n\005value\030\003 \002(\t\022\025\n\006expire\030\004 \001(\r:\0058640" +
       "0\022:\n\006parser\030\005 \001(\0162#.temperance.protobuf." +
@@ -3687,25 +3693,26 @@ public final class FullText {
       "\022\013\n\003key\030\001 \002(\t\022\r\n\005value\030\002 \002(\t\022\021\n\006expire\030\003" +
       " \001(\r:\0010\032^\n\006Search\022\013\n\003key\030\001 \002(\t\022\013\n\003str\030\002 " +
       "\002(\t\022:\n\006parser\030\003 \001(\0162#.temperance.protobu" +
-      "f.Request.Parser:\005MECAB\"+\n\006Parser\022\t\n\005MEC",
-      "AB\020\000\022\n\n\006BIGRAM\020\001\022\n\n\006PREFIX\020\002\"\231\002\n\010Respons" +
-      "e\032;\n\003Add\0224\n\006status\030\001 \002(\0162$.temperance.pr" +
-      "otobuf.Response.Status\032>\n\006Delete\0224\n\006stat" +
-      "us\030\001 \002(\0162$.temperance.protobuf.Response." +
-      "Status\032E\n\rDeleteByValue\0224\n\006status\030\001 \002(\0162" +
-      "$.temperance.protobuf.Response.Status\032\030\n" +
-      "\006Search\022\016\n\006values\030\001 \003(\t\"/\n\006Status\022\013\n\007FAI" +
-      "LURE\020\000\022\013\n\007SUCCESS\020\001\022\013\n\007ENQUEUE\020\0022\361\002\n\017Ful" +
-      "lTextService\022J\n\003add\022 .temperance.protobu" +
-      "f.Request.Add\032!.temperance.protobuf.Resp",
-      "onse.Add\022S\n\006delete\022#.temperance.protobuf" +
-      ".Request.Delete\032$.temperance.protobuf.Re" +
-      "sponse.Delete\022h\n\rdeleteByValue\022*.tempera" +
-      "nce.protobuf.Request.DeleteByValue\032+.tem" +
-      "perance.protobuf.Response.DeleteByValue\022" +
-      "S\n\006search\022#.temperance.protobuf.Request." +
-      "Search\032$.temperance.protobuf.Response.Se" +
-      "archB\002H\001"
+      "f.Request.Parser:\005MECAB\"U\n\006Parser\022\t\n\005MEC",
+      "AB\020\000\022\n\n\006BIGRAM\020\001\022\n\n\006PREFIX\020\002\022\014\n\010HASH_CSV" +
+      "\020\003\022\014\n\010HASH_TSV\020\004\022\014\n\010HASH_SSV\020\005\"\231\002\n\010Respo" +
+      "nse\032;\n\003Add\0224\n\006status\030\001 \002(\0162$.temperance." +
+      "protobuf.Response.Status\032>\n\006Delete\0224\n\006st" +
+      "atus\030\001 \002(\0162$.temperance.protobuf.Respons" +
+      "e.Status\032E\n\rDeleteByValue\0224\n\006status\030\001 \002(" +
+      "\0162$.temperance.protobuf.Response.Status\032" +
+      "\030\n\006Search\022\016\n\006values\030\001 \003(\t\"/\n\006Status\022\013\n\007F" +
+      "AILURE\020\000\022\013\n\007SUCCESS\020\001\022\013\n\007ENQUEUE\020\0022\361\002\n\017F" +
+      "ullTextService\022J\n\003add\022 .temperance.proto",
+      "buf.Request.Add\032!.temperance.protobuf.Re" +
+      "sponse.Add\022S\n\006delete\022#.temperance.protob" +
+      "uf.Request.Delete\032$.temperance.protobuf." +
+      "Response.Delete\022h\n\rdeleteByValue\022*.tempe" +
+      "rance.protobuf.Request.DeleteByValue\032+.t" +
+      "emperance.protobuf.Response.DeleteByValu" +
+      "e\022S\n\006search\022#.temperance.protobuf.Reques" +
+      "t.Search\032$.temperance.protobuf.Response." +
+      "SearchB\002H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {

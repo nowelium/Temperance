@@ -6,6 +6,7 @@ import java.util.concurrent.Future;
 
 import temperance.core.FullTextCommand;
 import temperance.exception.CommandExecutionException;
+import temperance.hash.Hash;
 import temperance.hashing.Hashing;
 import temperance.util.Lists;
 import temperance.util.Lists.IntersectalList;
@@ -52,7 +53,7 @@ public abstract class AbstractTaggerFunction implements InternalFunction {
             final Hashing hashing = createHashing(args);
             try {
                 IntersectalList<String> returnValue = Lists.newIntersectList();
-                List<Long> allHashes = hashing.parse(str);
+                List<Hash> allHashes = hashing.parse(str);
                 
                 FullTextCommand command = new FullTextCommand(context.getPooling());
                 List<Future<List<String>>> futures = command.getValues(key, allHashes);
@@ -77,10 +78,10 @@ public abstract class AbstractTaggerFunction implements InternalFunction {
             final String str = args.get(0);
             final Hashing hashing = createHashing(args);
             try {
-                List<Long> ignoreHashes = hashing.parse(str);
+                List<Hash> ignoreHashes = hashing.parse(str);
                 FullTextCommand command = new FullTextCommand(context.getPooling());
                 
-                List<Long> allKeys = command.getHashes(key).get();
+                List<Hash> allKeys = command.getHashes(key).get();
                 // remove ignore keys
                 allKeys.removeAll(ignoreHashes);
                 

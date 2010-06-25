@@ -4,14 +4,13 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import libmemcached.exception.LibMemcachedException;
-
 import org.chasen.mecab.wrapper.Tagger;
 
 import temperance.core.Configure;
 import temperance.core.FullTextCommand;
 import temperance.core.Pooling;
 import temperance.exception.RpcException;
+import temperance.hash.Hash;
 import temperance.hash.HashFunction;
 import temperance.hashing.GramHashing;
 import temperance.hashing.Hashing;
@@ -20,7 +19,6 @@ import temperance.hashing.MecabNodeFilter;
 import temperance.hashing.PrefixHashing;
 import temperance.rpc.RpcFullText;
 import temperance.rpc.RpcFullText.Request.Parser;
-import temperance.storage.impl.MemcachedFullText;
 
 public class RpcFullTextImpl implements RpcFullText {
 
@@ -60,7 +58,7 @@ public class RpcFullTextImpl implements RpcFullText {
         final FullTextCommand command = new FullTextCommand(pooling);
         try {
             Hashing hashing = createHashing(parser);
-            List<Long> hashes = hashing.parse(str);
+            List<Hash> hashes = hashing.parse(str);
             List<Future<List<String>>> futures = command.getValues(key, hashes);
             
             Response.Search response = Response.Search.newInstance();
@@ -87,7 +85,7 @@ public class RpcFullTextImpl implements RpcFullText {
         
         try {
             final Hashing hashing = createHashing(parser);
-            final List<Long> hashes = hashing.parse(str);
+            final List<Hash> hashes = hashing.parse(str);
             
             final FullTextCommand command = new FullTextCommand(pooling);
             final List<Future<Long>> futures = command.addAll(key, hashes, value, expire);
@@ -120,15 +118,29 @@ public class RpcFullTextImpl implements RpcFullText {
         final int expire = request.expire;
         // TODO: sync option
         final boolean sync = false;
-        
-        //
-        // T.B.D: delete
-        //
-        
-        
-        Response.Delete response = Response.Delete.newInstance();
-        response.status = Response.Status.SUCCESS;
-        return response;
+
+        final FullTextCommand command = new FullTextCommand(pooling);
+        try {
+            Future<Boolean> future = command.deleteAll(key, expire);
+            
+            if(sync){
+                Boolean success = future.get();
+                Response.Delete response = Response.Delete.newInstance();
+                if(success.booleanValue()){
+                    response.status = Response.Status.SUCCESS;
+                } else {
+                    response.status = Response.Status.FAILURE;
+                }
+                return response;
+            }
+            Response.Delete response = Response.Delete.newInstance();
+            response.status = Response.Status.ENQUEUE;
+            return response;
+        } catch (ExecutionException e) {
+            throw new RpcException(e);
+        } catch (InterruptedException e) {
+            throw new RpcException(e);
+        }
     }
     
     public Response.DeleteByValue deleteByValue(Request.DeleteByValue request) throws RpcException {
@@ -138,13 +150,28 @@ public class RpcFullTextImpl implements RpcFullText {
         // TODO: sync option
         final boolean sync = false;
 
-        //
-        // T.B.D: deleteByValue
-        //
-        
-        Response.DeleteByValue response = Response.DeleteByValue.newInstance();
-        response.status = Response.Status.SUCCESS;
-        return response;
+        final FullTextCommand command = new FullTextCommand(pooling);
+        try {
+            Future<Boolean> future = command.deleteAllValues(key, expire, value);
+            
+            if(sync){
+                Boolean success = future.get();
+                Response.DeleteByValue response = Response.DeleteByValue.newInstance();
+                if(success.booleanValue()){
+                    response.status = Response.Status.SUCCESS;
+                } else {
+                    response.status = Response.Status.FAILURE;
+                }
+                return response;
+            }
+            Response.DeleteByValue response = Response.DeleteByValue.newInstance();
+            response.status = Response.Status.ENQUEUE;
+            return response;
+        } catch (ExecutionException e) {
+            throw new RpcException(e);
+        } catch (InterruptedException e) {
+            throw new RpcException(e);
+        }
     }
     
 }

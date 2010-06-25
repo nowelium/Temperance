@@ -6,20 +6,22 @@ import temperance.hash.Hash;
 import temperance.hash.HashFunction;
 import temperance.util.Lists;
 
-public class PrefixHashing implements Hashing {
+public abstract class AbstractSeparateValueHashing implements Hashing {
     
     protected final HashFunction function;
     
-    public PrefixHashing(HashFunction function){
+    public AbstractSeparateValueHashing(HashFunction function){
         this.function = function;
     }
     
-    public List<Hash> parse(String str) {
+    public List<Hash> parse(String str){
         List<Hash> hashes = Lists.newArrayList();
-        int length = str.length();
-        for(int i = 0; i < length; ++i){
-            hashes.add(function.hash(str.substring(0, i + 1)));
+        for(String s: split(str)){
+            hashes.add(function.hash(s));
         }
         return hashes;
     }
+    
+    protected abstract String[] split(String str);
+    
 }

@@ -2,7 +2,7 @@ package temperance.function;
 
 import java.util.List;
 
-import temperance.core.SequenceCommand;
+import temperance.core.ListCommand;
 import temperance.exception.CommandExecutionException;
 import temperance.util.Lists;
 
@@ -39,9 +39,9 @@ public class ValueFunction implements InternalFunction {
     
     protected List<String> select(final String key, final Filter filter) throws CommandExecutionException {
         try {
-            final SequenceCommand command = new SequenceCommand(context.getPooling());
+            final ListCommand command = new ListCommand(context.getPooling());
             final List<String> returnValue = Lists.newArrayList();
-            command.filterAll(key, new SequenceCommand.Filter(){
+            command.filterAll(key, new ListCommand.Filter(){
                 public void execute(List<String> values){
                     synchronized(returnValue){
                         returnValue.addAll(filter.execute(values));

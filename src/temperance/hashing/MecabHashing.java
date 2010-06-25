@@ -7,6 +7,7 @@ import org.chasen.mecab.wrapper.Node;
 import org.chasen.mecab.wrapper.Path;
 import org.chasen.mecab.wrapper.Tagger;
 
+import temperance.hash.Hash;
 import temperance.hash.HashFunction;
 import temperance.hashing.MecabNodeFilter.CharType;
 import temperance.util.Lists;
@@ -67,19 +68,18 @@ public class MecabHashing implements Hashing {
         return surfaces;
     }
     
-    public List<Long> parse(String str) {
-        List<Long> hashes = Lists.newArrayList();
+    public List<Hash> parse(String str) {
+        List<Hash> hashes = Lists.newArrayList();
         List<String> surfaces = Lists.unique(parseToString(str));
         for(String surface: surfaces){
-            long hash = function.hash(surface);
-            hashes.add(Long.valueOf(hash));
+            hashes.add(function.hash(surface));
         }
         return hashes;
     }
 
-    public List<Long> parse(String str, int split) {
+    public List<Hash> parse(String str, int split) {
         GramHashing gram = new GramHashing(function, split);
-        List<Long> hashes = Lists.newArrayList();
+        List<Hash> hashes = Lists.newArrayList();
         for(String surface: parseToString(str)){
             hashes.addAll(gram.parse(surface));
         }

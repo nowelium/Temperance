@@ -35,6 +35,7 @@ public class ThreadPool implements LifeCycle {
         
         executor.shutdown();
         try {
+            logger.info("await shutdown");
             if(!executor.awaitTermination(10, TimeUnit.SECONDS)){
                 executor.shutdownNow();
                 
@@ -44,6 +45,8 @@ public class ThreadPool implements LifeCycle {
             }
         } catch(InterruptedException e){
             // nop
+        } finally {
+            logger.info("pool destroyed");
         }
     }
     
