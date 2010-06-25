@@ -5,6 +5,7 @@ import java.util.List;
 import temperance.hash.Hash;
 import temperance.hash.HashFunction;
 import temperance.util.Lists;
+import temperance.util.StringUtils;
 
 public abstract class AbstractSeparateValueHashing implements Hashing {
     
@@ -15,8 +16,12 @@ public abstract class AbstractSeparateValueHashing implements Hashing {
     }
     
     public List<Hash> parse(String str){
-        List<Hash> hashes = Lists.newArrayList();
+        final List<Hash> hashes = Lists.newArrayList();
         for(String s: split(str)){
+            if(StringUtils.isEmpty(s)){
+                continue;
+            }
+            
             hashes.add(function.hash(s));
         }
         return hashes;

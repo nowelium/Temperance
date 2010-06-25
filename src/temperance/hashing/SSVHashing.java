@@ -1,8 +1,12 @@
 package temperance.hashing;
 
+import java.util.regex.Pattern;
+
 import temperance.hash.HashFunction;
 
 public class SSVHashing extends AbstractSeparateValueHashing {
+    
+    protected static final Pattern space_pattern = Pattern.compile("[\\s\u3000]");
 
     public SSVHashing(HashFunction function) {
         super(function);
@@ -10,7 +14,7 @@ public class SSVHashing extends AbstractSeparateValueHashing {
 
     @Override
     protected String[] split(String str) {
-        return str.split("\\s");
+        return space_pattern.split(str);
     }
 
 }

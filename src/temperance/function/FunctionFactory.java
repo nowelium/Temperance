@@ -1,5 +1,8 @@
 package temperance.function;
 
+import temperance.hashing.CSVHashing;
+import temperance.hashing.SSVHashing;
+import temperance.hashing.TSVHashing;
 import temperance.ql.FunctionType;
 
 public class FunctionFactory implements FunctionType.Factory {
@@ -36,6 +39,18 @@ public class FunctionFactory implements FunctionType.Factory {
     
     public InternalFunction createPrefix() {
         return new PrefixFunction(context);
+    }
+
+    public InternalFunction createCSV() {
+        return new ConcreteHashingFunction(context, new CSVHashing(context.getHashFunction()));
+    }
+
+    public InternalFunction createSSV() {
+        return new ConcreteHashingFunction(context, new SSVHashing(context.getHashFunction()));
+    }
+
+    public InternalFunction createTSV() {
+        return new ConcreteHashingFunction(context, new TSVHashing(context.getHashFunction()));
     }
     
     public InternalFunction createLevenshteinDistance(){

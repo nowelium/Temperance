@@ -14,6 +14,16 @@ public class StringUtils {
         // nop
     }
     
+    public static boolean isEmpty(String source){
+        if(EMPTY_STRING.equals(source)){
+            return true;
+        }
+        if(source.length() < 1){
+            return true;
+        }
+        return false;
+    }
+    
     public static String[] split(String source, String delimiter){
         if(null == source){
             return EMPTY_STRINGS;

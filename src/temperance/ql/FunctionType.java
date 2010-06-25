@@ -46,6 +46,24 @@ public enum FunctionType {
         }
     },
     
+    CSV {
+        public InternalFunction create(Factory factory){
+            return null;
+        }
+    },
+    
+    TSV {
+        public InternalFunction create(Factory factory){
+            return null;
+        }
+    },
+    
+    SSV {
+        public InternalFunction create(Factory factory){
+            return null;
+        }
+    },
+    
     LevenshteinDistance {
         public InternalFunction create(Factory factory){
             return factory.createLevenshteinDistance();
@@ -63,6 +81,9 @@ public enum FunctionType {
         public InternalFunction createBigram();
         public InternalFunction createGram();
         public InternalFunction createPrefix();
+        public InternalFunction createCSV();
+        public InternalFunction createTSV();
+        public InternalFunction createSSV();
         public InternalFunction createLevenshteinDistance();
     }
 
