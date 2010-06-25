@@ -1,6 +1,11 @@
 package temperance.core;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class Pooling implements LifeCycle {
+    
+    protected final Log logger = LogFactory.getLog(Pooling.class);
     
     protected final Configure configure;
     

@@ -29,5 +29,12 @@ public class CountDownLock implements ConditionLock {
     public void countDown(){
         lock.get().countDown();
     }
+    
+    @Override
+    public String toString(){
+        StringBuilder buf = new StringBuilder();
+        buf.append("initial=").append(initial);
+        return buf.toString();
+    }
 
 }

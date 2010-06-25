@@ -8,6 +8,8 @@ import static org.codehaus.jparsec.Scanners.stringCaseInsensitive;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.codehaus.jparsec.OperatorTable;
 import org.codehaus.jparsec.Parser;
 import org.codehaus.jparsec.Scanners;
@@ -89,6 +91,9 @@ public class QueryParser {
     // parser cache
     protected final SoftReferenceMap<String, Statement> parserCache = new SoftReferenceMap<String, Statement>();
     
+    // log
+    protected final Log logger = LogFactory.getLog(QueryParser.class);
+    
     protected static Parser<String> quoteString(){
         return Scanners.SINGLE_QUOTE_STRING.map(new QuoteStringMapper('\''))
             .or(Scanners.DOUBLE_QUOTE_STRING.map(new QuoteStringMapper('"')));
@@ -128,6 +133,10 @@ public class QueryParser {
     }
     
     public Statement parse(String source) throws ParseException {
+        if(logger.isDebugEnabled()){
+            logger.debug("input query: '" + source + "'");
+        }
+        
         if("".equals(source)){
             throw new ParseException("empty query");
         }
@@ -137,8 +146,16 @@ public class QueryParser {
                 return parserCache.get(source);
             }
             
+            if(logger.isDebugEnabled()){
+                logger.debug("parsing query");
+            }
+            
             Statement stmt = PARSER.parse(source);
             parserCache.put(source, stmt);
+            
+            if(logger.isDebugEnabled()){
+                logger.debug("statement: " + stmt);
+            }
             return stmt;
         } catch(ParserException e) {
             throw new ParseException(e.getMessage() + " in query: " + source);

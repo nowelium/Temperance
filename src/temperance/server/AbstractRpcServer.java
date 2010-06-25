@@ -28,7 +28,10 @@ public abstract class AbstractRpcServer extends AbstractDaemon {
         super(serverName, daemonize);
         this.configure = configure;
         this.pooling = new Pooling(configure);
-        logger.info("Native.isProtected: " + Native.isProtected());
+        
+        if(logger.isDebugEnabled()){
+            logger.debug("Native.isProtected: " + Native.isProtected());
+        }
     }
     
     /**
@@ -48,7 +51,7 @@ public abstract class AbstractRpcServer extends AbstractDaemon {
     
     @Override
     public final void init() {
-        logger.info("pool start");
+        logger.info("pool init");
         try {
             pooling.init();
         } catch(InitializationException e){

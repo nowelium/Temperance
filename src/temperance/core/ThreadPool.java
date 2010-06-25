@@ -8,26 +8,42 @@ import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class ThreadPool implements LifeCycle {
     
+    protected final Configure configure;
+    
     protected final ExecutorService executor; 
     
-    protected final Logger logger = Logger.getLogger(ThreadPool.class.getSimpleName());
+    protected final Log logger = LogFactory.getLog(ThreadPool.class);
     
     public ThreadPool(Configure configure){
+        this.configure = configure;
         this.executor = new ThreadPoolExecutor(
             configure.getInitialThreadPoolSize(),
             configure.getMaxThreadPoolSize(),
             configure.getThreadKeepAlive(),
             configure.getThreadKeepAliveTimeUnit(),
             new LinkedBlockingQueue<Runnable>()
-        ); 
+        );
     }
     
     public void init(){
-        logger.info("init");
+        logger.info("init thread pool");
+        
+        logger.info(new StringBuilder("configure: ")
+            .append("initial thread pool size: ").append(configure.getInitialThreadPoolSize())
+        );
+        logger.info(new StringBuilder("configure: ")
+            .append("max thread pool size: ").append(configure.getMaxThreadPoolSize())
+        );
+        logger.info(new StringBuilder("configure: ")
+            .append("thread keep alive: ")
+            .append(configure.getThreadKeepAlive()).append(" ").append(configure.getThreadKeepAliveTimeUnit())
+        );
     }
     
     public void destroy(){
@@ -35,13 +51,16 @@ public class ThreadPool implements LifeCycle {
         
         executor.shutdown();
         try {
-            logger.info("await shutdown");
+            if(logger.isDebugEnabled()){
+                logger.debug("awaiting termination");
+            }
+            
             if(!executor.awaitTermination(10, TimeUnit.SECONDS)){
-                executor.shutdownNow();
-                
-                if(!executor.awaitTermination(10, TimeUnit.SECONDS)){
-                    logger.warning("thread pool shutdown failure");
+                if(logger.isWarnEnabled()){
+                    logger.warn("awaiting termination fail. shutdwon now");
                 }
+                
+                executor.shutdownNow();
             }
         } catch(InterruptedException e){
             // nop

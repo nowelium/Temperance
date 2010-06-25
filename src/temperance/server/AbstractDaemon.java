@@ -7,7 +7,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Logger;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
@@ -46,7 +48,7 @@ public abstract class AbstractDaemon implements Server {
     
     protected final boolean daemonize;
     
-    protected final Logger logger;
+    protected final Log logger;
     
     protected final File pidFile;
     
@@ -55,14 +57,16 @@ public abstract class AbstractDaemon implements Server {
     protected AbstractDaemon(final String name, boolean daemonize){
         this.name = name;
         this.daemonize = daemonize;
-        this.logger = Logger.getLogger(name);
+        this.logger = LogFactory.getLog(name);
         this.pidFile = new File(PID_DIR + "/" + name + PID_FILE_SUFFIX);
         this.errFile = new File(PID_DIR + "/" + name + ERR_FILE_SUFFIX);
     }
     
     protected void logError(Throwable t){
         t.printStackTrace(System.err);
-        logger.warning(t.getMessage());
+        if(logger.isWarnEnabled()){
+            logger.warn(t.getMessage(), t);
+        }
         
         try {
             FileWriter writer = new FileWriter(errFile);
@@ -86,6 +90,7 @@ public abstract class AbstractDaemon implements Server {
                     Signal.handle(signal, new ShutdownSignal());
                 }
                 
+                logger.debug("daemon init: " + pidFile.getAbsolutePath());
                 daemon.init(pidFile.getAbsolutePath());
             } else {
                 if(daemonize){
@@ -93,7 +98,6 @@ public abstract class AbstractDaemon implements Server {
                     System.exit(0);
                 }
             }
-            
             logger.info("starting process(" + LIBC.getpid() + ":" + name + ")");
             
             logger.info("init process");
@@ -110,11 +114,14 @@ public abstract class AbstractDaemon implements Server {
     
     public final void shutdown(){
         try {
+            logger.debug("read pid file: " + pidFile);
+            
             FileReader reader = new FileReader(pidFile);
             try {
                 BufferedReader in = new BufferedReader(reader);
                 int pid = Integer.valueOf(in.readLine());
                 
+                logger.info("shuwdown(kill SIGTERM): " + pid);
                 LIBC.kill(pid, SIGTERM);
             } finally {
                 reader.close();
