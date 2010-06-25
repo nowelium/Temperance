@@ -1,9 +1,11 @@
 <?php
 
-require dirname(__FILE__) . '/lib/php-protobuf/lib/PhpBuf.php';
+require dirname(__FILE__) . '/PhpBuf/lib/PhpBuf.php';
 require dirname(__FILE__) . '/proto/MecabService.php';
 
-$service = new Temperance_MecabService('localhost', 17001);
+$ctx = new PhpBuf_RPC_Context;
+$ctx->addServer('localhost', 17001);
+$service = new Temperance_MecabService($ctx);
 
 $parseParam = new Temperance_Mecab_Request_Parse;
 $parseParam->str = '本日は晴天なり';

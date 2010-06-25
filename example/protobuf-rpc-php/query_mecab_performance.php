@@ -1,10 +1,12 @@
 <?php
 
-require dirname(__FILE__) . '/lib/php-protobuf/lib/PhpBuf.php';
+require dirname(__FILE__) . '/PhpBuf/lib/PhpBuf.php';
 require dirname(__FILE__) . '/proto/FullTextService.php';
 require dirname(__FILE__) . '/proto/QueryService.php';
 
-$service = new Temperance_FullTextService('localhost', 17001);
+$ctx = new PhpBuf_RPC_Context;
+$ctx->addServer('localhost', 17001);
+$service = new Temperance_FullTextService($ctx);
 {
     $setParam = new Temperance_FullText_Request_Add;
     $setParam->key = 'hoge';
@@ -25,10 +27,10 @@ $service = new Temperance_FullTextService('localhost', 17001);
 }
 
 $total = array();
+$service = new Temperance_QueryService($ctx);
 while(true){
     $elapsed = microtime(true);
 
-    $service = new Temperance_QueryService('localhost', 17001);
     $getParam = new Temperance_Query_Request_Select;
     $getParam->query = 'FROM hoge IN MECAB("本日")';
     $result = $service->select($getParam);

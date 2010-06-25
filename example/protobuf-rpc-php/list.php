@@ -1,9 +1,11 @@
 <?php
 
-require dirname(__FILE__) . '/lib/php-protobuf/lib/PhpBuf.php';
+require dirname(__FILE__) . '/PhpBuf/lib/PhpBuf.php';
 require dirname(__FILE__) . '/proto/ListService.php';
 
-$service = new Temperance_ListService('localhost', 17001);
+$ctx = new PhpBuf_RPC_Context;
+$ctx->addServer('localhost', 17001);
+$service = new Temperance_ListService($ctx);
 
 {
     $addParam = new Temperance_List_Request_add;

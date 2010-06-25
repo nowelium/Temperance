@@ -1,9 +1,11 @@
 <?php
 
-require dirname(__FILE__) . '/lib/php-protobuf/lib/PhpBuf.php';
+require dirname(__FILE__) . '/PhpBuf/lib/PhpBuf.php';
 require dirname(__FILE__) . '/proto/MapService.php';
 
-$service = new Temperance_MapService('localhost', 17001);
+$ctx = new PhpBuf_RPC_Context;
+$ctx->addServer('localhost', 17001);
+$service = new Temperance_MapService($ctx);
 
 {
     $setParam = new Temperance_Map_Request_Set;

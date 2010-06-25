@@ -1,5 +1,9 @@
 <?php
 
+//
+// {{{ Request
+//
+
 class Temperance_Map_Request_Set extends PhpBuf_Message_Abstract {
     public function __construct(){
         $this->setField('key', PhpBuf_Type::STRING, PhpBuf_Rule::REQUIRED, 1);
@@ -30,6 +34,15 @@ class Temperance_Map_Request_Delete extends PhpBuf_Message_Abstract {
     }
 }
 
+//
+// }}} Request
+//
+
+
+//
+// {{{ Response
+//
+
 class Temperance_Map_Response_Set extends PhpBuf_Message_Abstract {
     public function __construct(){
         $this->setField('succeed', PhpBuf_Type::BOOL, PhpBuf_Rule::REQUIRED, 1);
@@ -57,9 +70,13 @@ class Temperance_Map_Response_Delete extends PhpBuf_Message_Abstract {
     }
 }
 
-class Temperance_MapService extends PhpBuf_RPC_Socket_Service_Client {
-    public function __construct($host, $port){
-        parent::__construct($host, $port);
+//
+// }}} Response
+//
+
+class Temperance_MapService extends PhpBuf_RPC_Service_Client {
+    public function __construct(PhpBuf_RPC_Context $context){
+        parent::__construct($context);
         $this->setServiceFullQualifiedName('temperance.protobuf.MapService');
         $this->registerMethodResponderClass('set', Temperance_Map_Response_Set::name());
         $this->registerMethodResponderClass('get', Temperance_Map_Response_Get::name());

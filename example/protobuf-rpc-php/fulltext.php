@@ -1,9 +1,11 @@
 <?php
 
-require dirname(__FILE__) . '/lib/php-protobuf/lib/PhpBuf.php';
+require dirname(__FILE__) . '/PhpBuf/lib/PhpBuf.php';
 require dirname(__FILE__) . '/proto/FullTextService.php';
 
-$service = new Temperance_FullTextService('localhost', 17001);
+$ctx = new PhpBuf_RPC_Context;
+$ctx->addServer('localhost', 17001);
+$service = new Temperance_FullTextService($ctx);
 
 {
     $setParam = new Temperance_FullText_Request_Add;

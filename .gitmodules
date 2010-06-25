@@ -1,0 +1,3 @@
+[submodule "example/protobuf-rpc-php/PhpBuf"]
+	path = example/protobuf-rpc-php/PhpBuf
+	url = git://github.com/nowelium/phpbuf.git

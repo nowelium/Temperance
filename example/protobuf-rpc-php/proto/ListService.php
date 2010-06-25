@@ -1,5 +1,9 @@
 <?php
 
+//
+// {{{ Request
+//
+
 class Temperance_List_Request_Add extends PhpBuf_Message_Abstract {
     public function __construct(){
         $this->setField('key', PhpBuf_Type::STRING, PhpBuf_Rule::REQUIRED, 1);
@@ -41,6 +45,14 @@ class Temperance_List_Request_Delete extends PhpBuf_Message_Abstract {
     }
 }
 
+//
+// }}} Request
+//
+
+//
+// {{{ Response
+//
+
 class Temperance_List_Response_Add extends PhpBuf_Message_Abstract {
     public function __construct(){
         $this->setField('succeed', PhpBuf_Type::BOOL, PhpBuf_Rule::REQUIRED, 1);
@@ -77,9 +89,17 @@ class Temperance_List_Response_Delete extends PhpBuf_Message_Abstract {
     }
 }
 
-class Temperance_ListService extends PhpBuf_RPC_Socket_Service_Client {
-    public function __construct($host, $port){
-        parent::__construct($host, $port);
+//
+// }}} Response
+//
+
+//
+// {{{ Service
+//
+
+class Temperance_ListService extends PhpBuf_RPC_Service_Client {
+    public function __construct(PhpBuf_RPC_Context $context){
+        parent::__construct($context);
         $this->setServiceFullQualifiedName('temperance.protobuf.ListService');
         $this->registerMethodResponderClass('add', Temperance_List_Response_Add::name());
         $this->registerMethodResponderClass('get', Temperance_List_Response_Get::name());
@@ -87,3 +107,7 @@ class Temperance_ListService extends PhpBuf_RPC_Socket_Service_Client {
         $this->registerMethodResponderClass('delete', Temperance_List_Response_Delete::name());
     }
 }
+
+//
+// }}} Service
+//
