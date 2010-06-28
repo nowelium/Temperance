@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import temperance.exception.LockTimeoutException;
 import temperance.exception.MemcachedOperationException;
 import temperance.hash.Hash;
@@ -80,6 +83,7 @@ public class FullTextCommand implements Command {
     }
     
     protected static class DeleteAll implements Callable<Boolean> {
+        protected static final Log logger = LogFactory.getLog(DeleteAll.class);
         protected final ConnectionPool pool;
         protected final String key;
         protected final int expire;
@@ -98,8 +102,14 @@ public class FullTextCommand implements Command {
                 }
                 return Boolean.TRUE;
             } catch(MemcachedOperationException e){
+                if(logger.isDebugEnabled()){
+                    logger.debug(e.getMessage(), e);
+                }
                 return Boolean.FALSE;
             } catch(LockTimeoutException e){
+                if(logger.isDebugEnabled()){
+                    logger.debug(e.getMessage(), e);
+                }
                 return Boolean.FALSE;
             }
         }
@@ -116,7 +126,9 @@ public class FullTextCommand implements Command {
             super(pool, key, expire);
             this.value = value;
         }
+        @Override
         protected void perform(TpFullText ft, List<Hash> hashes) throws MemcachedOperationException, LockTimeoutException {
+            // FIXME: logic
             for(Hash hash: hashes){
                 long count = ft.valueCount(key, hash);
                 for(int i = 0; i < count; i += SPLIT){

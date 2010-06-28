@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.chasen.mecab.wrapper.Tagger;
 
 import temperance.core.Configure;
@@ -12,15 +14,20 @@ import temperance.core.Pooling;
 import temperance.exception.RpcException;
 import temperance.hash.Hash;
 import temperance.hash.HashFunction;
+import temperance.hashing.CSVHashing;
 import temperance.hashing.GramHashing;
 import temperance.hashing.Hashing;
 import temperance.hashing.MecabHashing;
 import temperance.hashing.MecabNodeFilter;
 import temperance.hashing.PrefixHashing;
+import temperance.hashing.SSVHashing;
+import temperance.hashing.TSVHashing;
 import temperance.rpc.RpcFullText;
 import temperance.rpc.RpcFullText.Request.Parser;
 
 public class RpcFullTextImpl implements RpcFullText {
+    
+    protected static final Log logger = LogFactory.getLog(RpcFullTextImpl.class);
 
     protected final Configure configure;
     
@@ -41,13 +48,21 @@ public class RpcFullTextImpl implements RpcFullText {
     }
     
     protected Hashing createHashing(Parser parser){
-        if(Parser.BIGRAM.equals(parser)){
+        switch(parser){
+        case BIGRAM:
             return new GramHashing(hashFunction);
-        }
-        if(Parser.PREFIX.equals(parser)){
+        case PREFIX:
             return new PrefixHashing(hashFunction);
+        case MECAB:
+            return new MecabHashing(hashFunction, tagger, nodeFilter);
+        case HASH_CSV:
+            return new CSVHashing(hashFunction);
+        case HASH_TSV:
+            return new TSVHashing(hashFunction);
+        case HASH_SSV:
+            return new SSVHashing(hashFunction);
         }
-        return new MecabHashing(hashFunction, tagger, nodeFilter);
+        throw new RuntimeException("unknown parser: " + parser);
     }
     
     public Response.Search search(Request.Search request) throws RpcException {
@@ -80,8 +95,7 @@ public class RpcFullTextImpl implements RpcFullText {
         final String value = request.value;
         final int expire = request.expire;
         final Parser parser = request.parser;
-        // TODO: sync option
-        final boolean sync = false;
+        final boolean async = request.asyncRequest;
         
         try {
             final Hashing hashing = createHashing(parser);
@@ -89,24 +103,34 @@ public class RpcFullTextImpl implements RpcFullText {
             
             final FullTextCommand command = new FullTextCommand(pooling);
             final List<Future<Long>> futures = command.addAll(key, hashes, value, expire);
-            if(sync){
+            if(async){
                 Response.Add response = Response.Add.newInstance();
-                try {
-                    for(Future<Long> future: futures){
-                        future.get();
-                    }
-                    response.status = Response.Status.SUCCESS;
-                } catch(InterruptedException e){
-                    e.printStackTrace();
-                    response.status = Response.Status.FAILURE;
-                } catch(ExecutionException e){
-                    response.status = Response.Status.FAILURE;
-                }
+                response.status = Response.Status.ENQUEUE;
                 return response;
             }
             
+            //
+            // sync request
+            //
             Response.Add response = Response.Add.newInstance();
-            response.status = Response.Status.ENQUEUE;
+            try {
+                for(Future<Long> future: futures){
+                    future.get();
+                }
+                response.status = Response.Status.SUCCESS;
+            } catch(InterruptedException e){
+                if(logger.isInfoEnabled()){
+                    logger.info(e.getMessage(), e);
+                }
+                
+                response.status = Response.Status.FAILURE;
+            } catch(ExecutionException e){
+                if(logger.isInfoEnabled()){
+                    logger.info(e.getMessage(), e);
+                }
+
+                response.status = Response.Status.FAILURE;
+            }
             return response;
         } catch (Exception e) {
             throw new RpcException(e);
@@ -116,25 +140,28 @@ public class RpcFullTextImpl implements RpcFullText {
     public Response.Delete delete(Request.Delete request) throws RpcException {
         final String key = request.key;
         final int expire = request.expire;
-        // TODO: sync option
-        final boolean sync = false;
+        final boolean async = request.asyncRequest;
 
         final FullTextCommand command = new FullTextCommand(pooling);
         try {
             Future<Boolean> future = command.deleteAll(key, expire);
             
-            if(sync){
-                Boolean success = future.get();
+            if(async){
                 Response.Delete response = Response.Delete.newInstance();
-                if(success.booleanValue()){
-                    response.status = Response.Status.SUCCESS;
-                } else {
-                    response.status = Response.Status.FAILURE;
-                }
+                response.status = Response.Status.ENQUEUE;
                 return response;
             }
+            
+            //
+            // sync request
+            //
+            Boolean success = future.get();
             Response.Delete response = Response.Delete.newInstance();
-            response.status = Response.Status.ENQUEUE;
+            if(success.booleanValue()){
+                response.status = Response.Status.SUCCESS;
+            } else {
+                response.status = Response.Status.FAILURE;
+            }
             return response;
         } catch (ExecutionException e) {
             throw new RpcException(e);
@@ -147,25 +174,28 @@ public class RpcFullTextImpl implements RpcFullText {
         final String key = request.key;
         final String value = request.value;
         final int expire = request.expire;
-        // TODO: sync option
-        final boolean sync = false;
+        final boolean async = request.asyncRequest;
 
         final FullTextCommand command = new FullTextCommand(pooling);
         try {
             Future<Boolean> future = command.deleteAllValues(key, expire, value);
             
-            if(sync){
-                Boolean success = future.get();
+            if(async){
                 Response.DeleteByValue response = Response.DeleteByValue.newInstance();
-                if(success.booleanValue()){
-                    response.status = Response.Status.SUCCESS;
-                } else {
-                    response.status = Response.Status.FAILURE;
-                }
+                response.status = Response.Status.ENQUEUE;
                 return response;
             }
+            
+            //
+            // sync request
+            //
+            Boolean success = future.get();
             Response.DeleteByValue response = Response.DeleteByValue.newInstance();
-            response.status = Response.Status.ENQUEUE;
+            if(success.booleanValue()){
+                response.status = Response.Status.SUCCESS;
+            } else {
+                response.status = Response.Status.FAILURE;
+            }
             return response;
         } catch (ExecutionException e) {
             throw new RpcException(e);

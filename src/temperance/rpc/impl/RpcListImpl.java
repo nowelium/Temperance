@@ -4,9 +4,12 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import temperance.core.Configure;
-import temperance.core.Pooling;
 import temperance.core.ListCommand;
+import temperance.core.Pooling;
 import temperance.exception.LockTimeoutException;
 import temperance.exception.MemcachedOperationException;
 import temperance.exception.RpcException;
@@ -15,6 +18,8 @@ import temperance.storage.TpList;
 import temperance.storage.impl.MemcachedList;
 
 public class RpcListImpl implements RpcList {
+    
+    protected static final Log logger = LogFactory.getLog(RpcListImpl.class);
     
     protected final Configure configure;
     
@@ -38,10 +43,18 @@ public class RpcListImpl implements RpcList {
             response.succeed = true;
             return response;
         } catch(MemcachedOperationException e){
+            if(logger.isInfoEnabled()){
+                logger.info(e.getMessage(), e);
+            }
+            
             Response.Add response = Response.Add.newInstance();
             response.succeed = false;
             return response;
         } catch(LockTimeoutException e){
+            if(logger.isInfoEnabled()){
+                logger.info(e.getMessage(), e);
+            }
+            
             Response.Add response = Response.Add.newInstance();
             response.succeed = false;
             return response;
@@ -94,10 +107,18 @@ public class RpcListImpl implements RpcList {
             response.succeed = success;
             return response;
         } catch(MemcachedOperationException e){
+            if(logger.isInfoEnabled()){
+                logger.info(e.getMessage(), e);
+            }
+            
             Response.Delete response = Response.Delete.newInstance();
             response.succeed = false;
             return response;
         } catch(LockTimeoutException e){
+            if(logger.isInfoEnabled()){
+                logger.info(e.getMessage(), e);
+            }
+            
             Response.Delete response = Response.Delete.newInstance();
             response.succeed = false;
             return response;

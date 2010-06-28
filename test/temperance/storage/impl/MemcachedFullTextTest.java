@@ -24,7 +24,7 @@ import temperance.util.Lists;
 
 public class MemcachedFullTextTest {
 
-private static ConnectionPool pool;
+    private static ConnectionPool pool;
     
     private MemcachedFullText ft;
     

@@ -211,10 +211,6 @@ public class ConnectionPool implements LifeCycle {
             try {
                 // infinite loop
                 while(true){
-                    if(logger.isDebugEnabled()){
-                        logger.debug("rendezvous");
-                    }
-                    
                     // rendezvous
                     lock.await();
                     
@@ -223,7 +219,7 @@ public class ConnectionPool implements LifeCycle {
                     }
 
                     if(logger.isDebugEnabled()){
-                        logger.debug("fill pool connection(s)");
+                        logger.debug("fill connection pool");
                     }
                     int capacity = pool.remainingCapacity();
                     int count = capacity - initialPoolSize;
@@ -246,7 +242,7 @@ public class ConnectionPool implements LifeCycle {
             final long last = lastAccess.get();
             if(keepAliveTime < (current - last)){
                 if(logger.isDebugEnabled()){
-                    logger.debug("free pool connections");
+                    logger.debug("free connection pool");
                 }
                 
                 while(initialPoolSize < pool.size()){

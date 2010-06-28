@@ -57,6 +57,7 @@ public interface RpcFullText extends Rpc {
             public String value;
             public int expire = DEFAULT_EXPIRE;
             public Parser parser = Parser.MECAB;
+            public boolean asyncRequest = true;
             
             private Add(){
                 // nop
@@ -70,6 +71,7 @@ public interface RpcFullText extends Rpc {
             
             public String key;
             public int expire = DEFAULT_EXPIRE;
+            public boolean asyncRequest = true;
             
             private Delete(){
                 // nop
@@ -84,6 +86,7 @@ public interface RpcFullText extends Rpc {
             public String key;
             public String value;
             public int expire = DEFAULT_EXPIRE;
+            public boolean asyncRequest = true;
             
             private DeleteByValue(){
                 // nop
