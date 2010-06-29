@@ -28,7 +28,9 @@ public class MemcachedList implements TpList {
     
     protected static final KeyCache<String, Long> indexKeyCache = new KeyCache<String, Long>();
     
-    protected static final String DEFAULT_ROOT_KEY_PREFIX = "list";
+    protected static final String DEFAULT_ROOT_KEY_PREFIX = TpList.class.getSimpleName();
+
+    protected static final String KEY_SEPARATOR = "$";
     
     protected static final String INCREMENT_SUFFIX = ".increment";
     
@@ -37,8 +39,6 @@ public class MemcachedList implements TpList {
     protected static final String INITIAL_INCREMENT_VALUE = "0";
     
     protected static final String INITIAL_LOCKED_VALUE = "LOCKED";
-    
-    protected static final String KEY_SEPARATOR = "$";
     
     protected static final int INCREMENT_VALUE_EXPIRE = 0;
     

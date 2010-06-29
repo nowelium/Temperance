@@ -18,7 +18,7 @@ public class MemcachedFullText implements TpFullText {
     
     protected static final KeyCache<String, Hash> hashKeyCache = new KeyCache<String, Hash>();
     
-    protected static final String DEFAULT_ROOT_KEY_PREFIX = "fulltext";
+    protected static final String DEFAULT_ROOT_KEY_PREFIX = TpFullText.class.getSimpleName();
     
     protected static final String KEY_SEPARATOR = "#";
     
