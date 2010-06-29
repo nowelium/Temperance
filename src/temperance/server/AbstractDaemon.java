@@ -10,6 +10,8 @@ import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.xml.DOMConfigurator;
 
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
@@ -17,6 +19,8 @@ import sun.misc.SignalHandler;
 import com.sun.akuma.Daemon;
 
 public abstract class AbstractDaemon implements Server {
+    
+    protected static final String LOG4J_RESOURCE_PATH;
     
     protected static final String PID_DIR;
     
@@ -28,6 +32,7 @@ public abstract class AbstractDaemon implements Server {
     
     static {
         PID_DIR = System.getProperty("temperance.pid.dir", "/tmp");
+        LOG4J_RESOURCE_PATH = System.getProperty("temperance.log.path", "/resources/log4j.xml");
     }
     
     /**
@@ -39,7 +44,6 @@ public abstract class AbstractDaemon implements Server {
      */
     protected final Signal[] shutdownSignals = {
         new Signal("INT"),
-        new Signal("HUP"),
         new Signal("TERM"),
         new Signal("KILL"),
     };
@@ -95,6 +99,11 @@ public abstract class AbstractDaemon implements Server {
                 }
             }
             logger.info("starting process(" + LIBC.getpid() + ":" + name + ")");
+            
+            //
+            // signal handlers
+            //
+            Signal.handle(new Signal("HUP"), new ReloadSignal());
             for(Signal signal: shutdownSignals){
                 Signal.handle(signal, new ShutdownSignal());
             }
@@ -137,6 +146,15 @@ public abstract class AbstractDaemon implements Server {
     public abstract void run();
     
     public abstract void stop();
+    
+    protected class ReloadSignal implements SignalHandler {
+        public void handle(Signal signal){
+            logger.info("reload signal: " + signal.getName() + " was occured.");
+            
+            logger.info("reload log configuration.");
+            new DOMConfigurator().doConfigure(LOG4J_RESOURCE_PATH, LogManager.getLoggerRepository());
+        }
+    }
     
     protected class ShutdownSignal implements SignalHandler {
         public void handle(Signal signal) {
