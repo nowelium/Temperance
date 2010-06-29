@@ -13,6 +13,13 @@ import java.util.Set;
 
 public class SoftReferenceMap<K, V> implements Map<K, V> {
     
+    protected static final int CLEANUP_THRESHOLD;
+    
+    static {
+        String cleanupThreshold = System.getProperty("temperance.reference.cleanup_threshold", "128");
+        CLEANUP_THRESHOLD = Integer.parseInt(cleanupThreshold);
+    }
+    
     protected final ReferenceQueue<V> queue = new ReferenceQueue<V>();
 
     protected final Map<K, SoftReference<V>> cache = new HashMap<K, SoftReference<V>>();
@@ -20,10 +27,33 @@ public class SoftReferenceMap<K, V> implements Map<K, V> {
     protected final Map<SoftReference<V>, K> refMap = new HashMap<SoftReference<V>, K>();
     
     protected void clean(){
+        int count = 0;
+        boolean cleanAll = false;
         Reference<? extends V> ref = null;
+        
         while((ref = queue.poll()) != null){
+            // protected poll blocking
+            if(CLEANUP_THRESHOLD < count){
+                cleanAll = true;
+                break;
+            }
+            
             K key = refMap.remove(ref);
             cache.remove(key);
+            ref.clear();
+            
+            count++;
+        }
+        
+        if(cleanAll){
+            cache.clear();
+            refMap.clear();
+            /*
+            while((ref = queue.poll()) != null){
+                ref.clear();
+            }
+            */
+            while((ref = queue.poll()) != null);
         }
     }
     
@@ -34,6 +64,7 @@ public class SoftReferenceMap<K, V> implements Map<K, V> {
         refMap.put(ref, key);
         SoftReference<V> result = cache.put(key, ref);
         if(null != result){
+            refMap.remove(result);
             return result.get();
         }
         return null;

@@ -197,7 +197,6 @@ public class ConnectionPool implements LifeCycle {
             }
             return pool.take();
         } catch(InterruptedException e){
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -219,8 +218,9 @@ public class ConnectionPool implements LifeCycle {
                     }
 
                     if(logger.isDebugEnabled()){
-                        logger.debug("fill connection pool");
+                        logger.debug("filling connection pool");
                     }
+                    
                     int capacity = pool.remainingCapacity();
                     int count = capacity - initialPoolSize;
                     for(int i = 0; i < count; ++i){
@@ -242,7 +242,7 @@ public class ConnectionPool implements LifeCycle {
             final long last = lastAccess.get();
             if(keepAliveTime < (current - last)){
                 if(logger.isDebugEnabled()){
-                    logger.debug("free connection pool");
+                    logger.debug("freeing connection pool");
                 }
                 
                 while(initialPoolSize < pool.size()){

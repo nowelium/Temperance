@@ -25,8 +25,8 @@ public class Pooling implements LifeCycle {
     }
 
     public void destroy(){
-        threadPool.destroy();
         connectionPool.destroy();
+        threadPool.destroy();
     }
     
     public ThreadPool getThreadPool(){

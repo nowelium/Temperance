@@ -86,10 +86,6 @@ public abstract class AbstractDaemon implements Server {
         try {
             Daemon daemon = new Daemon();
             if(daemon.isDaemonized()){
-                for(Signal signal: shutdownSignals){
-                    Signal.handle(signal, new ShutdownSignal());
-                }
-                
                 logger.debug("daemon init: " + pidFile.getAbsolutePath());
                 daemon.init(pidFile.getAbsolutePath());
             } else {
@@ -99,6 +95,9 @@ public abstract class AbstractDaemon implements Server {
                 }
             }
             logger.info("starting process(" + LIBC.getpid() + ":" + name + ")");
+            for(Signal signal: shutdownSignals){
+                Signal.handle(signal, new ShutdownSignal());
+            }
             
             logger.info("init process");
             init();
