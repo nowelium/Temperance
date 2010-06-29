@@ -1,12 +1,15 @@
 package temperance.core;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -34,6 +37,8 @@ public class ConnectionPool implements LifeCycle {
     protected final MemcachedClient client = new MemcachedClient();
     
     protected final ScheduledExecutorService executor = Executors.newScheduledThreadPool(3);
+    
+    protected final List<ScheduledFuture<?>> schedules = new ArrayList<ScheduledFuture<?>>();
     
     protected final BlockingQueue<MemcachedClient> pool;
     
@@ -148,10 +153,10 @@ public class ConnectionPool implements LifeCycle {
         // fill pool: infinite
         executor.execute(new FillPoolTask());
         // free pool: every 10 sec
-        executor.scheduleWithFixedDelay(new FreePoolTask(), 10, 10, TimeUnit.SECONDS);
+        schedules.add(executor.scheduleWithFixedDelay(new FreePoolTask(), 10, 10, TimeUnit.SECONDS));
         // release pool: every 5000 usec
         // TODO: 2000 usec await when: libmemcached becomes segfault by excessive access
-        executor.scheduleWithFixedDelay(new ReleasePoolTask(), 0, 2000, TimeUnit.MICROSECONDS);
+        schedules.add(executor.scheduleWithFixedDelay(new ReleasePoolTask(), 0, 2000, TimeUnit.MICROSECONDS));
         
         if(logger.isDebugEnabled()){
             logger.debug(new StringBuilder("configure: scheduled fill pool"));
@@ -166,23 +171,12 @@ public class ConnectionPool implements LifeCycle {
     
     public void destroy(){
         logger.info("destroy pool");
+        for(ScheduledFuture<?> schedule: schedules){
+            schedule.cancel(false);
+        }
         executor.shutdown();
         
-        try {
-            if(logger.isDebugEnabled()){
-                logger.debug("awaiting termination");
-            }
-            if(!executor.awaitTermination(30, TimeUnit.SECONDS)){
-                if(logger.isWarnEnabled()){
-                    logger.warn("awaiting termination fail. shutdwon now");
-                }
-                executor.shutdownNow();
-            }
-        } catch(InterruptedException e){
-            // nop
-        } finally {
-            logger.info("pool destroyed");
-        }
+        logger.info("pool destroyed");
     }
     
     public MemcachedClient get(){

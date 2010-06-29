@@ -11,8 +11,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class SoftReferenceMap<K, V> implements Map<K, V> {
     
+    protected static final Log logger = LogFactory.getLog(SoftReferenceMap.class);
+
     protected static final int CLEANUP_THRESHOLD;
     
     static {
@@ -20,40 +25,44 @@ public class SoftReferenceMap<K, V> implements Map<K, V> {
         CLEANUP_THRESHOLD = Integer.parseInt(cleanupThreshold);
     }
     
-    protected final ReferenceQueue<V> queue = new ReferenceQueue<V>();
+    protected ReferenceQueue<V> queue = new ReferenceQueue<V>();
 
     protected final Map<K, SoftReference<V>> cache = new HashMap<K, SoftReference<V>>();
     
     protected final Map<SoftReference<V>, K> refMap = new HashMap<SoftReference<V>, K>();
     
+    
     protected void clean(){
         int count = 0;
         boolean cleanAll = false;
-        Reference<? extends V> ref = null;
+        Reference<? extends V> ref = queue.poll();
         
-        while((ref = queue.poll()) != null){
-            // protected poll blocking
-            if(CLEANUP_THRESHOLD < count){
-                cleanAll = true;
-                break;
-            }
+        if(ref != null){
+            logger.info("cleanup soft reference objs");
             
-            K key = refMap.remove(ref);
-            cache.remove(key);
-            ref.clear();
-            
-            count++;
+            do {
+                // protected poll blocking
+                if(CLEANUP_THRESHOLD < count){
+                    cleanAll = true;
+                    break;
+                }
+                
+                K key = refMap.remove(ref);
+                cache.remove(key);
+                ref.clear();
+                
+                count++;
+            } while((ref = queue.poll()) != null);
         }
         
         if(cleanAll){
-            cache.clear();
-            refMap.clear();
-            /*
-            while((ref = queue.poll()) != null){
-                ref.clear();
+            logger.info("cleanup all objs");
+            
+            synchronized(SoftReferenceMap.class){
+                queue = new ReferenceQueue<V>();
+                cache.clear();
+                refMap.clear();
             }
-            */
-            while((ref = queue.poll()) != null);
         }
     }
     

@@ -52,8 +52,7 @@ public class ThreadPool implements LifeCycle {
         executor.shutdown();
         try {
             logger.info("awaiting termination");
-            
-            if(!executor.awaitTermination(3600, TimeUnit.SECONDS)){
+            if(!executor.awaitTermination(60, TimeUnit.SECONDS)){
                 if(logger.isWarnEnabled()){
                     logger.warn("awaiting termination fail. shutdwon now");
                 }
