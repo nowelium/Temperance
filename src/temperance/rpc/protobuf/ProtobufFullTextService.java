@@ -37,12 +37,14 @@ public class ProtobufFullTextService implements FullTextService.BlockingInterfac
     
     protected static Response.Status convert(RpcFullText.Response.Status status){
         switch(status){
-        case FAILURE:
-            return Response.Status.FAILURE;
         case SUCCESS:
             return Response.Status.SUCCESS;
         case ENQUEUE:
             return Response.Status.ENQUEUE;
+        case FAILURE:
+            return Response.Status.FAILURE;
+        case TIMEOUT:
+            return Response.Status.TIMEOUT;
         }
         throw new RuntimeException("unknown status:" + status);
     }
@@ -109,6 +111,21 @@ public class ProtobufFullTextService implements FullTextService.BlockingInterfac
             RpcFullText.Response.DeleteByValue response = rpc.deleteByValue(request);
             
             Response.DeleteByValue.Builder builder = Response.DeleteByValue.newBuilder();
+            builder.setStatus(convert(response.status));
+            return builder.build();
+        } catch(RpcException e){
+            throw new ServiceException(e.getMessage());
+        }
+    }
+    
+    public Response.Reindex reindex(RpcController controller, Request.Reindex reindex) throws ServiceException {
+        RpcFullText.Request.Reindex request = RpcFullText.Request.Reindex.newInstance();
+        request.key = reindex.getKey();
+        
+        try {
+            RpcFullText.Response.Reindex response = rpc.reindex(request);
+            
+            Response.Reindex.Builder builder = Response.Reindex.newBuilder();
             builder.setStatus(convert(response.status));
             return builder.build();
         } catch(RpcException e){

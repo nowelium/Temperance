@@ -223,6 +223,7 @@ public class MemcachedList implements TpList {
                     }
                     
                     // copy reindex from key
+                    // TODO: expire lifetime copy
                     append(storage, reIndexKey, result.getValue(), 0);
                 }
                 //
@@ -240,6 +241,8 @@ public class MemcachedList implements TpList {
                 final long reindexSize = size(storage, reIndexKey);
                 for(long i = 0; i < reindexSize; ++i){
                     TpListResult result = get(storage, reIndexKey, i);
+                    // set new index
+                    // TODO: expire lifetime copy
                     append(storage, key, result.getValue(), 0);
                 }
                 // delete reindex < limit indexes

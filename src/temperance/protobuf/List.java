@@ -1314,6 +1314,630 @@ public final class List {
       }
     }
     
+    public static final class DeleteByValue extends
+        com.google.protobuf.GeneratedMessage {
+      // Use DeleteByValue.newBuilder() to construct.
+      private DeleteByValue() {}
+      
+      private static final DeleteByValue defaultInstance = new DeleteByValue();
+      public static DeleteByValue getDefaultInstance() {
+        return defaultInstance;
+      }
+      
+      public DeleteByValue getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+      
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return temperance.protobuf.List.internal_static_temperance_protobuf_Request_DeleteByValue_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return temperance.protobuf.List.internal_static_temperance_protobuf_Request_DeleteByValue_fieldAccessorTable;
+      }
+      
+      // required string key = 1;
+      public static final int KEY_FIELD_NUMBER = 1;
+      private boolean hasKey;
+      private java.lang.String key_ = "";
+      public boolean hasKey() { return hasKey; }
+      public java.lang.String getKey() { return key_; }
+      
+      // required string value = 2;
+      public static final int VALUE_FIELD_NUMBER = 2;
+      private boolean hasValue;
+      private java.lang.String value_ = "";
+      public boolean hasValue() { return hasValue; }
+      public java.lang.String getValue() { return value_; }
+      
+      // optional uint32 expire = 3 [default = 0];
+      public static final int EXPIRE_FIELD_NUMBER = 3;
+      private boolean hasExpire;
+      private int expire_ = 0;
+      public boolean hasExpire() { return hasExpire; }
+      public int getExpire() { return expire_; }
+      
+      public final boolean isInitialized() {
+        if (!hasKey) return false;
+        if (!hasValue) return false;
+        return true;
+      }
+      
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (hasKey()) {
+          output.writeString(1, getKey());
+        }
+        if (hasValue()) {
+          output.writeString(2, getValue());
+        }
+        if (hasExpire()) {
+          output.writeUInt32(3, getExpire());
+        }
+        getUnknownFields().writeTo(output);
+      }
+      
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+      
+        size = 0;
+        if (hasKey()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeStringSize(1, getKey());
+        }
+        if (hasValue()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeStringSize(2, getValue());
+        }
+        if (hasExpire()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeUInt32Size(3, getExpire());
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+      
+      public static temperance.protobuf.List.Request.DeleteByValue parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.List.Request.DeleteByValue parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.List.Request.DeleteByValue parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.List.Request.DeleteByValue parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.List.Request.DeleteByValue parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.List.Request.DeleteByValue parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.List.Request.DeleteByValue parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.List.Request.DeleteByValue parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.List.Request.DeleteByValue parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.List.Request.DeleteByValue parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(temperance.protobuf.List.Request.DeleteByValue prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+      
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder> {
+        private temperance.protobuf.List.Request.DeleteByValue result;
+        
+        // Construct using temperance.protobuf.List.Request.DeleteByValue.newBuilder()
+        private Builder() {}
+        
+        private static Builder create() {
+          Builder builder = new Builder();
+          builder.result = new temperance.protobuf.List.Request.DeleteByValue();
+          return builder;
+        }
+        
+        protected temperance.protobuf.List.Request.DeleteByValue internalGetResult() {
+          return result;
+        }
+        
+        public Builder clear() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "Cannot call clear() after build().");
+          }
+          result = new temperance.protobuf.List.Request.DeleteByValue();
+          return this;
+        }
+        
+        public Builder clone() {
+          return create().mergeFrom(result);
+        }
+        
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return temperance.protobuf.List.Request.DeleteByValue.getDescriptor();
+        }
+        
+        public temperance.protobuf.List.Request.DeleteByValue getDefaultInstanceForType() {
+          return temperance.protobuf.List.Request.DeleteByValue.getDefaultInstance();
+        }
+        
+        public boolean isInitialized() {
+          return result.isInitialized();
+        }
+        public temperance.protobuf.List.Request.DeleteByValue build() {
+          if (result != null && !isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return buildPartial();
+        }
+        
+        private temperance.protobuf.List.Request.DeleteByValue buildParsed()
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          if (!isInitialized()) {
+            throw newUninitializedMessageException(
+              result).asInvalidProtocolBufferException();
+          }
+          return buildPartial();
+        }
+        
+        public temperance.protobuf.List.Request.DeleteByValue buildPartial() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "build() has already been called on this Builder.");
+          }
+          temperance.protobuf.List.Request.DeleteByValue returnMe = result;
+          result = null;
+          return returnMe;
+        }
+        
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof temperance.protobuf.List.Request.DeleteByValue) {
+            return mergeFrom((temperance.protobuf.List.Request.DeleteByValue)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+        
+        public Builder mergeFrom(temperance.protobuf.List.Request.DeleteByValue other) {
+          if (other == temperance.protobuf.List.Request.DeleteByValue.getDefaultInstance()) return this;
+          if (other.hasKey()) {
+            setKey(other.getKey());
+          }
+          if (other.hasValue()) {
+            setValue(other.getValue());
+          }
+          if (other.hasExpire()) {
+            setExpire(other.getExpire());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+        
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder(
+              this.getUnknownFields());
+          while (true) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                this.setUnknownFields(unknownFields.build());
+                return this;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  this.setUnknownFields(unknownFields.build());
+                  return this;
+                }
+                break;
+              }
+              case 10: {
+                setKey(input.readString());
+                break;
+              }
+              case 18: {
+                setValue(input.readString());
+                break;
+              }
+              case 24: {
+                setExpire(input.readUInt32());
+                break;
+              }
+            }
+          }
+        }
+        
+        
+        // required string key = 1;
+        public boolean hasKey() {
+          return result.hasKey();
+        }
+        public java.lang.String getKey() {
+          return result.getKey();
+        }
+        public Builder setKey(java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  result.hasKey = true;
+          result.key_ = value;
+          return this;
+        }
+        public Builder clearKey() {
+          result.hasKey = false;
+          result.key_ = getDefaultInstance().getKey();
+          return this;
+        }
+        
+        // required string value = 2;
+        public boolean hasValue() {
+          return result.hasValue();
+        }
+        public java.lang.String getValue() {
+          return result.getValue();
+        }
+        public Builder setValue(java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  result.hasValue = true;
+          result.value_ = value;
+          return this;
+        }
+        public Builder clearValue() {
+          result.hasValue = false;
+          result.value_ = getDefaultInstance().getValue();
+          return this;
+        }
+        
+        // optional uint32 expire = 3 [default = 0];
+        public boolean hasExpire() {
+          return result.hasExpire();
+        }
+        public int getExpire() {
+          return result.getExpire();
+        }
+        public Builder setExpire(int value) {
+          result.hasExpire = true;
+          result.expire_ = value;
+          return this;
+        }
+        public Builder clearExpire() {
+          result.hasExpire = false;
+          result.expire_ = 0;
+          return this;
+        }
+      }
+      
+      static {
+        temperance.protobuf.List.getDescriptor();
+      }
+      
+      static {
+        temperance.protobuf.List.internalForceInit();
+      }
+    }
+    
+    public static final class Reindex extends
+        com.google.protobuf.GeneratedMessage {
+      // Use Reindex.newBuilder() to construct.
+      private Reindex() {}
+      
+      private static final Reindex defaultInstance = new Reindex();
+      public static Reindex getDefaultInstance() {
+        return defaultInstance;
+      }
+      
+      public Reindex getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+      
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return temperance.protobuf.List.internal_static_temperance_protobuf_Request_Reindex_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return temperance.protobuf.List.internal_static_temperance_protobuf_Request_Reindex_fieldAccessorTable;
+      }
+      
+      // required string key = 1;
+      public static final int KEY_FIELD_NUMBER = 1;
+      private boolean hasKey;
+      private java.lang.String key_ = "";
+      public boolean hasKey() { return hasKey; }
+      public java.lang.String getKey() { return key_; }
+      
+      public final boolean isInitialized() {
+        if (!hasKey) return false;
+        return true;
+      }
+      
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (hasKey()) {
+          output.writeString(1, getKey());
+        }
+        getUnknownFields().writeTo(output);
+      }
+      
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+      
+        size = 0;
+        if (hasKey()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeStringSize(1, getKey());
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+      
+      public static temperance.protobuf.List.Request.Reindex parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.List.Request.Reindex parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.List.Request.Reindex parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.List.Request.Reindex parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.List.Request.Reindex parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.List.Request.Reindex parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.List.Request.Reindex parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.List.Request.Reindex parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.List.Request.Reindex parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.List.Request.Reindex parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(temperance.protobuf.List.Request.Reindex prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+      
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder> {
+        private temperance.protobuf.List.Request.Reindex result;
+        
+        // Construct using temperance.protobuf.List.Request.Reindex.newBuilder()
+        private Builder() {}
+        
+        private static Builder create() {
+          Builder builder = new Builder();
+          builder.result = new temperance.protobuf.List.Request.Reindex();
+          return builder;
+        }
+        
+        protected temperance.protobuf.List.Request.Reindex internalGetResult() {
+          return result;
+        }
+        
+        public Builder clear() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "Cannot call clear() after build().");
+          }
+          result = new temperance.protobuf.List.Request.Reindex();
+          return this;
+        }
+        
+        public Builder clone() {
+          return create().mergeFrom(result);
+        }
+        
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return temperance.protobuf.List.Request.Reindex.getDescriptor();
+        }
+        
+        public temperance.protobuf.List.Request.Reindex getDefaultInstanceForType() {
+          return temperance.protobuf.List.Request.Reindex.getDefaultInstance();
+        }
+        
+        public boolean isInitialized() {
+          return result.isInitialized();
+        }
+        public temperance.protobuf.List.Request.Reindex build() {
+          if (result != null && !isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return buildPartial();
+        }
+        
+        private temperance.protobuf.List.Request.Reindex buildParsed()
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          if (!isInitialized()) {
+            throw newUninitializedMessageException(
+              result).asInvalidProtocolBufferException();
+          }
+          return buildPartial();
+        }
+        
+        public temperance.protobuf.List.Request.Reindex buildPartial() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "build() has already been called on this Builder.");
+          }
+          temperance.protobuf.List.Request.Reindex returnMe = result;
+          result = null;
+          return returnMe;
+        }
+        
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof temperance.protobuf.List.Request.Reindex) {
+            return mergeFrom((temperance.protobuf.List.Request.Reindex)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+        
+        public Builder mergeFrom(temperance.protobuf.List.Request.Reindex other) {
+          if (other == temperance.protobuf.List.Request.Reindex.getDefaultInstance()) return this;
+          if (other.hasKey()) {
+            setKey(other.getKey());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+        
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder(
+              this.getUnknownFields());
+          while (true) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                this.setUnknownFields(unknownFields.build());
+                return this;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  this.setUnknownFields(unknownFields.build());
+                  return this;
+                }
+                break;
+              }
+              case 10: {
+                setKey(input.readString());
+                break;
+              }
+            }
+          }
+        }
+        
+        
+        // required string key = 1;
+        public boolean hasKey() {
+          return result.hasKey();
+        }
+        public java.lang.String getKey() {
+          return result.getKey();
+        }
+        public Builder setKey(java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  result.hasKey = true;
+          result.key_ = value;
+          return this;
+        }
+        public Builder clearKey() {
+          result.hasKey = false;
+          result.key_ = getDefaultInstance().getKey();
+          return this;
+        }
+      }
+      
+      static {
+        temperance.protobuf.List.getDescriptor();
+      }
+      
+      static {
+        temperance.protobuf.List.internalForceInit();
+      }
+    }
+    
     public final boolean isInitialized() {
       return true;
     }
@@ -1542,6 +2166,75 @@ public final class List {
       return temperance.protobuf.List.internal_static_temperance_protobuf_Response_fieldAccessorTable;
     }
     
+    public enum Status
+        implements com.google.protobuf.ProtocolMessageEnum {
+      SUCCESS(0, 0),
+      ENQUEUE(1, 1),
+      FAILURE(2, 10),
+      TIMEOUT(3, 11),
+      ;
+      
+      
+      public final int getNumber() { return value; }
+      
+      public static Status valueOf(int value) {
+        switch (value) {
+          case 0: return SUCCESS;
+          case 1: return ENQUEUE;
+          case 10: return FAILURE;
+          case 11: return TIMEOUT;
+          default: return null;
+        }
+      }
+      
+      public static com.google.protobuf.Internal.EnumLiteMap<Status>
+          internalGetValueMap() {
+        return internalValueMap;
+      }
+      private static com.google.protobuf.Internal.EnumLiteMap<Status>
+          internalValueMap =
+            new com.google.protobuf.Internal.EnumLiteMap<Status>() {
+              public Status findValueByNumber(int number) {
+                return Status.valueOf(number)
+      ;        }
+            };
+      
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        return getDescriptor().getValues().get(index);
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return temperance.protobuf.List.Response.getDescriptor().getEnumTypes().get(0);
+      }
+      
+      private static final Status[] VALUES = {
+        SUCCESS, ENQUEUE, FAILURE, TIMEOUT, 
+      };
+      public static Status valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        return VALUES[desc.getIndex()];
+      }
+      private final int index;
+      private final int value;
+      private Status(int index, int value) {
+        this.index = index;
+        this.value = value;
+      }
+      
+      static {
+        temperance.protobuf.List.getDescriptor();
+      }
+    }
+    
     public static final class Add extends
         com.google.protobuf.GeneratedMessage {
       // Use Add.newBuilder() to construct.
@@ -1566,22 +2259,22 @@ public final class List {
         return temperance.protobuf.List.internal_static_temperance_protobuf_Response_Add_fieldAccessorTable;
       }
       
-      // required bool succeed = 1;
-      public static final int SUCCEED_FIELD_NUMBER = 1;
-      private boolean hasSucceed;
-      private boolean succeed_ = false;
-      public boolean hasSucceed() { return hasSucceed; }
-      public boolean getSucceed() { return succeed_; }
+      // required .temperance.protobuf.Response.Status status = 1;
+      public static final int STATUS_FIELD_NUMBER = 1;
+      private boolean hasStatus;
+      private temperance.protobuf.List.Response.Status status_ = temperance.protobuf.List.Response.Status.SUCCESS;
+      public boolean hasStatus() { return hasStatus; }
+      public temperance.protobuf.List.Response.Status getStatus() { return status_; }
       
       public final boolean isInitialized() {
-        if (!hasSucceed) return false;
+        if (!hasStatus) return false;
         return true;
       }
       
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (hasSucceed()) {
-          output.writeBool(1, getSucceed());
+        if (hasStatus()) {
+          output.writeEnum(1, getStatus().getNumber());
         }
         getUnknownFields().writeTo(output);
       }
@@ -1592,9 +2285,9 @@ public final class List {
         if (size != -1) return size;
       
         size = 0;
-        if (hasSucceed()) {
+        if (hasStatus()) {
           size += com.google.protobuf.CodedOutputStream
-            .computeBoolSize(1, getSucceed());
+            .computeEnumSize(1, getStatus().getNumber());
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -1745,8 +2438,8 @@ public final class List {
         
         public Builder mergeFrom(temperance.protobuf.List.Response.Add other) {
           if (other == temperance.protobuf.List.Response.Add.getDefaultInstance()) return this;
-          if (other.hasSucceed()) {
-            setSucceed(other.getSucceed());
+          if (other.hasStatus()) {
+            setStatus(other.getStatus());
           }
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
@@ -1774,7 +2467,13 @@ public final class List {
                 break;
               }
               case 8: {
-                setSucceed(input.readBool());
+                int rawValue = input.readEnum();
+                temperance.protobuf.List.Response.Status value = temperance.protobuf.List.Response.Status.valueOf(rawValue);
+                if (value == null) {
+                  unknownFields.mergeVarintField(1, rawValue);
+                } else {
+                  setStatus(value);
+                }
                 break;
               }
             }
@@ -1782,21 +2481,24 @@ public final class List {
         }
         
         
-        // required bool succeed = 1;
-        public boolean hasSucceed() {
-          return result.hasSucceed();
+        // required .temperance.protobuf.Response.Status status = 1;
+        public boolean hasStatus() {
+          return result.hasStatus();
         }
-        public boolean getSucceed() {
-          return result.getSucceed();
+        public temperance.protobuf.List.Response.Status getStatus() {
+          return result.getStatus();
         }
-        public Builder setSucceed(boolean value) {
-          result.hasSucceed = true;
-          result.succeed_ = value;
+        public Builder setStatus(temperance.protobuf.List.Response.Status value) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          result.hasStatus = true;
+          result.status_ = value;
           return this;
         }
-        public Builder clearSucceed() {
-          result.hasSucceed = false;
-          result.succeed_ = false;
+        public Builder clearStatus() {
+          result.hasStatus = false;
+          result.status_ = temperance.protobuf.List.Response.Status.SUCCESS;
           return this;
         }
       }
@@ -2408,22 +3110,22 @@ public final class List {
         return temperance.protobuf.List.internal_static_temperance_protobuf_Response_Delete_fieldAccessorTable;
       }
       
-      // required bool succeed = 1;
-      public static final int SUCCEED_FIELD_NUMBER = 1;
-      private boolean hasSucceed;
-      private boolean succeed_ = false;
-      public boolean hasSucceed() { return hasSucceed; }
-      public boolean getSucceed() { return succeed_; }
+      // required .temperance.protobuf.Response.Status status = 1;
+      public static final int STATUS_FIELD_NUMBER = 1;
+      private boolean hasStatus;
+      private temperance.protobuf.List.Response.Status status_ = temperance.protobuf.List.Response.Status.SUCCESS;
+      public boolean hasStatus() { return hasStatus; }
+      public temperance.protobuf.List.Response.Status getStatus() { return status_; }
       
       public final boolean isInitialized() {
-        if (!hasSucceed) return false;
+        if (!hasStatus) return false;
         return true;
       }
       
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (hasSucceed()) {
-          output.writeBool(1, getSucceed());
+        if (hasStatus()) {
+          output.writeEnum(1, getStatus().getNumber());
         }
         getUnknownFields().writeTo(output);
       }
@@ -2434,9 +3136,9 @@ public final class List {
         if (size != -1) return size;
       
         size = 0;
-        if (hasSucceed()) {
+        if (hasStatus()) {
           size += com.google.protobuf.CodedOutputStream
-            .computeBoolSize(1, getSucceed());
+            .computeEnumSize(1, getStatus().getNumber());
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -2587,8 +3289,8 @@ public final class List {
         
         public Builder mergeFrom(temperance.protobuf.List.Response.Delete other) {
           if (other == temperance.protobuf.List.Response.Delete.getDefaultInstance()) return this;
-          if (other.hasSucceed()) {
-            setSucceed(other.getSucceed());
+          if (other.hasStatus()) {
+            setStatus(other.getStatus());
           }
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
@@ -2616,7 +3318,13 @@ public final class List {
                 break;
               }
               case 8: {
-                setSucceed(input.readBool());
+                int rawValue = input.readEnum();
+                temperance.protobuf.List.Response.Status value = temperance.protobuf.List.Response.Status.valueOf(rawValue);
+                if (value == null) {
+                  unknownFields.mergeVarintField(1, rawValue);
+                } else {
+                  setStatus(value);
+                }
                 break;
               }
             }
@@ -2624,21 +3332,578 @@ public final class List {
         }
         
         
-        // required bool succeed = 1;
-        public boolean hasSucceed() {
-          return result.hasSucceed();
+        // required .temperance.protobuf.Response.Status status = 1;
+        public boolean hasStatus() {
+          return result.hasStatus();
         }
-        public boolean getSucceed() {
-          return result.getSucceed();
+        public temperance.protobuf.List.Response.Status getStatus() {
+          return result.getStatus();
         }
-        public Builder setSucceed(boolean value) {
-          result.hasSucceed = true;
-          result.succeed_ = value;
+        public Builder setStatus(temperance.protobuf.List.Response.Status value) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          result.hasStatus = true;
+          result.status_ = value;
           return this;
         }
-        public Builder clearSucceed() {
-          result.hasSucceed = false;
-          result.succeed_ = false;
+        public Builder clearStatus() {
+          result.hasStatus = false;
+          result.status_ = temperance.protobuf.List.Response.Status.SUCCESS;
+          return this;
+        }
+      }
+      
+      static {
+        temperance.protobuf.List.getDescriptor();
+      }
+      
+      static {
+        temperance.protobuf.List.internalForceInit();
+      }
+    }
+    
+    public static final class DeleteByValue extends
+        com.google.protobuf.GeneratedMessage {
+      // Use DeleteByValue.newBuilder() to construct.
+      private DeleteByValue() {}
+      
+      private static final DeleteByValue defaultInstance = new DeleteByValue();
+      public static DeleteByValue getDefaultInstance() {
+        return defaultInstance;
+      }
+      
+      public DeleteByValue getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+      
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return temperance.protobuf.List.internal_static_temperance_protobuf_Response_DeleteByValue_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return temperance.protobuf.List.internal_static_temperance_protobuf_Response_DeleteByValue_fieldAccessorTable;
+      }
+      
+      // required .temperance.protobuf.Response.Status status = 1;
+      public static final int STATUS_FIELD_NUMBER = 1;
+      private boolean hasStatus;
+      private temperance.protobuf.List.Response.Status status_ = temperance.protobuf.List.Response.Status.SUCCESS;
+      public boolean hasStatus() { return hasStatus; }
+      public temperance.protobuf.List.Response.Status getStatus() { return status_; }
+      
+      public final boolean isInitialized() {
+        if (!hasStatus) return false;
+        return true;
+      }
+      
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (hasStatus()) {
+          output.writeEnum(1, getStatus().getNumber());
+        }
+        getUnknownFields().writeTo(output);
+      }
+      
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+      
+        size = 0;
+        if (hasStatus()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeEnumSize(1, getStatus().getNumber());
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+      
+      public static temperance.protobuf.List.Response.DeleteByValue parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.List.Response.DeleteByValue parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.List.Response.DeleteByValue parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.List.Response.DeleteByValue parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.List.Response.DeleteByValue parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.List.Response.DeleteByValue parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.List.Response.DeleteByValue parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.List.Response.DeleteByValue parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.List.Response.DeleteByValue parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.List.Response.DeleteByValue parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(temperance.protobuf.List.Response.DeleteByValue prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+      
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder> {
+        private temperance.protobuf.List.Response.DeleteByValue result;
+        
+        // Construct using temperance.protobuf.List.Response.DeleteByValue.newBuilder()
+        private Builder() {}
+        
+        private static Builder create() {
+          Builder builder = new Builder();
+          builder.result = new temperance.protobuf.List.Response.DeleteByValue();
+          return builder;
+        }
+        
+        protected temperance.protobuf.List.Response.DeleteByValue internalGetResult() {
+          return result;
+        }
+        
+        public Builder clear() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "Cannot call clear() after build().");
+          }
+          result = new temperance.protobuf.List.Response.DeleteByValue();
+          return this;
+        }
+        
+        public Builder clone() {
+          return create().mergeFrom(result);
+        }
+        
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return temperance.protobuf.List.Response.DeleteByValue.getDescriptor();
+        }
+        
+        public temperance.protobuf.List.Response.DeleteByValue getDefaultInstanceForType() {
+          return temperance.protobuf.List.Response.DeleteByValue.getDefaultInstance();
+        }
+        
+        public boolean isInitialized() {
+          return result.isInitialized();
+        }
+        public temperance.protobuf.List.Response.DeleteByValue build() {
+          if (result != null && !isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return buildPartial();
+        }
+        
+        private temperance.protobuf.List.Response.DeleteByValue buildParsed()
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          if (!isInitialized()) {
+            throw newUninitializedMessageException(
+              result).asInvalidProtocolBufferException();
+          }
+          return buildPartial();
+        }
+        
+        public temperance.protobuf.List.Response.DeleteByValue buildPartial() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "build() has already been called on this Builder.");
+          }
+          temperance.protobuf.List.Response.DeleteByValue returnMe = result;
+          result = null;
+          return returnMe;
+        }
+        
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof temperance.protobuf.List.Response.DeleteByValue) {
+            return mergeFrom((temperance.protobuf.List.Response.DeleteByValue)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+        
+        public Builder mergeFrom(temperance.protobuf.List.Response.DeleteByValue other) {
+          if (other == temperance.protobuf.List.Response.DeleteByValue.getDefaultInstance()) return this;
+          if (other.hasStatus()) {
+            setStatus(other.getStatus());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+        
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder(
+              this.getUnknownFields());
+          while (true) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                this.setUnknownFields(unknownFields.build());
+                return this;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  this.setUnknownFields(unknownFields.build());
+                  return this;
+                }
+                break;
+              }
+              case 8: {
+                int rawValue = input.readEnum();
+                temperance.protobuf.List.Response.Status value = temperance.protobuf.List.Response.Status.valueOf(rawValue);
+                if (value == null) {
+                  unknownFields.mergeVarintField(1, rawValue);
+                } else {
+                  setStatus(value);
+                }
+                break;
+              }
+            }
+          }
+        }
+        
+        
+        // required .temperance.protobuf.Response.Status status = 1;
+        public boolean hasStatus() {
+          return result.hasStatus();
+        }
+        public temperance.protobuf.List.Response.Status getStatus() {
+          return result.getStatus();
+        }
+        public Builder setStatus(temperance.protobuf.List.Response.Status value) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          result.hasStatus = true;
+          result.status_ = value;
+          return this;
+        }
+        public Builder clearStatus() {
+          result.hasStatus = false;
+          result.status_ = temperance.protobuf.List.Response.Status.SUCCESS;
+          return this;
+        }
+      }
+      
+      static {
+        temperance.protobuf.List.getDescriptor();
+      }
+      
+      static {
+        temperance.protobuf.List.internalForceInit();
+      }
+    }
+    
+    public static final class Reindex extends
+        com.google.protobuf.GeneratedMessage {
+      // Use Reindex.newBuilder() to construct.
+      private Reindex() {}
+      
+      private static final Reindex defaultInstance = new Reindex();
+      public static Reindex getDefaultInstance() {
+        return defaultInstance;
+      }
+      
+      public Reindex getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+      
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return temperance.protobuf.List.internal_static_temperance_protobuf_Response_Reindex_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return temperance.protobuf.List.internal_static_temperance_protobuf_Response_Reindex_fieldAccessorTable;
+      }
+      
+      // required .temperance.protobuf.Response.Status status = 1;
+      public static final int STATUS_FIELD_NUMBER = 1;
+      private boolean hasStatus;
+      private temperance.protobuf.List.Response.Status status_ = temperance.protobuf.List.Response.Status.SUCCESS;
+      public boolean hasStatus() { return hasStatus; }
+      public temperance.protobuf.List.Response.Status getStatus() { return status_; }
+      
+      public final boolean isInitialized() {
+        if (!hasStatus) return false;
+        return true;
+      }
+      
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (hasStatus()) {
+          output.writeEnum(1, getStatus().getNumber());
+        }
+        getUnknownFields().writeTo(output);
+      }
+      
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+      
+        size = 0;
+        if (hasStatus()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeEnumSize(1, getStatus().getNumber());
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+      
+      public static temperance.protobuf.List.Response.Reindex parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.List.Response.Reindex parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.List.Response.Reindex parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static temperance.protobuf.List.Response.Reindex parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.List.Response.Reindex parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.List.Response.Reindex parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.List.Response.Reindex parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.List.Response.Reindex parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeDelimitedFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static temperance.protobuf.List.Response.Reindex parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static temperance.protobuf.List.Response.Reindex parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(temperance.protobuf.List.Response.Reindex prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+      
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder> {
+        private temperance.protobuf.List.Response.Reindex result;
+        
+        // Construct using temperance.protobuf.List.Response.Reindex.newBuilder()
+        private Builder() {}
+        
+        private static Builder create() {
+          Builder builder = new Builder();
+          builder.result = new temperance.protobuf.List.Response.Reindex();
+          return builder;
+        }
+        
+        protected temperance.protobuf.List.Response.Reindex internalGetResult() {
+          return result;
+        }
+        
+        public Builder clear() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "Cannot call clear() after build().");
+          }
+          result = new temperance.protobuf.List.Response.Reindex();
+          return this;
+        }
+        
+        public Builder clone() {
+          return create().mergeFrom(result);
+        }
+        
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return temperance.protobuf.List.Response.Reindex.getDescriptor();
+        }
+        
+        public temperance.protobuf.List.Response.Reindex getDefaultInstanceForType() {
+          return temperance.protobuf.List.Response.Reindex.getDefaultInstance();
+        }
+        
+        public boolean isInitialized() {
+          return result.isInitialized();
+        }
+        public temperance.protobuf.List.Response.Reindex build() {
+          if (result != null && !isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return buildPartial();
+        }
+        
+        private temperance.protobuf.List.Response.Reindex buildParsed()
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          if (!isInitialized()) {
+            throw newUninitializedMessageException(
+              result).asInvalidProtocolBufferException();
+          }
+          return buildPartial();
+        }
+        
+        public temperance.protobuf.List.Response.Reindex buildPartial() {
+          if (result == null) {
+            throw new IllegalStateException(
+              "build() has already been called on this Builder.");
+          }
+          temperance.protobuf.List.Response.Reindex returnMe = result;
+          result = null;
+          return returnMe;
+        }
+        
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof temperance.protobuf.List.Response.Reindex) {
+            return mergeFrom((temperance.protobuf.List.Response.Reindex)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+        
+        public Builder mergeFrom(temperance.protobuf.List.Response.Reindex other) {
+          if (other == temperance.protobuf.List.Response.Reindex.getDefaultInstance()) return this;
+          if (other.hasStatus()) {
+            setStatus(other.getStatus());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+        
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder(
+              this.getUnknownFields());
+          while (true) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                this.setUnknownFields(unknownFields.build());
+                return this;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  this.setUnknownFields(unknownFields.build());
+                  return this;
+                }
+                break;
+              }
+              case 8: {
+                int rawValue = input.readEnum();
+                temperance.protobuf.List.Response.Status value = temperance.protobuf.List.Response.Status.valueOf(rawValue);
+                if (value == null) {
+                  unknownFields.mergeVarintField(1, rawValue);
+                } else {
+                  setStatus(value);
+                }
+                break;
+              }
+            }
+          }
+        }
+        
+        
+        // required .temperance.protobuf.Response.Status status = 1;
+        public boolean hasStatus() {
+          return result.hasStatus();
+        }
+        public temperance.protobuf.List.Response.Status getStatus() {
+          return result.getStatus();
+        }
+        public Builder setStatus(temperance.protobuf.List.Response.Status value) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          result.hasStatus = true;
+          result.status_ = value;
+          return this;
+        }
+        public Builder clearStatus() {
+          result.hasStatus = false;
+          result.status_ = temperance.protobuf.List.Response.Status.SUCCESS;
           return this;
         }
       }
@@ -2881,6 +4146,16 @@ public final class List {
           temperance.protobuf.List.Request.Delete request,
           com.google.protobuf.RpcCallback<temperance.protobuf.List.Response.Delete> done);
       
+      public abstract void deleteByValue(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.List.Request.DeleteByValue request,
+          com.google.protobuf.RpcCallback<temperance.protobuf.List.Response.DeleteByValue> done);
+      
+      public abstract void reindex(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.List.Request.Reindex request,
+          com.google.protobuf.RpcCallback<temperance.protobuf.List.Response.Reindex> done);
+      
     }
     
     public static com.google.protobuf.Service newReflectiveService(
@@ -2918,6 +4193,22 @@ public final class List {
           impl.delete(controller, request, done);
         }
         
+        @Override
+        public  void deleteByValue(
+            com.google.protobuf.RpcController controller,
+            temperance.protobuf.List.Request.DeleteByValue request,
+            com.google.protobuf.RpcCallback<temperance.protobuf.List.Response.DeleteByValue> done) {
+          impl.deleteByValue(controller, request, done);
+        }
+        
+        @Override
+        public  void reindex(
+            com.google.protobuf.RpcController controller,
+            temperance.protobuf.List.Request.Reindex request,
+            com.google.protobuf.RpcCallback<temperance.protobuf.List.Response.Reindex> done) {
+          impl.reindex(controller, request, done);
+        }
+        
       };
     }
     
@@ -2948,6 +4239,10 @@ public final class List {
               return impl.count(controller, (temperance.protobuf.List.Request.Count)request);
             case 3:
               return impl.delete(controller, (temperance.protobuf.List.Request.Delete)request);
+            case 4:
+              return impl.deleteByValue(controller, (temperance.protobuf.List.Request.DeleteByValue)request);
+            case 5:
+              return impl.reindex(controller, (temperance.protobuf.List.Request.Reindex)request);
             default:
               throw new java.lang.AssertionError("Can't get here.");
           }
@@ -2970,6 +4265,10 @@ public final class List {
               return temperance.protobuf.List.Request.Count.getDefaultInstance();
             case 3:
               return temperance.protobuf.List.Request.Delete.getDefaultInstance();
+            case 4:
+              return temperance.protobuf.List.Request.DeleteByValue.getDefaultInstance();
+            case 5:
+              return temperance.protobuf.List.Request.Reindex.getDefaultInstance();
             default:
               throw new java.lang.AssertionError("Can't get here.");
           }
@@ -2992,6 +4291,10 @@ public final class List {
               return temperance.protobuf.List.Response.Count.getDefaultInstance();
             case 3:
               return temperance.protobuf.List.Response.Delete.getDefaultInstance();
+            case 4:
+              return temperance.protobuf.List.Response.DeleteByValue.getDefaultInstance();
+            case 5:
+              return temperance.protobuf.List.Response.Reindex.getDefaultInstance();
             default:
               throw new java.lang.AssertionError("Can't get here.");
           }
@@ -3019,6 +4322,16 @@ public final class List {
         com.google.protobuf.RpcController controller,
         temperance.protobuf.List.Request.Delete request,
         com.google.protobuf.RpcCallback<temperance.protobuf.List.Response.Delete> done);
+    
+    public abstract void deleteByValue(
+        com.google.protobuf.RpcController controller,
+        temperance.protobuf.List.Request.DeleteByValue request,
+        com.google.protobuf.RpcCallback<temperance.protobuf.List.Response.DeleteByValue> done);
+    
+    public abstract void reindex(
+        com.google.protobuf.RpcController controller,
+        temperance.protobuf.List.Request.Reindex request,
+        com.google.protobuf.RpcCallback<temperance.protobuf.List.Response.Reindex> done);
     
     public static final
         com.google.protobuf.Descriptors.ServiceDescriptor
@@ -3062,6 +4375,16 @@ public final class List {
             com.google.protobuf.RpcUtil.<temperance.protobuf.List.Response.Delete>specializeCallback(
               done));
           return;
+        case 4:
+          this.deleteByValue(controller, (temperance.protobuf.List.Request.DeleteByValue)request,
+            com.google.protobuf.RpcUtil.<temperance.protobuf.List.Response.DeleteByValue>specializeCallback(
+              done));
+          return;
+        case 5:
+          this.reindex(controller, (temperance.protobuf.List.Request.Reindex)request,
+            com.google.protobuf.RpcUtil.<temperance.protobuf.List.Response.Reindex>specializeCallback(
+              done));
+          return;
         default:
           throw new java.lang.AssertionError("Can't get here.");
       }
@@ -3084,6 +4407,10 @@ public final class List {
           return temperance.protobuf.List.Request.Count.getDefaultInstance();
         case 3:
           return temperance.protobuf.List.Request.Delete.getDefaultInstance();
+        case 4:
+          return temperance.protobuf.List.Request.DeleteByValue.getDefaultInstance();
+        case 5:
+          return temperance.protobuf.List.Request.Reindex.getDefaultInstance();
         default:
           throw new java.lang.AssertionError("Can't get here.");
       }
@@ -3106,6 +4433,10 @@ public final class List {
           return temperance.protobuf.List.Response.Count.getDefaultInstance();
         case 3:
           return temperance.protobuf.List.Response.Delete.getDefaultInstance();
+        case 4:
+          return temperance.protobuf.List.Response.DeleteByValue.getDefaultInstance();
+        case 5:
+          return temperance.protobuf.List.Response.Reindex.getDefaultInstance();
         default:
           throw new java.lang.AssertionError("Can't get here.");
       }
@@ -3186,6 +4517,36 @@ public final class List {
             temperance.protobuf.List.Response.Delete.class,
             temperance.protobuf.List.Response.Delete.getDefaultInstance()));
       }
+      
+      public  void deleteByValue(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.List.Request.DeleteByValue request,
+          com.google.protobuf.RpcCallback<temperance.protobuf.List.Response.DeleteByValue> done) {
+        channel.callMethod(
+          getDescriptor().getMethods().get(4),
+          controller,
+          request,
+          temperance.protobuf.List.Response.DeleteByValue.getDefaultInstance(),
+          com.google.protobuf.RpcUtil.generalizeCallback(
+            done,
+            temperance.protobuf.List.Response.DeleteByValue.class,
+            temperance.protobuf.List.Response.DeleteByValue.getDefaultInstance()));
+      }
+      
+      public  void reindex(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.List.Request.Reindex request,
+          com.google.protobuf.RpcCallback<temperance.protobuf.List.Response.Reindex> done) {
+        channel.callMethod(
+          getDescriptor().getMethods().get(5),
+          controller,
+          request,
+          temperance.protobuf.List.Response.Reindex.getDefaultInstance(),
+          com.google.protobuf.RpcUtil.generalizeCallback(
+            done,
+            temperance.protobuf.List.Response.Reindex.class,
+            temperance.protobuf.List.Response.Reindex.getDefaultInstance()));
+      }
     }
     
     public static BlockingInterface newBlockingStub(
@@ -3212,6 +4573,16 @@ public final class List {
       public temperance.protobuf.List.Response.Delete delete(
           com.google.protobuf.RpcController controller,
           temperance.protobuf.List.Request.Delete request)
+          throws com.google.protobuf.ServiceException;
+      
+      public temperance.protobuf.List.Response.DeleteByValue deleteByValue(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.List.Request.DeleteByValue request)
+          throws com.google.protobuf.ServiceException;
+      
+      public temperance.protobuf.List.Response.Reindex reindex(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.List.Request.Reindex request)
           throws com.google.protobuf.ServiceException;
     }
     
@@ -3269,6 +4640,30 @@ public final class List {
           temperance.protobuf.List.Response.Delete.getDefaultInstance());
       }
       
+      
+      public temperance.protobuf.List.Response.DeleteByValue deleteByValue(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.List.Request.DeleteByValue request)
+          throws com.google.protobuf.ServiceException {
+        return (temperance.protobuf.List.Response.DeleteByValue) channel.callBlockingMethod(
+          getDescriptor().getMethods().get(4),
+          controller,
+          request,
+          temperance.protobuf.List.Response.DeleteByValue.getDefaultInstance());
+      }
+      
+      
+      public temperance.protobuf.List.Response.Reindex reindex(
+          com.google.protobuf.RpcController controller,
+          temperance.protobuf.List.Request.Reindex request)
+          throws com.google.protobuf.ServiceException {
+        return (temperance.protobuf.List.Response.Reindex) channel.callBlockingMethod(
+          getDescriptor().getMethods().get(5),
+          controller,
+          request,
+          temperance.protobuf.List.Response.Reindex.getDefaultInstance());
+      }
+      
     }
   }
   
@@ -3298,6 +4693,16 @@ public final class List {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_temperance_protobuf_Request_Delete_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_temperance_protobuf_Request_DeleteByValue_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_temperance_protobuf_Request_DeleteByValue_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_temperance_protobuf_Request_Reindex_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_temperance_protobuf_Request_Reindex_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_temperance_protobuf_Response_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -3322,6 +4727,16 @@ public final class List {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_temperance_protobuf_Response_Delete_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_temperance_protobuf_Response_DeleteByValue_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_temperance_protobuf_Response_DeleteByValue_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_temperance_protobuf_Response_Reindex_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_temperance_protobuf_Response_Reindex_fieldAccessorTable;
   
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -3331,23 +4746,37 @@ public final class List {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\nList.proto\022\023temperance.protobuf\"\277\001\n\007Re" +
+      "\n\nList.proto\022\023temperance.protobuf\"\227\002\n\007Re" +
       "quest\0328\n\003Add\022\013\n\003key\030\001 \002(\t\022\r\n\005value\030\002 \002(\t" +
       "\022\025\n\006expire\030\003 \001(\r:\00586400\032:\n\003Get\022\013\n\003key\030\001 " +
       "\002(\t\022\021\n\006offset\030\002 \001(\004:\0010\022\023\n\005limit\030\003 \001(\004:\0041" +
       "000\032\024\n\005Count\022\013\n\003key\030\001 \002(\t\032(\n\006Delete\022\013\n\003k" +
-      "ey\030\001 \002(\t\022\021\n\006expire\030\002 \001(\r:\0010\"l\n\010Response\032" +
-      "\026\n\003Add\022\017\n\007succeed\030\001 \002(\010\032\025\n\003Get\022\016\n\006values" +
-      "\030\001 \003(\t\032\026\n\005Count\022\r\n\005count\030\001 \002(\004\032\031\n\006Delete" +
-      "\022\017\n\007succeed\030\001 \002(\0102\314\002\n\013ListService\022J\n\003add" +
-      "\022 .temperance.protobuf.Request.Add\032!.tem",
-      "perance.protobuf.Response.Add\022J\n\003get\022 .t" +
-      "emperance.protobuf.Request.Get\032!.tempera" +
-      "nce.protobuf.Response.Get\022P\n\005count\022\".tem" +
-      "perance.protobuf.Request.Count\032#.tempera" +
-      "nce.protobuf.Response.Count\022S\n\006delete\022#." +
-      "temperance.protobuf.Request.Delete\032$.tem" +
-      "perance.protobuf.Response.DeleteB\002H\001"
+      "ey\030\001 \002(\t\022\021\n\006expire\030\002 \001(\r:\0010\032>\n\rDeleteByV" +
+      "alue\022\013\n\003key\030\001 \002(\t\022\r\n\005value\030\002 \002(\t\022\021\n\006expi" +
+      "re\030\003 \001(\r:\0010\032\026\n\007Reindex\022\013\n\003key\030\001 \002(\t\"\374\002\n\010" +
+      "Response\032;\n\003Add\0224\n\006status\030\001 \002(\0162$.temper" +
+      "ance.protobuf.Response.Status\032\025\n\003Get\022\016\n\006",
+      "values\030\001 \003(\t\032\026\n\005Count\022\r\n\005count\030\001 \002(\004\032>\n\006" +
+      "Delete\0224\n\006status\030\001 \002(\0162$.temperance.prot" +
+      "obuf.Response.Status\032E\n\rDeleteByValue\0224\n" +
+      "\006status\030\001 \002(\0162$.temperance.protobuf.Resp" +
+      "onse.Status\032?\n\007Reindex\0224\n\006status\030\001 \002(\0162$" +
+      ".temperance.protobuf.Response.Status\"<\n\006" +
+      "Status\022\013\n\007SUCCESS\020\000\022\013\n\007ENQUEUE\020\001\022\013\n\007FAIL" +
+      "URE\020\n\022\013\n\007TIMEOUT\020\0132\216\004\n\013ListService\022J\n\003ad" +
+      "d\022 .temperance.protobuf.Request.Add\032!.te" +
+      "mperance.protobuf.Response.Add\022J\n\003get\022 .",
+      "temperance.protobuf.Request.Get\032!.temper" +
+      "ance.protobuf.Response.Get\022P\n\005count\022\".te" +
+      "mperance.protobuf.Request.Count\032#.temper" +
+      "ance.protobuf.Response.Count\022S\n\006delete\022#" +
+      ".temperance.protobuf.Request.Delete\032$.te" +
+      "mperance.protobuf.Response.Delete\022h\n\rdel" +
+      "eteByValue\022*.temperance.protobuf.Request" +
+      ".DeleteByValue\032+.temperance.protobuf.Res" +
+      "ponse.DeleteByValue\022V\n\007reindex\022$.tempera" +
+      "nce.protobuf.Request.Reindex\032%.temperanc",
+      "e.protobuf.Response.ReindexB\002H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -3394,6 +4823,22 @@ public final class List {
               new java.lang.String[] { "Key", "Expire", },
               temperance.protobuf.List.Request.Delete.class,
               temperance.protobuf.List.Request.Delete.Builder.class);
+          internal_static_temperance_protobuf_Request_DeleteByValue_descriptor =
+            internal_static_temperance_protobuf_Request_descriptor.getNestedTypes().get(4);
+          internal_static_temperance_protobuf_Request_DeleteByValue_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_temperance_protobuf_Request_DeleteByValue_descriptor,
+              new java.lang.String[] { "Key", "Value", "Expire", },
+              temperance.protobuf.List.Request.DeleteByValue.class,
+              temperance.protobuf.List.Request.DeleteByValue.Builder.class);
+          internal_static_temperance_protobuf_Request_Reindex_descriptor =
+            internal_static_temperance_protobuf_Request_descriptor.getNestedTypes().get(5);
+          internal_static_temperance_protobuf_Request_Reindex_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_temperance_protobuf_Request_Reindex_descriptor,
+              new java.lang.String[] { "Key", },
+              temperance.protobuf.List.Request.Reindex.class,
+              temperance.protobuf.List.Request.Reindex.Builder.class);
           internal_static_temperance_protobuf_Response_descriptor =
             getDescriptor().getMessageTypes().get(1);
           internal_static_temperance_protobuf_Response_fieldAccessorTable = new
@@ -3407,7 +4852,7 @@ public final class List {
           internal_static_temperance_protobuf_Response_Add_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_temperance_protobuf_Response_Add_descriptor,
-              new java.lang.String[] { "Succeed", },
+              new java.lang.String[] { "Status", },
               temperance.protobuf.List.Response.Add.class,
               temperance.protobuf.List.Response.Add.Builder.class);
           internal_static_temperance_protobuf_Response_Get_descriptor =
@@ -3431,9 +4876,25 @@ public final class List {
           internal_static_temperance_protobuf_Response_Delete_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_temperance_protobuf_Response_Delete_descriptor,
-              new java.lang.String[] { "Succeed", },
+              new java.lang.String[] { "Status", },
               temperance.protobuf.List.Response.Delete.class,
               temperance.protobuf.List.Response.Delete.Builder.class);
+          internal_static_temperance_protobuf_Response_DeleteByValue_descriptor =
+            internal_static_temperance_protobuf_Response_descriptor.getNestedTypes().get(4);
+          internal_static_temperance_protobuf_Response_DeleteByValue_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_temperance_protobuf_Response_DeleteByValue_descriptor,
+              new java.lang.String[] { "Status", },
+              temperance.protobuf.List.Response.DeleteByValue.class,
+              temperance.protobuf.List.Response.DeleteByValue.Builder.class);
+          internal_static_temperance_protobuf_Response_Reindex_descriptor =
+            internal_static_temperance_protobuf_Response_descriptor.getNestedTypes().get(5);
+          internal_static_temperance_protobuf_Response_Reindex_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_temperance_protobuf_Response_Reindex_descriptor,
+              new java.lang.String[] { "Status", },
+              temperance.protobuf.List.Response.Reindex.class,
+              temperance.protobuf.List.Response.Reindex.Builder.class);
           return null;
         }
       };

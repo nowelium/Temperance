@@ -70,6 +70,15 @@ public class RpcFullTextImpl implements RpcFullText {
         final String str = request.str;
         final Parser parser = request.parser;
         
+        if(logger.isDebugEnabled()){
+            logger.debug(new StringBuilder("search (")
+                .append("key=").append(key).append(",")
+                .append("str=").append(str).append(",")
+                .append("parser=").append(parser)
+                .append(")")
+            );
+        }
+        
         final FullTextCommand command = new FullTextCommand(pooling);
         try {
             Hashing hashing = createHashing(parser);
@@ -97,50 +106,67 @@ public class RpcFullTextImpl implements RpcFullText {
         final Parser parser = request.parser;
         final boolean async = request.asyncRequest;
         
-        try {
-            final Hashing hashing = createHashing(parser);
-            final List<Hash> hashes = hashing.parse(str);
-            
-            final FullTextCommand command = new FullTextCommand(pooling);
-            final List<Future<Long>> futures = command.addAll(key, hashes, value, expire);
-            if(async){
-                Response.Add response = Response.Add.newInstance();
-                response.status = Response.Status.ENQUEUE;
-                return response;
-            }
-            
-            //
-            // sync request
-            //
-            Response.Add response = Response.Add.newInstance();
-            try {
-                for(Future<Long> future: futures){
-                    future.get();
-                }
-                response.status = Response.Status.SUCCESS;
-            } catch(InterruptedException e){
-                if(logger.isInfoEnabled()){
-                    logger.info(e.getMessage(), e);
-                }
-                
-                response.status = Response.Status.FAILURE;
-            } catch(ExecutionException e){
-                if(logger.isInfoEnabled()){
-                    logger.info(e.getMessage(), e);
-                }
-
-                response.status = Response.Status.FAILURE;
-            }
-            return response;
-        } catch (Exception e) {
-            throw new RpcException(e);
+        if(logger.isDebugEnabled()){
+            logger.debug(new StringBuilder("add (")
+                .append("key=").append(key).append(",")
+                .append("str=").append(str).append(",")
+                .append("value=").append(value).append(",")
+                .append("expire=").append(expire).append(",")
+                .append("parser=").append(parser).append(",")
+                .append("async=").append(async)
+                .append(")")
+            );
         }
+        
+        final Hashing hashing = createHashing(parser);
+        final List<Hash> hashes = hashing.parse(str);
+        
+        final FullTextCommand command = new FullTextCommand(pooling);
+        final List<Future<Long>> futures = command.addAll(key, hashes, value, expire);
+        if(async){
+            Response.Add response = Response.Add.newInstance();
+            response.status = Response.Status.ENQUEUE;
+            return response;
+        }
+        
+        //
+        // sync request
+        //
+        Response.Add response = Response.Add.newInstance();
+        try {
+            for(Future<Long> future: futures){
+                future.get();
+            }
+            response.status = Response.Status.SUCCESS;
+        } catch(InterruptedException e){
+            if(logger.isInfoEnabled()){
+                logger.info(e.getMessage(), e);
+            }
+            
+            response.status = Response.Status.FAILURE;
+        } catch(ExecutionException e){
+            if(logger.isInfoEnabled()){
+                logger.info(e.getMessage(), e);
+            }
+
+            response.status = Response.Status.FAILURE;
+        }
+        return response;
     }
     
     public Response.Delete delete(Request.Delete request) throws RpcException {
         final String key = request.key;
         final int expire = request.expire;
         final boolean async = request.asyncRequest;
+        
+        if(logger.isDebugEnabled()){
+            logger.debug(new StringBuilder("delete (")
+                .append("key=").append(key).append(",")
+                .append("expire=").append(expire).append(",")
+                .append("asyc=").append(async)
+                .append(")")
+            );
+        }
 
         final FullTextCommand command = new FullTextCommand(pooling);
         try {
@@ -175,6 +201,16 @@ public class RpcFullTextImpl implements RpcFullText {
         final String value = request.value;
         final int expire = request.expire;
         final boolean async = request.asyncRequest;
+        
+        if(logger.isDebugEnabled()){
+            logger.debug(new StringBuilder("deleteByValue (")
+                .append("key=").append(key).append(",")
+                .append("value=").append(value).append(",")
+                .append("expire=").append(expire).append(",")
+                .append("async=").append(async)
+                .append(")")
+            );
+        }
 
         final FullTextCommand command = new FullTextCommand(pooling);
         try {
@@ -200,6 +236,45 @@ public class RpcFullTextImpl implements RpcFullText {
         } catch (ExecutionException e) {
             throw new RpcException(e);
         } catch (InterruptedException e) {
+            throw new RpcException(e);
+        }
+    }
+    
+    public Response.Reindex reindex(Request.Reindex request) throws RpcException {
+        final String key = request.key;
+        final boolean async = request.asyncRequest;
+        
+        if(logger.isDebugEnabled()){
+            logger.debug(new StringBuilder("reindex (")
+                .append("key=").append(key).append(",")
+                .append("async=").append(async)
+                .append(")")
+            );
+        }
+        
+        final FullTextCommand command = new FullTextCommand(pooling);
+        try {
+            Future<Boolean> future = command.reindex(key);
+            if(async){
+                Response.Reindex response = Response.Reindex.newInstance();
+                response.status = Response.Status.ENQUEUE;
+                return response;
+            }
+            
+            //
+            // sync request
+            //
+            Boolean success = future.get();
+            Response.Reindex response = Response.Reindex.newInstance();
+            if(success.booleanValue()){
+                response.status = Response.Status.SUCCESS;
+            } else {
+                response.status = Response.Status.FAILURE;
+            }
+            return response;
+        } catch(ExecutionException e){
+            throw new RpcException(e);
+        } catch(InterruptedException e){
             throw new RpcException(e);
         }
     }

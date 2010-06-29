@@ -45,6 +45,26 @@ class Temperance_List_Request_Delete extends PhpBuf_Message_Abstract {
     }
 }
 
+class Temperance_List_Request_DeleteByValue extends PhpBuf_Message_Abstract {
+    public function __construct(){
+        $this->setField('key', PhpBuf_Type::STRING, PhpBuf_Rule::REQUIRED, 1);
+        $this->setField('value', PhpBuf_Type::STRING, PhpBuf_Rule::REQUIRED, 2);
+        $this->setField('expire', PhpBuf_Type::INT, PhpBuf_Rule::OPTIONAL, 3, 0);
+    }
+    public static function name(){
+        return __CLASS__;
+    }
+}
+
+class Temperance_List_Request_Reindex extends PhpBuf_Message_Abstract {
+    public function __construct(){
+        $this->setField('key', PhpBuf_Type::STRING, PhpBuf_Rule::REQUIRED, 1);
+    }
+    public static function name(){
+        return __CLASS__;
+    }
+}
+
 //
 // }}} Request
 //
@@ -53,9 +73,30 @@ class Temperance_List_Request_Delete extends PhpBuf_Message_Abstract {
 // {{{ Response
 //
 
+class Temperance_List_Response_Status extends PhpBuf_Message_Abstract {
+    
+    const SUCCESS = 0;
+    const ENQUEUE = 1;
+    const FAILURE = 10;
+    const TIMEOUT = 11;
+    
+    public static function name(){
+        return __CLASS__;
+    }
+    
+    public static function values(){
+        return array(
+            self::SUCCESS,
+            self::ENQUEUE,
+            self::FAILURE,
+            self::TIMEOUT
+        );
+    }
+}
+
 class Temperance_List_Response_Add extends PhpBuf_Message_Abstract {
     public function __construct(){
-        $this->setField('succeed', PhpBuf_Type::BOOL, PhpBuf_Rule::REQUIRED, 1);
+        $this->setField('status', PhpBuf_Type::ENUM, PhpBuf_Rule::REQUIRED, 1, Temperance_List_Response_Status::values());
     }
     public static function name(){
         return __CLASS__;
@@ -82,7 +123,25 @@ class Temperance_List_Response_Count extends PhpBuf_Message_Abstract {
 
 class Temperance_List_Response_Delete extends PhpBuf_Message_Abstract {
     public function __construct(){
-        $this->setField('succeed', PhpBuf_Type::BOOL, PhpBuf_Rule::REQUIRED, 1);
+        $this->setField('status', PhpBuf_Type::ENUM, PhpBuf_Rule::REQUIRED, 1, Temperance_List_Response_Status::values());
+    }
+    public static function name(){
+        return __CLASS__;
+    }
+}
+
+class Temperance_List_Response_DeleteByValue extends PhpBuf_Message_Abstract {
+    public function __construct(){
+        $this->setField('status', PhpBuf_Type::ENUM, PhpBuf_Rule::REQUIRED, 1, Temperance_List_Response_Status::values());
+    }
+    public static function name(){
+        return __CLASS__;
+    }
+}
+
+class Temperance_List_Response_Reindex extends PhpBuf_Message_Abstract {
+    public function __construct(){
+        $this->setField('status', PhpBuf_Type::ENUM, PhpBuf_Rule::REQUIRED, 1, Temperance_List_Response_Status::values());
     }
     public static function name(){
         return __CLASS__;
@@ -105,6 +164,8 @@ class Temperance_ListService extends PhpBuf_RPC_Service_Client {
         $this->registerMethodResponderClass('get', Temperance_List_Response_Get::name());
         $this->registerMethodResponderClass('count', Temperance_List_Response_Count::name());
         $this->registerMethodResponderClass('delete', Temperance_List_Response_Delete::name());
+        $this->registerMethodResponderClass('deleteByValue', Temperance_List_Response_DeleteByValue::name());
+        $this->registerMethodResponderClass('reindex', Temperance_List_Response_Reindex::name());
     }
 }
 

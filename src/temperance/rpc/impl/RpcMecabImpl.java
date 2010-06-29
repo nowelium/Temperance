@@ -1,5 +1,7 @@
 package temperance.rpc.impl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.chasen.mecab.wrapper.MecabNode;
 import org.chasen.mecab.wrapper.Node;
 import org.chasen.mecab.wrapper.Path;
@@ -13,6 +15,8 @@ import temperance.hashing.MecabNodeFilter;
 import temperance.rpc.RpcMecab;
 
 public class RpcMecabImpl implements RpcMecab {
+    
+    protected static final Log logger = LogFactory.getLog(RpcMecabImpl.class);
 
     protected final Configure configure;
     
@@ -31,7 +35,15 @@ public class RpcMecabImpl implements RpcMecab {
     
     public Response.Parse parse(Request.Parse request) throws RpcException {
         final String str = request.str;
-        MecabHashing mecab = new MecabHashing(hashFunction, tagger, nodeFilter);
+        
+        if(logger.isDebugEnabled()){
+            logger.debug(new StringBuilder("parse (")
+                .append("str=").append(str)
+                .append(")")
+            );
+        }
+        
+        final MecabHashing mecab = new MecabHashing(hashFunction, tagger, nodeFilter);
         
         Response.Parse response = Response.Parse.newInstance();
         for(MecabNode<Node, Path> node: mecab.parseToNode(str)){

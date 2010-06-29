@@ -17,6 +17,8 @@ import temperance.util.Lists;
 
 public class FullTextCommand implements Command {
     
+    protected static final Log logger = LogFactory.getLog(FullTextCommand.class);
+    
     protected final ThreadPool thread;
     
     protected final ConnectionPool connection;
@@ -54,6 +56,10 @@ public class FullTextCommand implements Command {
         return futures;
     }
     
+    public Future<Boolean> reindex(final String key) {
+        return submit(new ReindexAllHashes(connection, key));
+    }
+    
     protected <T> List<Future<T>> invokeAll(List<Callable<T>> tasks) throws InterruptedException {
         return thread.invokeAll(tasks);
     }
@@ -83,7 +89,6 @@ public class FullTextCommand implements Command {
     }
     
     protected static class DeleteAll implements Callable<Boolean> {
-        protected static final Log logger = LogFactory.getLog(DeleteAll.class);
         protected final ConnectionPool pool;
         protected final String key;
         protected final int expire;
@@ -103,12 +108,12 @@ public class FullTextCommand implements Command {
                 return Boolean.TRUE;
             } catch(MemcachedOperationException e){
                 if(logger.isDebugEnabled()){
-                    logger.debug(e.getMessage(), e);
+                    logger.debug(DeleteAll.class, e);
                 }
                 return Boolean.FALSE;
             } catch(LockTimeoutException e){
                 if(logger.isDebugEnabled()){
-                    logger.debug(e.getMessage(), e);
+                    logger.debug(DeleteAll.class, e);
                 }
                 return Boolean.FALSE;
             }
@@ -130,7 +135,7 @@ public class FullTextCommand implements Command {
         protected void perform(TpFullText ft, List<Hash> hashes) throws MemcachedOperationException, LockTimeoutException {
             // FIXME: logic
             for(Hash hash: hashes){
-                long count = ft.valueCount(key, hash);
+                final long count = ft.valueCount(key, hash);
                 for(int i = 0; i < count; i += SPLIT){
                     List<TpListResult> results = ft.getValuesByResult(key, hash, i, SPLIT);
                     for(TpListResult result: results){
@@ -187,5 +192,42 @@ public class FullTextCommand implements Command {
             }
             return returnValue;
         }
+    }
+    
+    protected static class ReindexAllHashes implements Callable<Boolean> {
+        private final ConnectionPool pool;
+        private final String key;
+        protected ReindexAllHashes(ConnectionPool pool, String key){
+            this.pool = pool;
+            this.key = key;
+        }
+        public Boolean call() throws Exception {
+            try {
+                // TODO: logic
+                final TpFullText ft = new MemcachedFullText(pool);
+                final long hashCount = ft.hashCount(key);
+                for(long i = 0; i < hashCount; i += SPLIT){
+                    List<Hash> hashes = ft.getHashes(key, i, SPLIT);
+                    for(Hash hash: hashes){
+                        ft.reindexByHash(key, hash);
+                    }
+                }
+                
+                return Boolean.TRUE;
+            } catch(MemcachedOperationException e){
+                if(logger.isDebugEnabled()){
+                    logger.debug(ReindexAllHashes.class, e);
+                }
+                
+                return Boolean.FALSE;
+            } catch(LockTimeoutException e){
+                if(logger.isDebugEnabled()){
+                    logger.debug(ReindexAllHashes.class, e);
+                }
+                
+                return Boolean.FALSE;
+            }
+        }
+        
     }
 }

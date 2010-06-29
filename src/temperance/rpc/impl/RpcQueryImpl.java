@@ -3,6 +3,8 @@ package temperance.rpc.impl;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.chasen.mecab.wrapper.Tagger;
 
 import temperance.core.Configure;
@@ -30,6 +32,8 @@ import temperance.rpc.RpcQuery;
 import temperance.util.Lists;
 
 public class RpcQueryImpl implements RpcQuery {
+    
+    protected static final Log logger = LogFactory.getLog(RpcQueryImpl.class);
 
     protected final QueryParser parser = new QueryParser();
     
@@ -57,6 +61,13 @@ public class RpcQueryImpl implements RpcQuery {
 
     public Response.Select select(Request.Select request) throws RpcException {
         final String query = request.query;
+        
+        if(logger.isDebugEnabled()){
+            logger.debug(new StringBuilder("select (")
+                .append("query=").append(query)
+                .append(")")
+            );
+        }
         
         try {
             FunctionContext ctx = new FunctionContext();

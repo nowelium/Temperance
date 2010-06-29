@@ -15,6 +15,8 @@ public interface RpcFullText extends Rpc {
     
     public Response.Search search(Request.Search request) throws RpcException;
     
+    public Response.Reindex reindex(Request.Reindex request) throws RpcException;
+    
     public static abstract class Request {
         public static enum Parser {
             MECAB(0),
@@ -107,13 +109,26 @@ public interface RpcFullText extends Rpc {
                 return new Search();
             }
         }
+        public static class Reindex {
+            public String key;
+            public boolean asyncRequest = true;
+            
+            private Reindex(){
+                // nop
+            }
+            public static Reindex newInstance(){
+                return new Reindex();
+            }
+        }
     }
     
     public static abstract class Response {
         public static enum Status {
-            FAILURE(0),
-            SUCCESS(1),
-            ENQUEUE(2),
+            SUCCESS(0),
+            ENQUEUE(1),
+            
+            FAILURE(10),
+            TIMEOUT(11),
             ;
             
             private final int value;
@@ -126,11 +141,13 @@ public interface RpcFullText extends Rpc {
             public static Status get(int num){
                 switch(num){
                 case 0:
-                    return FAILURE;
-                case 1:
                     return SUCCESS;
-                case 2:
+                case 1:
                     return ENQUEUE;
+                case 10:
+                    return FAILURE;
+                case 11:
+                    return TIMEOUT;
                 }
                 throw new IllegalArgumentException("no such status:" + num);
             }
@@ -173,6 +190,16 @@ public interface RpcFullText extends Rpc {
             }
             public static Search newInstance(){
                 return new Search();
+            }
+        }
+        public static class Reindex {
+            public Status status;
+            
+            private Reindex(){
+                // nop
+            }
+            public static Reindex newInstance(){
+                return new Reindex();
             }
         }
     }

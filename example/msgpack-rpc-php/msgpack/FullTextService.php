@@ -11,9 +11,10 @@ class Temperance_FullTextService extends MessagePackRPC_Client {
     const PARSER_HASH_TSV = 4;
     const PARSER_HASH_SSV = 5;
     
-    const STATUS_FAILURE = 0;
-    const STATUS_SUCCESS = 1;
-    const STATUS_ENQUEUE = 2;
+    const STATUS_SUCCESS = 0;
+    const STATUS_ENQUEUE = 1;
+    const STATUS_FAILURE = 10;
+    const STATUS_TIMEOUT = 11;
     
     public function __construct($host, $port){
         parent::__construct($host, $port);
@@ -29,5 +30,8 @@ class Temperance_FullTextService extends MessagePackRPC_Client {
     }
     public function deleteByValue($key, $value, $expire = 0){
         return $this->call(self::SERVICE_NAME . '#deleteByValue', array($key, $value, $expire));
+    }
+    public function reindex($key){
+        return $this->call(self::SERVICE_NAME . '#reindex', array($key));
     }
 }

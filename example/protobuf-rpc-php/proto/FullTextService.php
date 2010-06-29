@@ -74,6 +74,15 @@ class Temperance_FullText_Request_Search extends PhpBuf_Message_Abstract {
     }
 }
 
+class Temperance_FullText_Request_Reindex extends PhpBuf_Message_Abstract {
+    public function __construct(){
+        $this->setField('key', PhpBuf_Type::STRING, PhpBuf_Rule::REQUIRED, 1);
+    }
+    public static function name(){
+        return __CLASS__;
+    }
+}
+
 //
 // }}} Request
 //
@@ -84,9 +93,10 @@ class Temperance_FullText_Request_Search extends PhpBuf_Message_Abstract {
 
 class Temperance_FullText_Response_Status extends PhpBuf_Message_Abstract {
     
-    const FAILURE = 0;
-    const SUCCESS = 1;
-    const ENQUEUE = 2;
+    const SUCCESS = 0;
+    const ENQUEUE = 1;
+    const FAILURE = 10;
+    const TIMEOUT = 11;
     
     public static function name(){
         return __CLASS__;
@@ -94,9 +104,10 @@ class Temperance_FullText_Response_Status extends PhpBuf_Message_Abstract {
     
     public static function values(){
         return array(
-            self::FAILURE,
             self::SUCCESS,
-            self::ENQUEUE
+            self::ENQUEUE,
+            self::FAILURE,
+            self::TIMEOUT
         );
     }
 }
@@ -137,6 +148,16 @@ class Temperance_FullText_Response_Search extends PhpBuf_Message_Abstract {
     }
 }
 
+class Temperance_FullText_Response_Reindex extends PhpBuf_Message_Abstract {
+    public function __construct(){
+        $this->setField('status', PhpBuf_Type::ENUM, PhpBuf_Rule::REQUIRED, 1, Temperance_FullText_Response_Status::values());
+    }
+    public static function name(){
+        return __CLASS__;
+    }
+}
+
+
 //
 // }}} Response
 //
@@ -153,6 +174,7 @@ class Temperance_FullTextService extends PhpBuf_RPC_Service_Client {
         $this->registerMethodResponderClass('delete', Temperance_FullText_Response_Delete::name());
         $this->registerMethodResponderClass('deleteByValue', Temperance_FullText_Response_DeleteByValue::name());
         $this->registerMethodResponderClass('search', Temperance_FullText_Response_Search::name());
+        $this->registerMethodResponderClass('reindex', Temperance_FullText_Response_Reindex::name());
     }
 }
 

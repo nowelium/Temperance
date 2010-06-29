@@ -74,4 +74,12 @@ public class MsgpackFullTextService {
         return response.status.getValue();
     }
     
+    public int reindex(String key) throws RpcException {
+        RpcFullText.Request.Reindex request = RpcFullText.Request.Reindex.newInstance();
+        request.key = key;
+        
+        RpcFullText.Response.Reindex response = rpc.reindex(request);
+        return response.status.getValue();
+    }
+    
 }

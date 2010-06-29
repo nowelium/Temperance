@@ -16,6 +16,20 @@ public class ProtobufListService implements ListService.BlockingInterface {
     public ProtobufListService(RpcList rpc){
         this.rpc = rpc;
     }
+    
+    protected static Response.Status convert(RpcList.Response.Status status){
+        switch(status){
+        case SUCCESS:
+            return Response.Status.SUCCESS;
+        case ENQUEUE:
+            return Response.Status.ENQUEUE;
+        case FAILURE:
+            return Response.Status.FAILURE;
+        case TIMEOUT:
+            return Response.Status.TIMEOUT;
+        }
+        throw new RuntimeException("unknown status:" + status);
+    }
 
     public Response.Add add(RpcController controller, Request.Add add) throws ServiceException {
         RpcList.Request.Add request = RpcList.Request.Add.newInstance();
@@ -27,7 +41,7 @@ public class ProtobufListService implements ListService.BlockingInterface {
             RpcList.Response.Add response = rpc.add(request);
             
             Response.Add.Builder builder = Response.Add.newBuilder();
-            builder.setSucceed(response.succeed);
+            builder.setStatus(convert(response.status));
             return builder.build();
         } catch(RpcException e){
             throw new ServiceException(e.getMessage());
@@ -73,8 +87,41 @@ public class ProtobufListService implements ListService.BlockingInterface {
         
         try {
             RpcList.Response.Delete response = rpc.delete(request);
+            
             Response.Delete.Builder builder = Response.Delete.newBuilder();
-            builder.setSucceed(response.succeed);
+            builder.setStatus(convert(response.status));
+            return builder.build();
+        } catch(RpcException e){
+            throw new ServiceException(e.getMessage());
+        }
+    }
+    
+    public Response.DeleteByValue deleteByValue(RpcController controller, Request.DeleteByValue deleteByValue) throws ServiceException {
+        RpcList.Request.DeleteByValue request = RpcList.Request.DeleteByValue.newInstance();
+        request.key = deleteByValue.getKey();
+        request.value = deleteByValue.getValue();
+        request.expire = deleteByValue.getExpire();
+        
+        try {
+            RpcList.Response.DeleteByValue response = rpc.deleteByValue(request);
+            
+            Response.DeleteByValue.Builder builder = Response.DeleteByValue.newBuilder();
+            builder.setStatus(convert(response.status));
+            return builder.build();
+        } catch(RpcException e){
+            throw new ServiceException(e.getMessage());
+        }
+    }
+    
+    public Response.Reindex reindex(RpcController controller, Request.Reindex reindex) throws ServiceException {
+        RpcList.Request.Reindex request = RpcList.Request.Reindex.newInstance();
+        request.key = reindex.getKey();
+        
+        try {
+            RpcList.Response.Reindex response = rpc.reindex(request);
+            
+            Response.Reindex.Builder builder = Response.Reindex.newBuilder();
+            builder.setStatus(convert(response.status));
             return builder.build();
         } catch(RpcException e){
             throw new ServiceException(e.getMessage());

@@ -13,18 +13,18 @@ public class MsgpackListService {
         this.rpc = rpc;
     }
     
-    public boolean add(String key, String value) throws RpcException {
+    public int add(String key, String value) throws RpcException {
         return add(key, value, RpcList.Request.Add.DEFAULT_EXPIRE);
     }
     
-    public boolean add(String key, String value, int expire) throws RpcException {
+    public int add(String key, String value, int expire) throws RpcException {
         RpcList.Request.Add request = RpcList.Request.Add.newInstance();
         request.key = key;
         request.value = value;
         request.expire = expire;
         
         RpcList.Response.Add response = rpc.add(request);
-        return response.succeed;
+        return response.status.getValue();
     }
     
     public List<String> get(String key) throws RpcException {
@@ -49,16 +49,38 @@ public class MsgpackListService {
         return response.count;
     }
     
-    public boolean delete(String key) throws RpcException {
+    public int delete(String key) throws RpcException {
         return delete(key, RpcList.Request.Delete.DEFAULT_EXPIRE);
     }
     
-    public boolean delete(String key, int expire) throws RpcException {
+    public int delete(String key, int expire) throws RpcException {
         RpcList.Request.Delete request = RpcList.Request.Delete.newInstance();
         request.key = key;
         request.expire = expire;
         
         RpcList.Response.Delete response = rpc.delete(request);
-        return response.succeed;
+        return response.status.getValue();
+    }
+    
+    public int deleteByValue(String key, String value) throws RpcException {
+        return deleteByValue(key, value, RpcList.Request.DeleteByValue.DEFAULT_EXPIRE);
+    }
+    
+    public int deleteByValue(String key, String value, int expire) throws RpcException {
+        RpcList.Request.DeleteByValue request = RpcList.Request.DeleteByValue.newInstance();
+        request.key = key;
+        request.value = value;
+        request.expire = expire;
+        
+        RpcList.Response.DeleteByValue response = rpc.deleteByValue(request);
+        return response.status.getValue();
+    }
+    
+    public int reindex(String key) throws RpcException {
+        RpcList.Request.Reindex request = RpcList.Request.Reindex.newInstance();
+        request.key = key;
+        
+        RpcList.Response.Reindex response = rpc.reindex(request);
+        return response.status.getValue();
     }
 }
