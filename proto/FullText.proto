@@ -33,12 +33,17 @@ message Request {
         required string str = 2;
         optional Parser parser = 3 [default = MECAB];
     }
+    message Reindex {
+        required string key = 1;
+    }
 }
 message Response {
     enum Status {
-        FAILURE = 0;
-        SUCCESS = 1;
-        ENQUEUE = 2;
+        SUCCESS = 0;
+        ENQUEUE = 1;
+        
+        FAILURE = 10;
+        TIMEOUT = 11;
     }
     
     message Add {
@@ -53,6 +58,9 @@ message Response {
     message Search {
         repeated string values = 1;
     }
+    message Reindex {
+        required Status status = 1;
+    }
 }
 
 service FullTextService {
@@ -60,4 +68,6 @@ service FullTextService {
     rpc delete(Request.Delete) returns(Response.Delete);
     rpc deleteByValue(Request.DeleteByValue) returns(Response.DeleteByValue);
     rpc search(Request.Search) returns(Response.Search);
+    
+    rpc reindex(Request.Reindex) returns(Response.Reindex);
 }
