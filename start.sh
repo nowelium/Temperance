@@ -15,6 +15,7 @@ JAVA_OPTIONS="-Dfile.encoding=UTF-8 -Djna.encoding=UTF-8 -Djna.protected=false -
 JMX_OPTIONS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=7900 -Dcom.sun.management.jmxremote.authenticate=false"
 MEMCACHED="localhost:11211"
 MECABRC="/opt/local/etc/mecabrc"
+TP_PORT="17001"
 
 export JAVA_HOME=$JAVA_HOME
 export _JAVA_OPTIONS=$JAVA_OPTIONS
@@ -38,4 +39,5 @@ LIB=$LIB:"$DIR/lib/protobuf/protobuf-socket-rpc.jar"
 LIB=$LIB:"$DIR/lib/msgpack/msgpack-0.3.jar"
 LIB=$LIB:"$DIR/lib/msgpack/msgpack-rpc-0.3.0.jar"
 
-$JAVA_HOME/bin/java $JVM_OPTIONS $JAVA_OPTIONS $JMX_OPTIONS -cp $LIB temperance.Start -memc $MEMCACHED -mecabrc $MECABRC -p 17001 -daemonize
+$JAVA_HOME/bin/java $JVM_OPTIONS $JAVA_OPTIONS $JMX_OPTIONS -cp $LIB temperance.Start -memc $MEMCACHED -mecabrc $MECABRC -p $TP_PORT -daemonize
+

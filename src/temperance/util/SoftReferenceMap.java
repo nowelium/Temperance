@@ -31,14 +31,13 @@ public class SoftReferenceMap<K, V> implements Map<K, V> {
     
     protected final Map<SoftReference<V>, K> refMap = new HashMap<SoftReference<V>, K>();
     
-    
     protected void clean(){
         int count = 0;
         boolean cleanAll = false;
         Reference<? extends V> ref = queue.poll();
         
         if(ref != null){
-            logger.info("cleanup soft reference objs");
+            logger.info("cleanup referent objs");
             
             do {
                 // protected poll blocking

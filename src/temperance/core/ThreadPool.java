@@ -14,11 +14,11 @@ import org.apache.commons.logging.LogFactory;
 
 public class ThreadPool implements LifeCycle {
     
+    protected static final Log logger = LogFactory.getLog(ThreadPool.class);
+
     protected final Configure configure;
     
     protected final ExecutorService executor; 
-    
-    protected final Log logger = LogFactory.getLog(ThreadPool.class);
     
     public ThreadPool(Configure configure){
         this.configure = configure;
@@ -51,8 +51,8 @@ public class ThreadPool implements LifeCycle {
         
         executor.shutdown();
         try {
-            logger.info("awaiting termination");
-            if(!executor.awaitTermination(60, TimeUnit.SECONDS)){
+            logger.info("awaiting termination...");
+            if(!executor.awaitTermination(3600, TimeUnit.SECONDS)){
                 if(logger.isWarnEnabled()){
                     logger.warn("awaiting termination fail. shutdwon now");
                 }

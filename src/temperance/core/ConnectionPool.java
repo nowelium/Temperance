@@ -28,6 +28,8 @@ import temperance.lock.impl.CountDownLock;
 
 public class ConnectionPool implements LifeCycle {
     
+    protected static final Log logger = LogFactory.getLog(ConnectionPool.class);
+
     protected final Configure configure;
     
     protected final int initialPoolSize;
@@ -51,8 +53,6 @@ public class ConnectionPool implements LifeCycle {
     protected final long keepAliveTime = TimeUnit.SECONDS.toMillis(1800L);
     
     protected final CountDownLock lock;
-    
-    protected final Log logger = LogFactory.getLog(ConnectionPool.class);
     
     public ConnectionPool(Configure configure){
         this.configure = configure;
