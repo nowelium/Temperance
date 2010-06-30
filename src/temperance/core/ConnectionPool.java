@@ -152,19 +152,16 @@ public class ConnectionPool implements LifeCycle {
         
         // fill pool: infinite
         executor.execute(new FillPoolTask());
+        // release pool: infinite
+        executor.execute(new ReleasePoolTask());
         // free pool: every 10 sec
         schedules.add(executor.scheduleWithFixedDelay(new FreePoolTask(), 10, 10, TimeUnit.SECONDS));
-        // release pool: every 5000 usec
-        // TODO: 2000 usec await when: libmemcached becomes segfault by excessive access
-        schedules.add(executor.scheduleWithFixedDelay(new ReleasePoolTask(), 0, 2000, TimeUnit.MICROSECONDS));
         
         if(logger.isDebugEnabled()){
-            logger.debug(new StringBuilder("configure: scheduled fill pool"));
+            logger.debug(new StringBuilder("configure: scheduled: fill pool"));
+            logger.debug(new StringBuilder("configure: scheduled: release pool"));
             logger.debug(new StringBuilder("configure: scheduled fixed delay: free pool: ")
                 .append(10).append(" ").append(TimeUnit.SECONDS)
-            );
-            logger.debug(new StringBuilder("configure: scheduled fixed delay: release pool: ")
-                .append(2000).append(" ").append(TimeUnit.MICROSECONDS)
             );
         }
     }
@@ -253,13 +250,19 @@ public class ConnectionPool implements LifeCycle {
 
     protected class ReleasePoolTask implements Runnable {
         public void run(){
-            MemcachedClient client = release.poll();
-            if(null == client){
-                return;
+            try {
+                while(true){
+                    MemcachedClient client = release.take();
+                    
+                    client.quit();
+                    pool.offer(ConnectionPool.this.clone());
+                    
+                    // TODO: 5000 usec await when: libmemcached becomes segfault by excessive access
+                    TimeUnit.MICROSECONDS.sleep(5000);
+                }
+            } catch(InterruptedException e){
+                // nop
             }
-            
-            client.quit();
-            pool.offer(ConnectionPool.this.clone());
         }
     }
 }

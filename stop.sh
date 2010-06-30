@@ -1,6 +1,11 @@
 #!/bin/sh
 
-JAVA_OPTIONS="-Dfile.encoding=UTF-8 -Djna.encoding=UTF-8 -Djna.protected=true -Djna.dump_memory=true -Dtemperance.pid.dir=/tmp"
+#
+# debug
+#
+#JAVA_OPTIONS="-Dfile.encoding=UTF-8 -Djna.encoding=UTF-8 -Djna.protected=true -Djna.dump_memory=true -Dtemperance.pid.dir=/tmp"
+
+JAVA_OPTIONS="-Dfile.encoding=UTF-8 -Djna.encoding=UTF-8 -Djna.protected=false -Djna.dump_memory=false -Dtemperance.pid.dir=/var/run"
 
 export JAVA_HOME=$JAVA_HOME
 export _JAVA_OPTIONS=$JAVA_OPTIONS
@@ -8,8 +13,8 @@ export _JAVA_OPTIONS=$JAVA_OPTIONS
 DIR=$(cd $(dirname $0);pwd)
 
 LIB=$DIR
-#LIB=$LIB:"$DIR/dist/temperance-0.01.jar"
-LIB=$LIB:"$DIR/bin"
+LIB=$LIB:"$DIR/dist/temperance-0.01.jar"
+#LIB=$LIB:"$DIR/bin"
 LIB=$LIB:"$DIR/resources"
 LIB=$LIB:"$DIR/lib/libmecab-0.01.jar"
 LIB=$LIB:"$DIR/lib/libmemcached-0.01.jar"

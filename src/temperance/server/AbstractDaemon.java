@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,12 +33,12 @@ public abstract class AbstractDaemon implements Server {
     
     static {
         PID_DIR = System.getProperty("temperance.pid.dir", "/tmp");
-        LOG4J_RESOURCE_PATH = System.getProperty("temperance.log.path", "/resources/log4j.xml");
+        LOG4J_RESOURCE_PATH = System.getProperty("temperance.log.path", "log4j.xml");
     }
     
     /**
      * :INT (中断:interrupt) C-c
-     * :HUP (切断: hangup)
+     * <del>:HUP (切断: hangup)</del>
      * :TERM (停止: terminate)
      * :KILL (停止: kill)
      * の各シグナルに対する処理は全て停止としておく
@@ -45,7 +46,7 @@ public abstract class AbstractDaemon implements Server {
     protected final Signal[] shutdownSignals = {
         new Signal("INT"),
         new Signal("TERM"),
-        new Signal("KILL"),
+        //new Signal("KILL"),
     };
     
     protected final String name;
@@ -77,6 +78,7 @@ public abstract class AbstractDaemon implements Server {
             writer.write(t.getMessage());
             writer.write("\n");
             for(StackTraceElement stackTrace: t.getStackTrace()){
+                writer.write("\t");
                 writer.write(stackTrace.toString());
                 writer.write("\n");
             }
@@ -87,6 +89,11 @@ public abstract class AbstractDaemon implements Server {
     }
     
     public final void start(){
+        if(pidFile.exists()){
+            logger.info("pid file " + pidFile.getAbsolutePath() + " was already exists. stop it first.");
+            System.exit(1);
+        }
+        
         try {
             Daemon daemon = new Daemon();
             if(daemon.isDaemonized()){
@@ -99,7 +106,6 @@ public abstract class AbstractDaemon implements Server {
                 }
             }
             logger.info("starting process(" + LIBC.getpid() + ":" + name + ")");
-            
             //
             // signal handlers
             //
@@ -129,7 +135,7 @@ public abstract class AbstractDaemon implements Server {
                 BufferedReader in = new BufferedReader(reader);
                 int pid = Integer.valueOf(in.readLine());
                 
-                logger.info("shuwdown(kill SIGTERM): " + pid);
+                logger.info("shuwdown signal(kill SIGTERM): " + pid);
                 LIBC.kill(pid, SIGTERM);
             } finally {
                 reader.close();
@@ -152,7 +158,14 @@ public abstract class AbstractDaemon implements Server {
             logger.info("reload signal: " + signal.getName() + " was occured.");
             
             logger.info("reload log configuration.");
-            new DOMConfigurator().doConfigure(LOG4J_RESOURCE_PATH, LogManager.getLoggerRepository());
+            ClassLoader loader = AbstractDaemon.class.getClassLoader();
+            URL log4jxml = loader.getResource(LOG4J_RESOURCE_PATH);
+            if(null == log4jxml){
+                logger.warn("log4j configration file not found: " + LOG4J_RESOURCE_PATH);
+                return;
+            }
+            
+            new DOMConfigurator().doConfigure(log4jxml, LogManager.getLoggerRepository());
         }
     }
     

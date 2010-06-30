@@ -70,7 +70,7 @@ public class StartStop {
     protected void stop(String...args){
         Options options = new Options();
         options.addOptionGroup(rpcServer());
-        start(options, new GnuParser(), args);
+        stop(options, new GnuParser(), args);
     }
     
     protected void stop(Options options, Parser parser, String...args){

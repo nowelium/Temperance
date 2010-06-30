@@ -1,9 +1,26 @@
 <?xml version="1.0"?>
-<project name="hierophant" default="usage" basedir=".">
+<project name="temperance" default="usage" basedir=".">
+  
+  <property environment="env" />
+  
   <property name="src.dir" value="${basedir}/src" />
   <property name="proto.dir" value="${basedir}/proto" />
   <property name="proto.src.dir" value="${src.dir}" />
-
+  <property name="test.src.dir" value="${basedir}/test" />
+  <property name="build.dir" value="${basedir}/build" />
+  <property name="dist.dir" value="${basedir}/dist" />
+  <property name="library.dir" value="${basedir}/lib" />
+  <property name="resources.dir" value="${basedir}/resources" />
+  
+  <property name="build.complete" value="false" />
+    
+  <property name="temperance.name" value="temperance" />
+  <property name="temperance.version" value="0.01" />
+  <property name="temperance.package.zip" value="${temperance.name}-${temperance.version}.zip" />
+  <property name="temperance.package.zip.dependencies" value="${temperance.name}-${temperance.version}-dependencies.zip" />
+  <property name="temperance.jar" value="${temperance.name}-${temperance.version}.jar" />
+  <property name="temperance.jar.sources" value="${temperance.name}-${temperance.version}-sources.jar" />
+  
   <macrodef name="gen-protos">
     <attribute name="outdir" />
     <attribute name="dir" />
@@ -20,11 +37,59 @@
     </sequential>
   </macrodef>
   
+  <path id="jar-libraries">
+    <pathelement path="${library.dir}/libmecab-0.01.jar" />
+    <pathelement path="${library.dir}/libmemcached-0.01.jar" />
+    <pathelement path="${library.dir}/akuma-1.3.jar" />
+    <pathelement path="${library.dir}/jna.jar" />
+    <pathelement path="${library.dir}/commons-cli-1.0.jar" />
+    <pathelement path="${library.dir}/commons-logging-1.1.jar" />
+    <pathelement path="${library.dir}/log4j-1.2.13.jar" />
+    <pathelement path="${library.dir}/jparsec-2.0.jar" />
+    <pathelement path="${library.dir}/protobuf/protobuf-java-2.2.0.jar" />
+    <pathelement path="${library.dir}/protobuf/protobuf-socket-rpc.jar" />
+    <pathelement path="${library.dir}/msgpack/msgpack-0.3.jar" />
+    <pathelement path="${library.dir}/msgpack/msgpack-rpc-0.3.0.jar" />
+    <pathelement path="${library.dir}/msgpack/netty-3.2.0.CR1.jar" />
+  </path>
+    
+  <target name="prepare">
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${dist.dir}"/>
+  </target>
+
+  <target name="cleanup" depends="prepare">
+    <delete dir="${build.dir}" includes="**/**" />
+    <delete dir="${dist.dir}" includes="**/**" />
+  </target>
+    
+  <target name="-compile" depends="prepare" unless="${build.complete}">
+    <javac destdir="${build.dir}" srcdir="${src.dir}" debug="true" target="1.5" encoding="UTF-8">
+      <classpath refid="jar-libraries" />
+    </javac>
+    <property name="build.complete" value="true" />
+  </target>
+  
+  <target name="-jar" depends="-compile">
+    <jar destfile="${dist.dir}/${temperance.jar}">
+      <fileset dir="${build.dir}" includes="**/*.class" />
+    </jar>
+  </target>
+
+  <target name="-jar-sources" depends="-compile">
+    <jar destfile="${dist.dir}/${temperance.jar.sources}">
+      <fileset dir="${src.dir}" includes="**/*.java" />
+    </jar>
+  </target>
+        
+  <target name="jars" depends="-jar-sources, -jar" />
+  
   <target name="usage">
     <echo message="" />
     <echo message="${ant.project.name} usage" />
     <echo message="--------------------" />
     <echo message="proto-gen           " />
+    <echo message="package             " />
     <echo message="--------------------" />
   </target>
   
@@ -34,5 +99,18 @@
     <gen-protos dir="${proto.dir}" target="Map" outdir="${proto.src.dir}" />
     <gen-protos dir="${proto.dir}" target="Query" outdir="${proto.src.dir}" />
     <gen-protos dir="${proto.dir}" target="Mecab" outdir="${proto.src.dir}" />
+  </target>
+  
+  <target name="package" depends="cleanup, jars">
+    <zip destfile="${dist.dir}/${temperance.package.zip.dependencies}">
+      <zipfileset dir="${library.dir}" includes="**/**" prefix="lib" />
+      <zipfileset dir="${resources.dir}" includes="**/**" prefix="resources" />
+      <zipfileset dir="${dist.dir}" includes="${temperance.jar}" prefix="dist" />
+      <zipfileset dir="${dist.dir}" includes="${temperance.jar.sources}" prefix="dist" />
+      <fileset dir="${basedir}" includes="README.rst" />
+      <fileset dir="${basedir}" includes="LICENSE" />
+      <fileset dir="${basedir}" includes="start.sh" />
+      <fileset dir="${basedir}" includes="stop.sh" />
+    </zip>
   </target>
 </project>
