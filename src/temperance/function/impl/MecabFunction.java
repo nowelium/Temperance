@@ -1,7 +1,8 @@
-package temperance.function;
+package temperance.function.impl;
 
 import java.util.List;
 
+import temperance.function.FunctionContext;
 import temperance.hashing.Hashing;
 import temperance.hashing.MecabHashing;
 

@@ -18,6 +18,7 @@ import temperance.core.Pooling;
 import temperance.exception.CommandExecutionException;
 import temperance.exception.LockTimeoutException;
 import temperance.exception.MemcachedOperationException;
+import temperance.function.impl.MecabFunction;
 import temperance.hash.Digest;
 import temperance.hash.Hash;
 import temperance.hash.HashFunction;

@@ -1,13 +1,15 @@
 package temperance.rpc.impl;
 
+import libmemcached.exception.LibMemcachedException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import libmemcached.exception.LibMemcachedException;
 import temperance.core.Configure;
 import temperance.core.Pooling;
 import temperance.exception.RpcException;
 import temperance.rpc.RpcMap;
+import temperance.storage.TpMap;
 import temperance.storage.impl.MemcachedMap;
 
 public class RpcMapImpl implements RpcMap {
@@ -33,7 +35,7 @@ public class RpcMapImpl implements RpcMap {
             );
         }
         
-        final MemcachedMap map = new MemcachedMap(pooling.getConnectionPool());
+        final TpMap map = new MemcachedMap(pooling.getConnectionPool());
         try {
             String result = map.get(key);
             
@@ -59,7 +61,7 @@ public class RpcMapImpl implements RpcMap {
             );
         }
         
-        final MemcachedMap map = new MemcachedMap(pooling.getConnectionPool());
+        final TpMap map = new MemcachedMap(pooling.getConnectionPool());
         try {
             boolean success = map.set(key, value, expire);
             
@@ -85,7 +87,7 @@ public class RpcMapImpl implements RpcMap {
             );
         }
         
-        final MemcachedMap map = new MemcachedMap(pooling.getConnectionPool());
+        final TpMap map = new MemcachedMap(pooling.getConnectionPool());
         try {
             boolean success = map.delete(key, expire);
             

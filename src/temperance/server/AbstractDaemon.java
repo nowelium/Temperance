@@ -90,7 +90,7 @@ public abstract class AbstractDaemon implements Server {
     
     public final void start(){
         if(pidFile.exists()){
-            logger.info("pid file " + pidFile.getAbsolutePath() + " was already exists. stop it first.");
+            logger.warn("pid file " + pidFile.getAbsolutePath() + " was already exists. stop it first.");
             System.exit(1);
         }
         

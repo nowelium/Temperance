@@ -1,4 +1,4 @@
-package temperance.function;
+package temperance.function.impl;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -6,6 +6,8 @@ import java.util.concurrent.Future;
 
 import temperance.core.ListCommand;
 import temperance.exception.CommandExecutionException;
+import temperance.function.FunctionContext;
+import temperance.function.InternalFunction;
 
 public class DataFunction implements InternalFunction {
     

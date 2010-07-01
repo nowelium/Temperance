@@ -1,5 +1,12 @@
 package temperance.function;
 
+import temperance.function.impl.ConcreteHashingFunction;
+import temperance.function.impl.DataFunction;
+import temperance.function.impl.GeoPointFunction;
+import temperance.function.impl.GramFunction;
+import temperance.function.impl.MecabFunction;
+import temperance.function.impl.PrefixFunction;
+import temperance.function.impl.ValueFunction;
 import temperance.hashing.CSVHashing;
 import temperance.hashing.SSVHashing;
 import temperance.hashing.TSVHashing;

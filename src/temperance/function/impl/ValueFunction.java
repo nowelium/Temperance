@@ -1,9 +1,11 @@
-package temperance.function;
+package temperance.function.impl;
 
 import java.util.List;
 
 import temperance.core.ListCommand;
 import temperance.exception.CommandExecutionException;
+import temperance.function.FunctionContext;
+import temperance.function.InternalFunction;
 import temperance.util.Lists;
 
 public class ValueFunction implements InternalFunction {

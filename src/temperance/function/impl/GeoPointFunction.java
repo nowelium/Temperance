@@ -1,8 +1,10 @@
-package temperance.function;
+package temperance.function.impl;
 
 import java.util.List;
 
 import temperance.exception.CommandExecutionException;
+import temperance.function.FunctionContext;
+import temperance.function.InternalFunction;
 
 public class GeoPointFunction implements InternalFunction {
 

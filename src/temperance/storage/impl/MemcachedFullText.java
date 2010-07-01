@@ -24,11 +24,11 @@ public class MemcachedFullText implements TpFullText {
     
     protected final ConnectionPool pool;
     
-    protected final MemcachedList sequence;
+    protected final MemcachedList list;
     
     public MemcachedFullText(ConnectionPool pool) {
         this.pool = pool;
-        this.sequence = new MemcachedList(pool, DEFAULT_ROOT_KEY_PREFIX);
+        this.list = new MemcachedList(pool, DEFAULT_ROOT_KEY_PREFIX);
     }
     
     public long add(final String key, final Hash hash, final String value, final int expire) throws MemcachedOperationException, LockTimeoutException {
@@ -36,10 +36,10 @@ public class MemcachedFullText implements TpFullText {
         try {
             final MemcachedStorage storage = client.getStorage();
             // add hash to key
-            sequence.append(storage, key, hash.hashValue(), expire);
+            list.append(storage, key, hash.hashValue(), expire);
             
             // add value to _key(key, hash)
-            return sequence.append(storage, genKey(key, hash), value, expire);
+            return list.append(storage, genKey(key, hash), value, expire);
         } finally {
             pool.release(client);
         }
@@ -52,10 +52,10 @@ public class MemcachedFullText implements TpFullText {
             final List<Long> returnValue = Lists.newArrayList();
             for(Hash hash: hashes){
                 // add hash to key
-                sequence.append(storage, key, hash.hashValue(), expire);
+                list.append(storage, key, hash.hashValue(), expire);
                 
                 // add value to _key(key, hash)
-                long nexthashId = sequence.append(storage, genKey(key, hash), value, expire);
+                long nexthashId = list.append(storage, genKey(key, hash), value, expire);
                 returnValue.add(Long.valueOf(nexthashId));
             }
             return returnValue;
@@ -74,7 +74,7 @@ public class MemcachedFullText implements TpFullText {
     }
     
     public List<TpListResult> getHashesByResult(final String key, final long offset, final long limit) throws MemcachedOperationException {
-        return sequence.getByResult(key, offset, limit);
+        return list.getByResult(key, offset, limit);
     }
     
     public List<String> getValues(final String key, final Hash hash, final long offset, final long limit) throws MemcachedOperationException {
@@ -87,15 +87,15 @@ public class MemcachedFullText implements TpFullText {
     }
     
     public List<TpListResult> getValuesByResult(final String key, final Hash hash, final long offset, final long limit) throws MemcachedOperationException {
-        return sequence.getByResult(genKey(key, hash), offset, limit);
+        return list.getByResult(genKey(key, hash), offset, limit);
     }
     
     public long hashCount(final String key) throws MemcachedOperationException {
-        return sequence.count(key);
+        return list.count(key);
     }
     
     public long valueCount(final String key, final Hash hash) throws MemcachedOperationException {
-        return sequence.count(genKey(key, hash));
+        return list.count(genKey(key, hash));
     }
     
     // TODO: all hashes delte
@@ -105,11 +105,11 @@ public class MemcachedFullText implements TpFullText {
 //    }
     
     public boolean deleteByHash(final String key, final Hash hash, final int expire) throws MemcachedOperationException, LockTimeoutException {
-        return sequence.delete(genKey(key, hash), expire);
+        return list.delete(genKey(key, hash), expire);
     }
     
     public boolean deleteAtByHash(final String key, final Hash hash, final long index, final int expire) throws MemcachedOperationException, LockTimeoutException {
-        return sequence.deleteAt(genKey(key, hash), index, expire);
+        return list.deleteAt(genKey(key, hash), index, expire);
     }
     
     // TODO: all hash reindex
@@ -118,7 +118,7 @@ public class MemcachedFullText implements TpFullText {
 //    }
     
     public void reindexByHash(final String key, final Hash hash) throws MemcachedOperationException, LockTimeoutException {
-        sequence.reindex(genKey(key, hash));
+        list.reindex(genKey(key, hash));
     }
 
     protected static String genKey(final String key, final Hash hash){
