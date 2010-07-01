@@ -7,7 +7,7 @@ import temperance.exception.MemcachedOperationException;
 import temperance.hash.Hash;
 import temperance.storage.TpList.TpListResult;
 
-public interface TpFullText {
+public interface TpFullText extends TpStorage {
     
     public long add(String key, Hash hash, String value, int expire) throws MemcachedOperationException, LockTimeoutException;
     

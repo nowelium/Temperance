@@ -10,8 +10,6 @@ public class MemcachedUUID implements TpUUID {
     
     protected static final String DEFAULT_ROOT_KEY_PREFIX = TpUUID.class.getSimpleName();
     
-    protected static final String KEY_SEPARATOR = "$";
-
     protected final ConnectionPool pool;
     
     protected final MemcachedList list;

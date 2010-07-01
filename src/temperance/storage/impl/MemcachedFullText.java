@@ -20,8 +20,6 @@ public class MemcachedFullText implements TpFullText {
     
     protected static final String DEFAULT_ROOT_KEY_PREFIX = TpFullText.class.getSimpleName();
     
-    protected static final String KEY_SEPARATOR = "#";
-    
     protected final ConnectionPool pool;
     
     protected final MemcachedList list;

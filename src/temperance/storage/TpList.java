@@ -5,7 +5,7 @@ import java.util.List;
 import temperance.exception.LockTimeoutException;
 import temperance.exception.MemcachedOperationException;
 
-public interface TpList {
+public interface TpList extends TpStorage {
     
     public long add(String key, String value, int expire) throws MemcachedOperationException, LockTimeoutException;
     

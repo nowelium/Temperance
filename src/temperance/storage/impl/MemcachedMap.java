@@ -10,10 +10,6 @@ public class MemcachedMap implements TpMap {
     
     protected static final String DEFAULT_ROOT_KEY_PREFIX = TpMap.class.getSimpleName();
     
-    protected static final String KEY_SEPARATOR = "@";
-    
-    protected static final int flag = 0;
-
     protected final ConnectionPool pool;
     
     public MemcachedMap(ConnectionPool pool){
@@ -23,7 +19,7 @@ public class MemcachedMap implements TpMap {
     public boolean set(String key, String value, int expire) throws LibMemcachedException {
         final MemcachedClient client = pool.get();
         try {
-            ReturnType rt = client.getStorage().set(genKey(key), value, expire, flag);
+            ReturnType rt = client.getStorage().set(genKey(key), value, expire, DEFAULT_VALUE_FLAG);
             if(ReturnType.BUFFERED.equals(rt) || ReturnType.SUCCESS.equals(rt)){
                 return true;
             }

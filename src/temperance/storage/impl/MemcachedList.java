@@ -30,8 +30,6 @@ public class MemcachedList implements TpList {
     
     protected static final String DEFAULT_ROOT_KEY_PREFIX = TpList.class.getSimpleName();
 
-    protected static final String KEY_SEPARATOR = "$";
-    
     protected static final String INCREMENT_SUFFIX = ".increment";
     
     protected static final String LOCK_SUFFIX = ".lock";
@@ -47,8 +45,6 @@ public class MemcachedList implements TpList {
     protected static final int LOCK_VALUE_EXPIRE = 0;
     
     protected static final int LOCK_VALUE_FLAG = 0;
-    
-    protected static final int DEFAULT_VALUE_FLAG = 0;
     
     // TODO: hardcode, runtime parameter
     protected static final long INCREMENT_LOCK_TIMEOUT = TimeUnit.SECONDS.toMillis(3);
