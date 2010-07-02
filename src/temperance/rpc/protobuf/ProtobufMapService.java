@@ -23,6 +23,9 @@ public class ProtobufMapService implements MapService.BlockingInterface {
         
         try {
             RpcMap.Response.Get response = rpc.get(request);
+            if(null == response.value){
+                return Response.Get.newBuilder().clear().build();
+            }
             return Response.Get.newBuilder().setValue(response.value).build();
         } catch(RpcException e){
             throw new ServiceException(e.getMessage());
