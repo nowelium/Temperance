@@ -412,30 +412,36 @@ public class MemcachedList implements TpList {
     }
     
     protected String incrementKey(final String key){
-        String incrementKey = incrementKeyCache.get(key);
-        if(null == incrementKey){
-            incrementKey = new StringBuilder(rootKeyPrefix).append(KEY_SEPARATOR).append(key).append(INCREMENT_SUFFIX).toString();
-            incrementKeyCache.put(key, incrementKey);
+        synchronized(incrementKeyCache){
+            String incrementKey = incrementKeyCache.get(key);
+            if(null == incrementKey){
+                incrementKey = new StringBuilder(rootKeyPrefix).append(KEY_SEPARATOR).append(key).append(INCREMENT_SUFFIX).toString();
+                incrementKeyCache.put(key, incrementKey);
+            }
+            return incrementKey;
         }
-        return incrementKey;
     }
     
     protected String lockKey(final String key){
-        String lockKey = lockKeyCache.get(key);
-        if(null == lockKey){
-            lockKey = new StringBuilder(rootKeyPrefix).append(KEY_SEPARATOR).append(key).append(LOCK_SUFFIX).toString();
-            lockKeyCache.put(key, lockKey);
+        synchronized(lockKeyCache){
+            String lockKey = lockKeyCache.get(key);
+            if(null == lockKey){
+                lockKey = new StringBuilder(rootKeyPrefix).append(KEY_SEPARATOR).append(key).append(LOCK_SUFFIX).toString();
+                lockKeyCache.put(key, lockKey);
+            }
+            return lockKey;
         }
-        return lockKey;
     }
     
     protected String indexKey(final String key, final long index){
-        String indexKey = indexKeyCache.get(key, index);
-        if(null == indexKey){
-            indexKey = new StringBuilder(rootKeyPrefix).append(KEY_SEPARATOR).append(key).append(KEY_SEPARATOR).append(index).toString();
-            indexKeyCache.put(key, index, indexKey);
+        synchronized(indexKeyCache){
+            String indexKey = indexKeyCache.get(key, index);
+            if(null == indexKey){
+                indexKey = new StringBuilder(rootKeyPrefix).append(KEY_SEPARATOR).append(key).append(KEY_SEPARATOR).append(index).toString();
+                indexKeyCache.put(key, index, indexKey);
+            }
+            return indexKey;
         }
-        return indexKey;
     }
     
     protected class KeyList {

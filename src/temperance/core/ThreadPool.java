@@ -1,13 +1,20 @@
 package temperance.core;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,11 +25,11 @@ public class ThreadPool implements LifeCycle {
 
     protected final Configure configure;
     
-    protected final ExecutorService executor; 
+    protected final TrackingThreadPoolExecutor executor; 
     
     public ThreadPool(Configure configure){
         this.configure = configure;
-        this.executor = new ThreadPoolExecutor(
+        this.executor = new TrackingThreadPoolExecutor(
             configure.getInitialThreadPoolSize(),
             configure.getMaxThreadPoolSize(),
             configure.getThreadKeepAlive(),
@@ -76,6 +83,91 @@ public class ThreadPool implements LifeCycle {
     
     public <T> List<Future<T>> invokeAll(Collection<Callable<T>> tasks) throws InterruptedException {
         return executor.invokeAll(tasks);
+    }
+    
+    public Set<Runnable> getInProgressTasks(){
+        return executor.getInProgressTasks();
+    }
+    
+    public Collection<Runnable> getQueuedTasks(){
+        return executor.getQueuedTasks();
+    }
+    
+    public long getTotalTasks(){
+        return executor.getTotalTasks();
+    }
+    
+    public long getTotalTime(){
+        return executor.getTotalTime();
+    }
+    
+    protected static class TrackingThreadPoolExecutor extends ThreadPoolExecutor {
+        
+        protected final Map<Runnable, Boolean> inProgress = new ConcurrentHashMap<Runnable, Boolean>();
+        
+        protected final ThreadLocal<Long> startTime = new ThreadLocal<Long>();
+        
+        protected final AtomicLong totalTime = new AtomicLong(0);
+        
+        protected final AtomicLong totalTasks = new AtomicLong(0);
+
+        public TrackingThreadPoolExecutor(int corePoolSize, int maximumPoolSize,
+                long keepAliveTime, TimeUnit unit,
+                BlockingQueue<Runnable> workQueue,
+                RejectedExecutionHandler handler) {
+            super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, handler);
+        }
+
+        public TrackingThreadPoolExecutor(int corePoolSize, int maximumPoolSize,
+                long keepAliveTime, TimeUnit unit,
+                BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory,
+                RejectedExecutionHandler handler) {
+            super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, handler);
+        }
+
+        public TrackingThreadPoolExecutor(int corePoolSize, int maximumPoolSize,
+                long keepAliveTime, TimeUnit unit,
+                BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory) {
+            super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory);
+        }
+
+        public TrackingThreadPoolExecutor(int corePoolSize, int maximumPoolSize,
+                long keepAliveTime, TimeUnit unit,
+                BlockingQueue<Runnable> workQueue) {
+            super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
+        }
+        
+        protected void beforeExecute(Thread th, Runnable command) {
+            super.beforeExecute(th, command);
+            
+            inProgress.put(command, Boolean.TRUE);
+            startTime.set(Long.valueOf(System.currentTimeMillis()));
+        }
+        
+        protected void afterExecute(Runnable command, Throwable t) {
+            long elapsed = System.currentTimeMillis() - startTime.get().longValue();
+            totalTime.addAndGet(elapsed);
+            totalTasks.incrementAndGet();
+            
+            inProgress.remove(command);
+            super.afterExecute(command, t);
+        }
+        
+        public Set<Runnable> getInProgressTasks() {
+            return Collections.unmodifiableSet(inProgress.keySet());
+        }
+        
+        public Collection<Runnable> getQueuedTasks(){
+            return Collections.unmodifiableCollection(super.getQueue());
+        }
+        
+        public long getTotalTasks(){
+            return totalTasks.get();
+        }
+        
+        public long getTotalTime(){
+            return totalTime.get();
+        }
     }
 
 }

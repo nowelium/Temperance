@@ -1,0 +1,21 @@
+package temperance.protobuf;
+
+option optimize_for = SPEED;
+
+message Request {
+    message Monitor {
+    }
+}
+
+message Response {
+    message Monitor {
+        required uint32 inProgressTasks = 1;
+        required uint32 queuedTasks = 2;
+        required uint64 totalTasks = 3;
+        required uint64 totalTime = 4;
+    }
+}
+
+service TemperanceService {
+    rpc monitor(Request.Monitor) returns(Response.Monitor);
+}

@@ -20,15 +20,15 @@ public class Configure {
     
     private Map<BehaviorType, Boolean> poolBehaviors = new HashMap<BehaviorType, Boolean>();
     
-    private int initialThreadPoolSize = 10;
+    private int initialThreadPoolSize = 100;
     
-    private int maxThreadPoolSize = 100;
+    private int maxThreadPoolSize = 500;
     
     private long threadKeepAlive = 60L;
     
     private TimeUnit threadKeepAliveTimeUnit = TimeUnit.SECONDS;
     
-    private int initialConnectionPoolSize = 30;
+    private int initialConnectionPoolSize = 50;
     
     private int maxConnectionPoolSize = 500;
     

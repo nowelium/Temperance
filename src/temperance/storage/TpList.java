@@ -47,7 +47,7 @@ public interface TpList extends TpStorage {
             StringBuilder buf = new StringBuilder("{");
             buf.append("key=").append(key).append(",");
             buf.append("index=").append(index).append(",");
-            buf.append("valeu=").append(value);
+            buf.append("value=").append(value);
             buf.append("}");
             return buf.toString();
         }

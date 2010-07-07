@@ -1,5 +1,7 @@
 package temperance.rpc.protobuf;
 
+import java.util.List;
+
 import temperance.exception.RpcException;
 import temperance.protobuf.Map.MapService;
 import temperance.protobuf.Map.Request;
@@ -27,6 +29,27 @@ public class ProtobufMapService implements MapService.BlockingInterface {
                 return Response.Get.newBuilder().clear().buildPartial();
             }
             return Response.Get.newBuilder().setValue(response.value).build();
+        } catch(RpcException e){
+            throw new ServiceException(e.getMessage());
+        }
+    }
+    
+    public Response.GetValues getValues(RpcController controller, Request.GetValues getValues) throws ServiceException {
+        RpcMap.Request.GetValues request = RpcMap.Request.GetValues.newInstance();
+        request.keys = getValues.getKeysList();
+        
+        try {
+            RpcMap.Response.GetValues response = rpc.getValues(request);
+            List<RpcMap.Response.Entry> entries = response.values;
+            
+            Response.GetValues.Builder builder = Response.GetValues.newBuilder();
+            for(RpcMap.Response.Entry entry: entries){
+                Response.Entry.Builder responseEntryBuilder = Response.Entry.newBuilder();
+                responseEntryBuilder.setKey(entry.key);
+                responseEntryBuilder.setValue(entry.value);
+                builder.addValues(responseEntryBuilder.build());
+            }
+            return builder.build();
         } catch(RpcException e){
             throw new ServiceException(e.getMessage());
         }

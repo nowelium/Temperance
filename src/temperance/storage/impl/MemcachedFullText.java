@@ -120,12 +120,14 @@ public class MemcachedFullText implements TpFullText {
     }
 
     protected static String genKey(final String key, final Hash hash){
-        String hashKey = hashKeyCache.get(key, hash);
-        if(null == hashKey){
-            hashKey = new StringBuffer(key).append(KEY_SEPARATOR).append(hash.hashValue()).toString();
-            hashKeyCache.put(key, hash, hashKey);
+        synchronized(hashKeyCache){
+            String hashKey = hashKeyCache.get(key, hash);
+            if(null == hashKey){
+                hashKey = new StringBuffer(key).append(KEY_SEPARATOR).append(hash.hashValue()).toString();
+                hashKeyCache.put(key, hash, hashKey);
+            }
+            return hashKey;
         }
-        return hashKey;
     }
 
 }

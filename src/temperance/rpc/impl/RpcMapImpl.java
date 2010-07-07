@@ -1,15 +1,19 @@
 package temperance.rpc.impl;
 
-import libmemcached.exception.LibMemcachedException;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import temperance.core.Configure;
+import temperance.core.MapCommand;
 import temperance.core.Pooling;
+import temperance.exception.MemcachedOperationException;
 import temperance.exception.RpcException;
 import temperance.rpc.RpcMap;
 import temperance.storage.TpMap;
+import temperance.storage.TpMap.TpMapResult;
 import temperance.storage.impl.MemcachedMap;
 
 public class RpcMapImpl implements RpcMap {
@@ -42,7 +46,33 @@ public class RpcMapImpl implements RpcMap {
             Response.Get response = Response.Get.newInstance();
             response.value = result;
             return response;
-        } catch (LibMemcachedException e) {
+        } catch (MemcachedOperationException e) {
+            throw new RpcException(e);
+        }
+    }
+    
+    public Response.GetValues getValues(Request.GetValues request) throws RpcException {
+        final List<String> keys = request.keys;
+        
+        if(logger.isDebugEnabled()){
+            logger.debug(new StringBuilder("getValues (")
+                .append("keys=").append(keys)
+                .append(")")
+            );
+        }
+        
+        final MapCommand command = new MapCommand(pooling);
+        try {
+            List<TpMapResult> results = command.getValues(keys);
+            
+            Response.GetValues response = Response.GetValues.newInstance();
+            for(TpMapResult result: results){
+                response.add(result.getKey(), result.getValue());
+            }
+            return response;
+        } catch (InterruptedException e) {
+            throw new RpcException(e);
+        } catch (ExecutionException e) {
             throw new RpcException(e);
         }
     }
@@ -62,17 +92,11 @@ public class RpcMapImpl implements RpcMap {
         }
         
         final TpMap map = new MemcachedMap(pooling.getConnectionPool());
-        try {
-            boolean success = map.set(key, value, expire);
-            
-            Response.Set response = Response.Set.newInstance();
-            response.succeed = success;
-            return response;
-        } catch (LibMemcachedException e) {
-            Response.Set response = Response.Set.newInstance();
-            response.succeed = false;
-            return response;
-        }
+        boolean success = map.set(key, value, expire);
+        
+        Response.Set response = Response.Set.newInstance();
+        response.succeed = success;
+        return response;
     }
 
     public Response.Delete delete(Request.Delete request) throws RpcException {
@@ -88,17 +112,11 @@ public class RpcMapImpl implements RpcMap {
         }
         
         final TpMap map = new MemcachedMap(pooling.getConnectionPool());
-        try {
-            boolean success = map.delete(key, expire);
-            
-            Response.Delete response = Response.Delete.newInstance();
-            response.succeed = success;
-            return response;
-        } catch(LibMemcachedException e){
-            Response.Delete response = Response.Delete.newInstance();
-            response.succeed = false;
-            return response;
-        }
+        boolean success = map.delete(key, expire);
+        
+        Response.Delete response = Response.Delete.newInstance();
+        response.succeed = success;
+        return response;
     }
 
 }

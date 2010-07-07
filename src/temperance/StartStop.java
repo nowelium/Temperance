@@ -45,7 +45,7 @@ public class StartStop {
                 factory = ServerFactory.Msgpack;
             }
             
-            String maxThreads = cli.getOptionValue("maxThreads", "100");
+            String maxThreads = cli.getOptionValue("maxThreads", "500");
             
             String port = cli.getOptionValue("p", "17001");
             boolean daemonize = cli.hasOption("daemonize");
@@ -114,7 +114,7 @@ public class StartStop {
 
         OptionGroup rpcServer = rpcServer();
         
-        Option maxThreads = new Option("maxThreads", true, "max thread size(default 100)");
+        Option maxThreads = new Option("maxThreads", true, "max thread size(default 500)");
         maxThreads.setRequired(false);
 
         Option port = new Option("p", "port", true, "server port");

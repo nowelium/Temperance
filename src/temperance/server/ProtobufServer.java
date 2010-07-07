@@ -10,11 +10,13 @@ import temperance.protobuf.List.ListService;
 import temperance.protobuf.Map.MapService;
 import temperance.protobuf.Mecab.MecabService;
 import temperance.protobuf.Query.QueryService;
+import temperance.protobuf.Temperance.TemperanceService;
 import temperance.rpc.protobuf.ProtobufFullTextService;
 import temperance.rpc.protobuf.ProtobufListService;
 import temperance.rpc.protobuf.ProtobufMapService;
 import temperance.rpc.protobuf.ProtobufMecabService;
 import temperance.rpc.protobuf.ProtobufQueryService;
+import temperance.rpc.protobuf.ProtobufTemperanceService;
 
 import com.google.protobuf.BlockingService;
 import com.googlecode.protobuf.socketrpc.SocketRpcServer;
@@ -51,7 +53,8 @@ public class ProtobufServer extends AbstractRpcServer {
             ListService.newReflectiveBlockingService(new ProtobufListService(createRpcList())),
             MapService.newReflectiveBlockingService(new ProtobufMapService(createRpcMap())),
             MecabService.newReflectiveBlockingService(new ProtobufMecabService(createRpcMecab())),
-            QueryService.newReflectiveBlockingService(new ProtobufQueryService(createRpcQuery()))
+            QueryService.newReflectiveBlockingService(new ProtobufQueryService(createRpcQuery())),
+            TemperanceService.newReflectiveBlockingService(new ProtobufTemperanceService(createRpcTemperance()))
         );
     }
 }
