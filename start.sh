@@ -25,6 +25,8 @@ JMX_OPTIONS=""
 MEMCACHED="localhost:11211"
 MECABRC="/etc/mecabrc"
 TP_PORT="17001"
+TP_INI_THREADS="300"
+TP_MAX_THREADS="500"
 
 export JAVA_HOME=$JAVA_HOME
 export _JAVA_OPTIONS=$JAVA_OPTIONS
@@ -48,4 +50,4 @@ LIB=$LIB:"$DIR/lib/protobuf/protobuf-socket-rpc.jar"
 LIB=$LIB:"$DIR/lib/msgpack/msgpack-0.3.jar"
 LIB=$LIB:"$DIR/lib/msgpack/msgpack-rpc-0.3.0.jar"
 
-$JAVA_HOME/bin/java $JVM_OPTIONS $JAVA_OPTIONS $JMX_OPTIONS -cp $LIB temperance.Start -memc $MEMCACHED -mecabrc $MECABRC -p $TP_PORT -daemonize
+$JAVA_HOME/bin/java $JVM_OPTIONS $JAVA_OPTIONS $JMX_OPTIONS -cp $LIB temperance.Start -memc $MEMCACHED -mecabrc $MECABRC -p $TP_PORT -iniThreads $TP_INI_THREADS -maxThreads $TP_MAX_THREADS -daemonize

@@ -45,6 +45,7 @@ public class StartStop {
                 factory = ServerFactory.Msgpack;
             }
             
+            String iniThreads = cli.getOptionValue("iniThreads", "100");
             String maxThreads = cli.getOptionValue("maxThreads", "500");
             
             String port = cli.getOptionValue("p", "17001");
@@ -56,6 +57,7 @@ public class StartStop {
             configure.setMecabrc(mecabrc);
             configure.setFullTextHashFunction(fullTextHashFunction);
             configure.setNodeFilter(nodeFilter);
+            configure.setInitialThreadPoolSize(Integer.parseInt(iniThreads));
             configure.setMaxThreadPoolSize(Integer.parseInt(maxThreads));
             
             Server server = factory.createServer(configure, daemonize, Integer.parseInt(port));
@@ -114,7 +116,9 @@ public class StartStop {
 
         OptionGroup rpcServer = rpcServer();
         
-        Option maxThreads = new Option("maxThreads", true, "max thread size(default 500)");
+        Option iniThreads = new Option("iniThreads", true, "initial thread pool size(default 100)");
+        iniThreads.setRequired(false);
+        Option maxThreads = new Option("maxThreads", true, "max thread pool size(default 500)");
         maxThreads.setRequired(false);
 
         Option port = new Option("p", "port", true, "server port");
@@ -130,6 +134,7 @@ public class StartStop {
         options.addOptionGroup(mecabNodeFilter);
         options.addOptionGroup(hashFunction);
         options.addOptionGroup(rpcServer);
+        options.addOption(iniThreads);
         options.addOption(maxThreads);
         options.addOption(port);
         options.addOption(daemonize);

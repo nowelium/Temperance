@@ -28,7 +28,7 @@ public class Configure {
     
     private TimeUnit threadKeepAliveTimeUnit = TimeUnit.SECONDS;
     
-    private int initialConnectionPoolSize = 50;
+    private int initialConnectionPoolSize = 100;
     
     private int maxConnectionPoolSize = 500;
     

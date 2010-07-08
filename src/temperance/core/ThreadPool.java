@@ -14,6 +14,7 @@ import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.logging.Log;
@@ -34,7 +35,8 @@ public class ThreadPool implements LifeCycle {
             configure.getMaxThreadPoolSize(),
             configure.getThreadKeepAlive(),
             configure.getThreadKeepAliveTimeUnit(),
-            new LinkedBlockingQueue<Runnable>()
+            new LinkedBlockingQueue<Runnable>(),
+            new ThreadFactoryImpl()
         );
     }
     
@@ -167,6 +169,55 @@ public class ThreadPool implements LifeCycle {
         
         public long getTotalTime(){
             return totalTime.get();
+        }
+    }
+    
+    protected static class ThreadFactoryImpl implements ThreadFactory {
+        
+        protected static final AtomicInteger poolNumber = new AtomicInteger(1);
+        
+        protected final ThreadGroup group;
+        
+        protected final AtomicInteger threadNumber = new AtomicInteger(1);
+        
+        protected final String namePrefix;
+        
+        private final boolean daemon;
+        
+        public ThreadFactoryImpl(){
+            this(false);
+        }
+        
+        public ThreadFactoryImpl(boolean daemon) {
+            this.daemon = daemon;
+            SecurityManager securityManager = System.getSecurityManager();
+            if(null == securityManager){
+                this.group = Thread.currentThread().getThreadGroup();
+            } else {
+                this.group = securityManager.getThreadGroup();
+            }
+            
+            StringBuilder buf = new StringBuilder("tp-pool-").append(poolNumber.getAndIncrement());
+            buf.append("-");
+            if(daemon){
+                buf.append("daemon-");
+            }
+            buf.append("thread-");
+            this.namePrefix = buf.toString();
+        }
+        
+        public Thread newThread(Runnable runnable) {
+            StringBuilder buf = new StringBuilder(namePrefix);
+            buf.append(threadNumber.getAndIncrement());
+            
+            Thread th = new Thread(group, runnable, buf.toString(), 0L);
+            if(daemon){
+                th.setDaemon(daemon);
+            }
+            if(th.getPriority() != Thread.NORM_PRIORITY){
+                th.setPriority(Thread.NORM_PRIORITY);
+            }
+            return th;
         }
     }
 
