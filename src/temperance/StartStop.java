@@ -71,7 +71,11 @@ public class StartStop {
     
     protected void stop(String...args){
         Options options = new Options();
+        Option port = new Option("p", "port", true, "server port");
+        port.setRequired(true);
+        
         options.addOptionGroup(rpcServer());
+        options.addOption(port);
         stop(options, new GnuParser(), args);
     }
     
@@ -83,9 +87,10 @@ public class StartStop {
             if(cli.hasOption("rpc_msgpack")){
                 factory = ServerFactory.Msgpack;
             }
+            String port = cli.getOptionValue("p", "17001");
         
             Configure nullobj = new Configure();
-            Server server = factory.createServer(nullobj, false, 0);
+            Server server = factory.createServer(nullobj, false, Integer.parseInt(port));
             server.shutdown();
         } catch(ParseException e){
             HelpFormatter formatter = new HelpFormatter();

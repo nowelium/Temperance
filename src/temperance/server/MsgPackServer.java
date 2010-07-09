@@ -28,7 +28,7 @@ public class MsgPackServer extends AbstractRpcServer {
     protected final ServiceTcpServer server;
     
     public MsgPackServer(Configure configure, boolean daemonize, int rpcPort) {
-        super(configure, MsgPackServer.class.getName(), daemonize);
+        super(configure, MsgPackServer.class.getName() + "_" + rpcPort, daemonize);
         this.server = new ServiceTcpServer("0.0.0.0", rpcPort);
     }
     

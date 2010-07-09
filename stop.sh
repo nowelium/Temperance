@@ -6,6 +6,7 @@
 #JAVA_OPTIONS="-Dfile.encoding=UTF-8 -Djna.encoding=UTF-8 -Djna.protected=true -Djna.dump_memory=true -Dtemperance.pid.dir=/tmp"
 
 JAVA_OPTIONS="-Dfile.encoding=UTF-8 -Djna.encoding=UTF-8 -Djna.protected=false -Djna.dump_memory=false -Dtemperance.pid.dir=/var/run"
+TP_PORT="17001"
 
 export JAVA_HOME=$JAVA_HOME
 export _JAVA_OPTIONS=$JAVA_OPTIONS
@@ -29,4 +30,4 @@ LIB=$LIB:"$DIR/lib/protobuf/protobuf-socket-rpc.jar"
 LIB=$LIB:"$DIR/lib/msgpack/msgpack-0.3.jar"
 LIB=$LIB:"$DIR/lib/msgpack/msgpack-rpc-0.3.0.jar"
 
-$JAVA_HOME/bin/java $JAVA_OPTIONS -cp $LIB temperance.Stop
+$JAVA_HOME/bin/java $JAVA_OPTIONS -cp $LIB temperance.Stop -p $TP_PORT

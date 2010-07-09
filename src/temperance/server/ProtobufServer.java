@@ -26,7 +26,7 @@ public class ProtobufServer extends AbstractRpcServer {
     protected final SocketRpcServer server;
     
     public ProtobufServer(Configure configure, boolean daemonize, int rpcPort) {
-        super(configure, ProtobufServer.class.getName(), daemonize);
+        super(configure, ProtobufServer.class.getName() + "_" + rpcPort, daemonize);
         this.server = new SocketRpcServer(rpcPort, Executors.newCachedThreadPool());
     }
 
