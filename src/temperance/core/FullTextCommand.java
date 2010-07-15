@@ -68,7 +68,7 @@ public class FullTextCommand implements Command {
         return thread.submit(task);
     }
     
-    protected static class AddValue implements Callable<Long> {
+    protected static class AddValue extends SubCommand<Long> {
         private final ConnectionPool pool;
         private final String key;
         private final Hash hash;
@@ -81,14 +81,14 @@ public class FullTextCommand implements Command {
             this.value = value;
             this.expire = expire;
         }
-        public Long call() throws Exception {
+        public Long apply() throws LockTimeoutException, MemcachedOperationException {
             final MemcachedFullText ft = new MemcachedFullText(pool);
             final long id = ft.add(key, hash, value, expire);
             return Long.valueOf(id);
         }
     }
     
-    protected static class DeleteAll implements Callable<Boolean> {
+    protected static class DeleteAll extends SubCommand<Boolean> {
         protected final ConnectionPool pool;
         protected final String key;
         protected final int expire;
@@ -97,7 +97,7 @@ public class FullTextCommand implements Command {
             this.key = key;
             this.expire = expire;
         }
-        public Boolean call() throws Exception {
+        public Boolean apply() throws LockTimeoutException, MemcachedOperationException {
             final TpFullText ft = new MemcachedFullText(pool);
             final long hashCount = ft.hashCount(key);
             try {
@@ -149,14 +149,14 @@ public class FullTextCommand implements Command {
         }
     }
     
-    protected static class GetHashes implements Callable<List<Hash>> {
+    protected static class GetHashes extends SubCommand<List<Hash>> {
         private final ConnectionPool pool;
         private final String key;
         protected GetHashes(ConnectionPool pool, String key){
             this.pool = pool;
             this.key = key;
         }
-        public List<Hash> call() throws Exception {
+        public List<Hash> apply() throws LockTimeoutException, MemcachedOperationException {
             final TpFullText ft = new MemcachedFullText(pool);
             final List<Hash> returnValue = Lists.newArrayList();
             final long targetCount = ft.hashCount(key);
@@ -168,7 +168,7 @@ public class FullTextCommand implements Command {
         }
     }
 
-    protected static class GetValues implements Callable<List<String>> {
+    protected static class GetValues extends SubCommand<List<String>> {
         private final ConnectionPool pool;
         private final String key;
         private final Hash hash;
@@ -177,7 +177,7 @@ public class FullTextCommand implements Command {
             this.key = key;
             this.hash = hash;
         }
-        public List<String> call() throws Exception {
+        public List<String> apply() throws LockTimeoutException, MemcachedOperationException {
             final TpFullText ft = new MemcachedFullText(pool);
             final List<String> returnValue = Lists.newArrayList();
             final long targetCount = ft.valueCount(key, hash);
@@ -194,14 +194,14 @@ public class FullTextCommand implements Command {
         }
     }
     
-    protected static class ReindexAllHashes implements Callable<Boolean> {
+    protected static class ReindexAllHashes extends SubCommand<Boolean> {
         private final ConnectionPool pool;
         private final String key;
         protected ReindexAllHashes(ConnectionPool pool, String key){
             this.pool = pool;
             this.key = key;
         }
-        public Boolean call() throws Exception {
+        public Boolean apply() throws LockTimeoutException, MemcachedOperationException {
             try {
                 // TODO: logic
                 final TpFullText ft = new MemcachedFullText(pool);

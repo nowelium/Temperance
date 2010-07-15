@@ -85,7 +85,7 @@ public class ListCommand implements Command {
         public void execute(List<String> results);
     }
     
-    protected static class AddValue implements Callable<Long> {
+    protected static class AddValue extends SubCommand<Long> {
         private final ConnectionPool pool;
         private final String key;
         private final String value;
@@ -96,14 +96,14 @@ public class ListCommand implements Command {
             this.value = value;
             this.expire = expire;
         }
-        public Long call() throws Exception {
+        public Long apply() throws LockTimeoutException, MemcachedOperationException {
             final TpList list = new MemcachedList(pool);
             final long id = list.add(key, value, expire);
             return Long.valueOf(id);
         }
     }
     
-    protected static class Delete implements Callable<Boolean> {
+    protected static class Delete extends SubCommand<Boolean> {
         private final ConnectionPool pool;
         private final String key;
         private final int expire;
@@ -112,14 +112,14 @@ public class ListCommand implements Command {
             this.key = key;
             this.expire = expire;
         }
-        public Boolean call() throws Exception {
+        public Boolean apply() throws LockTimeoutException, MemcachedOperationException {
             final TpList list = new MemcachedList(pool);
             final boolean deleted = list.delete(key, expire);
             return Boolean.valueOf(deleted);
         }
     }
     
-    protected static class DeleteAllValues implements Callable<Boolean> {
+    protected static class DeleteAllValues extends SubCommand<Boolean> {
         private final ConnectionPool pool;
         private final String key;
         private final int expire;
@@ -130,7 +130,7 @@ public class ListCommand implements Command {
             this.expire = expire;
             this.value = value;
         }
-        public Boolean call() throws Exception {
+        public Boolean apply() throws LockTimeoutException, MemcachedOperationException {
             // TODO: logic
             try {
                 final TpList list = new MemcachedList(pool);
@@ -162,14 +162,14 @@ public class ListCommand implements Command {
         }
     }
     
-    protected static class Reindex implements Callable<Boolean> {
+    protected static class Reindex extends SubCommand<Boolean> {
         private final ConnectionPool pool;
         private final String key;
         protected Reindex(ConnectionPool pool, String key){
             this.pool = pool;
             this.key = key;
         }
-        public Boolean call() throws Exception {
+        public Boolean apply() throws LockTimeoutException, MemcachedOperationException {
             // TODO: handle Exception
             
             final TpList list = new MemcachedList(pool);
@@ -183,24 +183,18 @@ public class ListCommand implements Command {
                 }
                 
                 return Boolean.FALSE;
-            } catch(LockTimeoutException e){
-                if(logger.isDebugEnabled()){
-                    logger.debug(Reindex.class, e);
-                }
-                
-                return Boolean.FALSE;
             }
         }
     }
     
-    protected static class GetAllValues implements Callable<List<String>> {
+    protected static class GetAllValues extends SubCommand<List<String>> {
         private final ConnectionPool pool;
         private final String key;
         protected GetAllValues(ConnectionPool pool, String key){
             this.pool = pool;
             this.key = key;
         }
-        public List<String> call() throws Exception {
+        public List<String> apply() throws LockTimeoutException, MemcachedOperationException {
             final TpList list = new MemcachedList(pool);
             final List<String> returnValue = Lists.newArrayList();
             final long count = list.count(key);
@@ -220,7 +214,7 @@ public class ListCommand implements Command {
         }
     }
     
-    protected static class AllFilterValues implements Callable<Void> {
+    protected static class AllFilterValues extends SubCommand<Void> {
         private final ConnectionPool pool;
         private final String key;
         private final Filter filter;
@@ -229,7 +223,7 @@ public class ListCommand implements Command {
             this.key = key;
             this.filter = filter;
         }
-        public Void call() throws Exception {
+        public Void apply() throws LockTimeoutException, MemcachedOperationException {
             final TpList list = new MemcachedList(pool);
             final long count = list.count(key);
             for(long i = 0; i < count; i += SPLIT){
@@ -245,7 +239,7 @@ public class ListCommand implements Command {
         }
     }
 
-    protected static class LimitGetValues implements Callable<List<String>> {
+    protected static class LimitGetValues extends SubCommand<List<String>> {
         private final ConnectionPool pool;
         private final String key;
         private final long offset;
@@ -256,7 +250,7 @@ public class ListCommand implements Command {
             this.offset = offset;
             this.limit = limit;
         }
-        public List<String> call() throws Exception {
+        public List<String> apply() throws LockTimeoutException, MemcachedOperationException {
             final TpList list = new MemcachedList(pool);
             final long count = list.count(key);
             if(count < 1){

@@ -1,13 +1,14 @@
 package temperance.core;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import temperance.exception.LockTimeoutException;
+import temperance.exception.MemcachedOperationException;
 import temperance.storage.TpMap;
 import temperance.storage.TpMap.TpMapResult;
 import temperance.storage.impl.MemcachedMap;
@@ -44,14 +45,14 @@ public class MapCommand implements Command {
         return results;
     }
     
-    protected class GetValues implements Callable<List<TpMapResult>> {
+    protected class GetValues extends SubCommand<List<TpMapResult>> {
         protected final ConnectionPool pool;
         protected final List<String> keys;
         protected GetValues(ConnectionPool pool, List<String> keys){
             this.pool = pool;
             this.keys = keys;
         }
-        public List<TpMapResult> call() throws Exception {
+        public List<TpMapResult> apply() throws LockTimeoutException, MemcachedOperationException {
             final TpMap map = new MemcachedMap(pool);
             return map.getValuesByResult(keys);
         }

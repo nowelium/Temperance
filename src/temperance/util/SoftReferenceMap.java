@@ -4,12 +4,12 @@ import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,9 +27,9 @@ public class SoftReferenceMap<K, V> implements Map<K, V> {
     
     protected ReferenceQueue<V> queue = new ReferenceQueue<V>();
 
-    protected final Map<K, SoftReference<V>> cache = new HashMap<K, SoftReference<V>>();
+    protected Map<K, SoftReference<V>> cache = new ConcurrentHashMap<K, SoftReference<V>>();
     
-    protected final Map<SoftReference<V>, K> refMap = new HashMap<SoftReference<V>, K>();
+    protected Map<SoftReference<V>, K> refMap = new ConcurrentHashMap<SoftReference<V>, K>();
     
     protected void clean(){
         int count = 0;
@@ -57,10 +57,10 @@ public class SoftReferenceMap<K, V> implements Map<K, V> {
         if(cleanAll){
             logger.info("cleanup all objs");
             
-            synchronized(SoftReferenceMap.class){
+            synchronized(this){
                 queue = new ReferenceQueue<V>();
-                cache.clear();
-                refMap.clear();
+                cache = new ConcurrentHashMap<K, SoftReference<V>>();
+                refMap = new ConcurrentHashMap<SoftReference<V>, K>();
             }
         }
     }
