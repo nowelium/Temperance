@@ -18,6 +18,7 @@ import temperance.exception.LockTimeoutException;
 import temperance.exception.MemcachedOperationException;
 import temperance.hash.Hash;
 import temperance.hash.StringHash;
+import temperance.storage.TpFullText;
 import temperance.storage.TpList.TpListResult;
 import temperance.util.Lists;
 
@@ -90,9 +91,9 @@ public class MemcachedFullTextTest {
         
         List<Long> ids1 = ft.addAll("key", hashes1, "value", 10);
         Assert.assertEquals(ids1.size(), 3);
-        Assert.assertEquals(ids1.get(0), 0);
-        Assert.assertEquals(ids1.get(1), 0);
-        Assert.assertEquals(ids1.get(2), 0);
+        Assert.assertEquals(ids1.get(0).longValue(), 0);
+        Assert.assertEquals(ids1.get(1).longValue(), 0);
+        Assert.assertEquals(ids1.get(2).longValue(), 0);
 
         // 
         List<Hash> hashes2 = Lists.newArrayList();
@@ -102,9 +103,9 @@ public class MemcachedFullTextTest {
         
         List<Long> ids2 = ft.addAll("key", hashes2, "value", 10);
         Assert.assertEquals(ids2.size(), 3);
-        Assert.assertEquals(ids2.get(0), 1);
-        Assert.assertEquals(ids2.get(1), 1);
-        Assert.assertEquals(ids2.get(2), 1);
+        Assert.assertEquals(ids2.get(0).longValue(), 1);
+        Assert.assertEquals(ids2.get(1).longValue(), 1);
+        Assert.assertEquals(ids2.get(2).longValue(), 1);
     }
     
     @Test
@@ -308,7 +309,7 @@ public class MemcachedFullTextTest {
             List<TpListResult> results = ft.getValuesByResult("key", new StringHash("hash-a"), 0, 3);
             System.out.println(results);
             Assert.assertEquals(results.size(), 1);
-            Assert.assertEquals(results.get(0).getKey(), "key#hash-a");
+            Assert.assertEquals(results.get(0).getKey(), "key" + TpFullText.KEY_SEPARATOR + "hash-a");
             Assert.assertEquals(results.get(0).getValue(), "value-a");
             Assert.assertEquals(results.get(0).getIndex(), 0);
         }
@@ -316,7 +317,7 @@ public class MemcachedFullTextTest {
             List<TpListResult> results = ft.getValuesByResult("key", new StringHash("hash-b"), 0, 1);
             System.out.println(results);
             Assert.assertEquals(results.size(), 1);
-            Assert.assertEquals(results.get(0).getKey(), "key#hash-b");
+            Assert.assertEquals(results.get(0).getKey(), "key" + TpFullText.KEY_SEPARATOR + "hash-b");
             Assert.assertEquals(results.get(0).getValue(), "value-b");
             Assert.assertEquals(results.get(0).getIndex(), 0);
         }
@@ -337,15 +338,15 @@ public class MemcachedFullTextTest {
             List<TpListResult> results = ft.getValuesByResult("key", new StringHash("hash-a"), 0, 3);
             System.out.println(results);
             Assert.assertEquals(results.size(), 3);
-            Assert.assertEquals(results.get(0).getKey(), "key#hash-a");
+            Assert.assertEquals(results.get(0).getKey(), "key" + TpFullText.KEY_SEPARATOR + "hash-a");
             Assert.assertEquals(results.get(0).getValue(), "value-a");
             Assert.assertEquals(results.get(0).getIndex(), 0);
             
-            Assert.assertEquals(results.get(1).getKey(), "key#hash-a");
+            Assert.assertEquals(results.get(1).getKey(), "key" + TpFullText.KEY_SEPARATOR + "hash-a");
             Assert.assertEquals(results.get(1).getValue(), "value-b");
             Assert.assertEquals(results.get(1).getIndex(), 1);
 
-            Assert.assertEquals(results.get(2).getKey(), "key#hash-a");
+            Assert.assertEquals(results.get(2).getKey(), "key" + TpFullText.KEY_SEPARATOR + "hash-a");
             Assert.assertEquals(results.get(2).getValue(), "value-c");
             Assert.assertEquals(results.get(2).getIndex(), 2);
         }
