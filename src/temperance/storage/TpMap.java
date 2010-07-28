@@ -12,7 +12,7 @@ public interface TpMap extends TpStorage {
     
     public List<TpMapResult> getValuesByResult(List<String> keys) throws MemcachedOperationException;
     
-    public boolean delete(String key, int expire);
+    public boolean delete(String key, int expire) throws MemcachedOperationException;
     
     public static class TpMapResult {
         private final String key;
