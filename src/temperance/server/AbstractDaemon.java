@@ -18,6 +18,8 @@ import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
 import com.sun.akuma.Daemon;
+import java.util.Iterator;
+import java.util.Map;
 
 public abstract class AbstractDaemon implements Server {
     
@@ -110,6 +112,7 @@ public abstract class AbstractDaemon implements Server {
             // signal handlers
             //
             Signal.handle(new Signal("HUP"), new ReloadSignal());
+            Signal.handle(new Signal("QUIT"), new ThreadDumpSignal());
             for(Signal signal: shutdownSignals){
                 Signal.handle(signal, new ShutdownSignal());
             }
@@ -169,6 +172,31 @@ public abstract class AbstractDaemon implements Server {
         }
     }
     
+    protected class ThreadDumpSignal implements SignalHandler {
+        public void handle(Signal signal){
+            logger.info("quit signal: " + signal.getName() + " was occured.");
+            
+            logger.debug("thread stack info:");
+            StringBuilder buf = new StringBuilder("all stack trace\n");
+            
+            Map<Thread, StackTraceElement[]> allStack = Thread.getAllStackTraces();
+            Iterator<Map.Entry<Thread, StackTraceElement[]>> it = allStack.entrySet().iterator();
+            while(it.hasNext()){
+                Map.Entry<Thread, StackTraceElement[]> entry = it.next();
+                Thread th = entry.getKey();
+                StackTraceElement[] sts = entry.getValue();
+                buf.append("thead ").append(th.getId()).append(":").append(th.getName());
+                buf.append(" ");
+                buf.append("stack trace:\n");
+                for(StackTraceElement st: sts){
+                    buf.append(st.toString()).append("\n");
+                }
+            }
+            logger.debug(buf.toString());
+            logger.debug("done.");
+        }
+    }
+    
     protected class ShutdownSignal implements SignalHandler {
         public void handle(Signal signal) {
             logger.info("shutdown signal: " + signal.getName() + " was occured.");
@@ -184,8 +212,12 @@ public abstract class AbstractDaemon implements Server {
             System.exit(0);
         }
         protected void handleShutdown(){
-            pidFile.delete();
-            errFile.delete();
+            if(!pidFile.delete()){
+                pidFile.deleteOnExit();
+            }
+            if(!errFile.delete()){
+                errFile.deleteOnExit();
+            }
         }
     }
 }
