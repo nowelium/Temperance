@@ -18,7 +18,7 @@ public class Configure {
     
     private MecabNodeFilter nodeFilter;
     
-    private Map<BehaviorType, Boolean> poolBehaviors = new EnumMap<BehaviorType,Boolean>(BehaviorType.class);
+    private Map<BehaviorType, Boolean> poolBehaviors = new EnumMap<BehaviorType, Boolean>(BehaviorType.class);
     
     private int initialThreadPoolSize = 100;
     
