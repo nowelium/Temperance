@@ -1,7 +1,10 @@
 package temperance.storage.impl;
 
+import java.util.Arrays;
 import junit.framework.Assert;
 import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import libmemcached.wrapper.type.BehaviorType;
 import temperance.core.Configure;
 import temperance.core.ConnectionPool;
@@ -9,6 +12,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import temperance.exception.MemcachedOperationException;
 
@@ -72,5 +76,54 @@ public class MemcachedQueueTest {
         Assert.assertTrue(queue.enqueue("key", "baz", 0));
         Assert.assertEquals(queue.dequeue("key"), "baz");
     }
+    
+    @Test
+    public void testMultiThread() throws Exception {
+        final String key = "hoge";
+        // 3 threads
+        List<Thread> threads = Arrays.asList(
+            create("th1", key, queue),
+            create("th2", key, queue),
+            create("th3", key, queue)
+        );
+        for(Thread th: threads){
+            th.start();
+        }
+        
+        queue.enqueue(key, "value1", 0);
+        queue.enqueue(key, "value2", 0);
+        queue.enqueue(key, "value3", 0);
+        queue.enqueue(key, "value4", 0);
+        queue.enqueue(key, "value5", 0);
+        
+        try {
+            TimeUnit.MILLISECONDS.sleep(1000);
+        } catch(InterruptedException e){
+        }
+        
+        Assert.assertNull(queue.dequeue(key));
+        for(Thread th: threads){
+            th.interrupt();
+        }
+    }
 
+    private Thread create(final String name, final String key, final MemcachedQueue queue) {
+        return new Thread(new Runnable(){
+            public void run(){
+                while(true){
+                    try {
+                        System.out.println(name + "=" + queue.dequeue(key));
+                    } catch(MemcachedOperationException e){
+                        e.printStackTrace();
+                    }
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(100);
+                    } catch(InterruptedException e){
+                    }
+                }
+            }
+        });
+    }
+
+    
 }
