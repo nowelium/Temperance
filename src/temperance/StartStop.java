@@ -48,6 +48,11 @@ public class StartStop {
             String iniThreads = cli.getOptionValue("iniThreads", "100");
             String maxThreads = cli.getOptionValue("maxThreads", "500");
             
+            boolean verboseThread = false;
+            if(cli.hasOption("verbose_thread")){
+                verboseThread = true;
+            }
+            
             String port = cli.getOptionValue("p", "17001");
             boolean daemonize = cli.hasOption("daemonize");
             
@@ -59,6 +64,7 @@ public class StartStop {
             configure.setNodeFilter(nodeFilter);
             configure.setInitialThreadPoolSize(Integer.parseInt(iniThreads));
             configure.setMaxThreadPoolSize(Integer.parseInt(maxThreads));
+            configure.setVerboseThread(verboseThread);
             
             Server server = factory.createServer(configure, daemonize, Integer.parseInt(port));
             server.start();
@@ -125,6 +131,9 @@ public class StartStop {
         iniThreads.setRequired(false);
         Option maxThreads = new Option("maxThreads", true, "max thread pool size(default 500)");
         maxThreads.setRequired(false);
+        
+        Option verboseThread = new Option("verbose_thread", false, "verbose thread monitor log");
+        verboseThread.setRequired(false);
 
         Option port = new Option("p", "port", true, "server port");
         port.setRequired(false);
@@ -141,6 +150,7 @@ public class StartStop {
         options.addOptionGroup(rpcServer);
         options.addOption(iniThreads);
         options.addOption(maxThreads);
+        options.addOption(verboseThread);
         options.addOption(port);
         options.addOption(daemonize);
         return options;

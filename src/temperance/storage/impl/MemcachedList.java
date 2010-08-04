@@ -22,11 +22,14 @@ import temperance.util.SoftReferenceMap;
 
 public class MemcachedList implements TpList {
     
-    protected static final SoftReferenceMap<String, String> incrementKeyCache = new SoftReferenceMap<String, String>();
+    // TODO: SoftReferenceMap::clean are locked threads
+    //protected static final SoftReferenceMap<String, String> incrementKeyCache = new SoftReferenceMap<String, String>();
     
-    protected static final SoftReferenceMap<String, String> lockKeyCache = new SoftReferenceMap<String, String>();
+    // TODO: SoftReferenceMap::clean are locked threads
+    //protected static final SoftReferenceMap<String, String> lockKeyCache = new SoftReferenceMap<String, String>();
     
-    protected static final KeyCache<String, Long> indexKeyCache = new KeyCache<String, Long>();
+    // TODO: SoftReferenceMap::clean are locked threads
+    //protected static final KeyCache<String, Long> indexKeyCache = new KeyCache<String, Long>();
     
     protected static final String DEFAULT_ROOT_KEY_PREFIX = TpList.class.getSimpleName();
 
@@ -189,6 +192,7 @@ public class MemcachedList implements TpList {
     public void reindex(final String key) throws MemcachedOperationException, LockTimeoutException {
         //
         // copying reindex(gc)
+        // TODO: code style
         //
         
         final MemcachedClient client = pool.get();
@@ -412,6 +416,9 @@ public class MemcachedList implements TpList {
     }
     
     protected String incrementKey(final String key){
+        return new StringBuilder(rootKeyPrefix).append(KEY_SEPARATOR).append(key).append(INCREMENT_SUFFIX).toString();
+        // TODO: SoftReferenceMap::clean are locked threads
+        /*
         synchronized(incrementKeyCache){
             String incrementKey = incrementKeyCache.get(key);
             if(null == incrementKey){
@@ -420,9 +427,13 @@ public class MemcachedList implements TpList {
             }
             return incrementKey;
         }
+        */
     }
     
     protected String lockKey(final String key){
+        return new StringBuilder(rootKeyPrefix).append(KEY_SEPARATOR).append(key).append(LOCK_SUFFIX).toString();
+        // TODO: SoftReferenceMap::clean are locked threads
+        /*
         synchronized(lockKeyCache){
             String lockKey = lockKeyCache.get(key);
             if(null == lockKey){
@@ -431,9 +442,13 @@ public class MemcachedList implements TpList {
             }
             return lockKey;
         }
+        */
     }
     
     protected String indexKey(final String key, final long index){
+        return new StringBuilder(rootKeyPrefix).append(KEY_SEPARATOR).append(key).append(KEY_SEPARATOR).append(index).toString();
+        // TODO: SoftReferenceMap::clean are locked threads
+        /*
         synchronized(indexKeyCache){
             String indexKey = indexKeyCache.get(key, index);
             if(null == indexKey){
@@ -442,6 +457,7 @@ public class MemcachedList implements TpList {
             }
             return indexKey;
         }
+        */
     }
     
     protected class KeyList {

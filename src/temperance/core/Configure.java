@@ -32,6 +32,8 @@ public class Configure {
     
     private int maxConnectionPoolSize = 500;
     
+    private boolean verboseThread = false;
+    
     public String getMemcached(){
         return memcached;
     }
@@ -118,6 +120,14 @@ public class Configure {
 
     public void setMaxConnectionPoolSize(int maxConnectionPoolSize) {
         this.maxConnectionPoolSize = maxConnectionPoolSize;
+    }
+    
+    public boolean isVerboseThread(){
+        return verboseThread;
+    }
+    
+    public void setVerboseThread(boolean verboseThread){
+        this.verboseThread = verboseThread;
     }
 
 }

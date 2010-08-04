@@ -8,9 +8,11 @@ import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -26,6 +28,12 @@ public class ThreadPool implements LifeCycle {
 
     protected final Configure configure;
     
+    protected final LinkedBlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>();
+    
+    protected final ThreadFactory factory = new ThreadFactoryImpl();
+    
+    protected final ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor(factory);
+
     protected final TrackingThreadPoolExecutor executor; 
     
     public ThreadPool(Configure configure){
@@ -35,8 +43,8 @@ public class ThreadPool implements LifeCycle {
             configure.getMaxThreadPoolSize(),
             configure.getThreadKeepAlive(),
             configure.getThreadKeepAliveTimeUnit(),
-            new LinkedBlockingQueue<Runnable>(),
-            new ThreadFactoryImpl()
+            workQueue,
+            factory
         );
     }
     
@@ -53,11 +61,33 @@ public class ThreadPool implements LifeCycle {
             .append("thread keep alive: ")
             .append(configure.getThreadKeepAlive()).append(" ").append(configure.getThreadKeepAliveTimeUnit())
         );
+        
+        if(configure.isVerboseThread()){
+            scheduledExecutor.scheduleWithFixedDelay(new ThreadMonitor(), 60, 60, TimeUnit.SECONDS);
+        }
     }
     
     public void destroy(){
         logger.info("destroy");
         
+        logger.info("scheduler shutdown");
+        scheduledExecutor.shutdown();
+        try {
+            logger.info("awaiting scheduler termination...");
+            if(!scheduledExecutor.awaitTermination(60, TimeUnit.SECONDS)){
+                if(logger.isWarnEnabled()){
+                    logger.warn("scheduler awaiting termination fail. shutdown now");
+                }
+                
+                scheduledExecutor.shutdownNow();
+            }
+        } catch(InterruptedException e){
+            // nop
+        } finally {
+            logger.info("scheduler destroyed");
+        }
+        
+        logger.info("pool shutdown");
         executor.shutdown();
         try {
             logger.info("awaiting termination...");
@@ -101,6 +131,22 @@ public class ThreadPool implements LifeCycle {
     
     public long getTotalTime(){
         return executor.getTotalTime();
+    }
+    
+    protected class ThreadMonitor implements Runnable {
+        public void run(){
+            final int inProgress = executor.getInProgressTasks().size();
+            final int queued = executor.getQueuedTasks().size();
+            final long total = executor.getTotalTasks();
+            final long count = inProgress + queued + total;
+            logger.info(new StringBuilder("thread monitor {")
+                .append("in-progress:").append(inProgress).append(",")
+                .append("queued:").append(queued).append(",")
+                .append("total:").append(total).append(",")
+                .append("count:").append(count)
+                .append("}")
+            );
+        }
     }
     
     protected static class TrackingThreadPoolExecutor extends ThreadPoolExecutor {

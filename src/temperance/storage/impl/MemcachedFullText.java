@@ -11,12 +11,12 @@ import temperance.hash.Hash;
 import temperance.hash.StringHash;
 import temperance.storage.TpFullText;
 import temperance.storage.TpList.TpListResult;
-import temperance.storage.impl.MemcachedList.KeyCache;
 import temperance.util.Lists;
 
 public class MemcachedFullText implements TpFullText {
     
-    protected static final KeyCache<String, Hash> hashKeyCache = new KeyCache<String, Hash>();
+    // TODO: SoftReferenceMap::clean are locked threads
+    //protected static final KeyCache<String, Hash> hashKeyCache = new KeyCache<String, Hash>();
     
     protected static final String DEFAULT_ROOT_KEY_PREFIX = TpFullText.class.getSimpleName();
     
@@ -120,6 +120,9 @@ public class MemcachedFullText implements TpFullText {
     }
 
     protected static String genKey(final String key, final Hash hash){
+        return new StringBuffer(key).append(KEY_SEPARATOR).append(hash.hashValue()).toString();
+        // TODO: SoftReferenceMap::clean are locked threads
+        /*
         synchronized(hashKeyCache){
             String hashKey = hashKeyCache.get(key, hash);
             if(null == hashKey){
@@ -128,6 +131,7 @@ public class MemcachedFullText implements TpFullText {
             }
             return hashKey;
         }
+        */
     }
 
 }
