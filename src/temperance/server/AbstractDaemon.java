@@ -112,7 +112,7 @@ public abstract class AbstractDaemon implements Server {
             // signal handlers
             //
             Signal.handle(new Signal("HUP"), new ReloadSignal());
-            Signal.handle(new Signal("QUIT"), new ThreadDumpSignal());
+            //Signal.handle(new Signal("QUIT"), new ThreadDumpSignal());
             for(Signal signal: shutdownSignals){
                 Signal.handle(signal, new ShutdownSignal());
             }
