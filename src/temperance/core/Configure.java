@@ -1,6 +1,6 @@
 package temperance.core;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -18,7 +18,7 @@ public class Configure {
     
     private MecabNodeFilter nodeFilter;
     
-    private Map<BehaviorType, Boolean> poolBehaviors = new HashMap<BehaviorType, Boolean>();
+    private Map<BehaviorType, Boolean> poolBehaviors = new EnumMap<BehaviorType, Boolean>(BehaviorType.class);
     
     private int initialThreadPoolSize = 100;
     

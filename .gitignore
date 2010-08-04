@@ -2,6 +2,7 @@
 .settings
 .svn
 .DS_Store
-build/
-dist/
-bin/
+build
+dist
+bin
+

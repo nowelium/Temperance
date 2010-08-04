@@ -112,10 +112,14 @@ public class RpcMapImpl implements RpcMap {
         }
         
         final TpMap map = new MemcachedMap(pooling.getConnectionPool());
-        boolean success = map.delete(key, expire);
+        final Response.Delete response = Response.Delete.newInstance();
+        try {
+            boolean success = map.delete(key, expire);
         
-        Response.Delete response = Response.Delete.newInstance();
-        response.succeed = success;
+            response.succeed = success;
+        } catch(MemcachedOperationException e){
+            response.succeed = false;
+        }
         return response;
     }
 
