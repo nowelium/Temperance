@@ -12,8 +12,7 @@ export _JAVA_OPTIONS=$JAVA_OPTIONS
 DIR=$(cd $(dirname $0);pwd)
 
 LIB=$DIR
-LIB=$LIB:"$DIR/dist/temperance-0.01.jar"
-#LIB=$LIB:"$DIR/bin"
+LIB=$LIB:"$DIR/dist/temperance-0.02.jar"
 LIB=$LIB:"$DIR/resources"
 LIB=$LIB:"$DIR/lib/commons-cli-1.0.jar"
 LIB=$LIB:"$DIR/lib/protobuf/protobuf-java-2.2.0.jar"

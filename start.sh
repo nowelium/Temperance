@@ -34,8 +34,7 @@ export _JAVA_OPTIONS=$JAVA_OPTIONS
 DIR=$(cd $(dirname $0);pwd)
 
 LIB=$DIR
-LIB=$LIB:"$DIR/dist/temperance-0.01.jar"
-#LIB=$LIB:"$DIR/bin"
+LIB=$LIB:"$DIR/dist/temperance-0.02.jar"
 LIB=$LIB:"$DIR/resources"
 LIB=$LIB:"$DIR/lib/libmecab-0.01.jar"
 LIB=$LIB:"$DIR/lib/libmemcached-0.01.jar"
@@ -50,4 +49,4 @@ LIB=$LIB:"$DIR/lib/protobuf/protobuf-socket-rpc.jar"
 LIB=$LIB:"$DIR/lib/msgpack/msgpack-0.3.jar"
 LIB=$LIB:"$DIR/lib/msgpack/msgpack-rpc-0.3.0.jar"
 
-$JAVA_HOME/bin/java $JVM_OPTIONS $JAVA_OPTIONS $JMX_OPTIONS -cp $LIB temperance.Start -memc $MEMCACHED -mecabrc $MECABRC -p $TP_PORT -iniThreads $TP_INI_THREADS -maxThreads $TP_MAX_THREADS -daemonize
+$JAVA_HOME/bin/java $JVM_OPTIONS $JAVA_OPTIONS $JMX_OPTIONS -cp $LIB temperance.Start -memc $MEMCACHED -mecabrc $MECABRC -p $TP_PORT -iniThreads $TP_INI_THREADS -maxThreads $TP_MAX_THREADS -verbose_thread -daemonize
