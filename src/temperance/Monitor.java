@@ -120,6 +120,7 @@ public class Monitor {
                 }
             }
         } finally {
+            System.out.print("\033[2J"); // clear screen
             System.out.println();
             System.out.flush();
         }
