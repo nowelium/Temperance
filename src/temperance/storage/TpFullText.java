@@ -15,6 +15,8 @@ public interface TpFullText extends TpStorage {
     
     public List<Hash> getHashes(String key, long offset, long limit) throws MemcachedOperationException;
     
+    public List<Hash> getHashesByValue(String key, String value, long offset, long limit) throws MemcachedOperationException, LockTimeoutException;
+    
     public List<TpListResult> getHashesByResult(String key, long offset, long limit) throws MemcachedOperationException;
     
     public List<String> getValues(String key, Hash hash, long offset, long limit) throws MemcachedOperationException;
@@ -22,6 +24,8 @@ public interface TpFullText extends TpStorage {
     public List<TpListResult> getValuesByResult(String key, Hash hash, long offset, long limit) throws MemcachedOperationException;
     
     public long hashCount(String key) throws MemcachedOperationException;
+    
+    public long hashCountByValue(String key, String value) throws MemcachedOperationException;
     
     public long valueCount(String key, Hash hash) throws MemcachedOperationException;
     

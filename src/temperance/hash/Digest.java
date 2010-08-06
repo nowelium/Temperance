@@ -50,6 +50,10 @@ public enum Digest implements HashFunction {
         }
     }
     
+    public String getAlgorithm(){
+        return algorithm;
+    }
+    
     public Hash hash(String key){
         byte[] digest = digest(algorithm, key);
         return new ByteHash(digest, hashSize);

@@ -11,6 +11,14 @@ public class StringHash implements Hash {
     public String hashValue(){
         return hash;
     }
+    
+    public boolean equals(Object o){
+        if(o instanceof Hash){
+            Hash h = (Hash) o;
+            return h.hashValue().equals(hash);
+        }
+        return false;
+    }
 
     @Override
     public String toString(){

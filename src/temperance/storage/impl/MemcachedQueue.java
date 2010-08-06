@@ -43,18 +43,19 @@ public class MemcachedQueue implements TpQueue {
             
             while(true){
                 try {
-                    MemcachedResult result = storage.gets(tailKey);
+                    MemcachedResult result = storage.getsByKey(key, tailKey);
                     if(null == result){
-                        storage.set(headKey, INITIAL_VALUE, INITIAL_EXPIRE, INITIAL_FLAG);
-                        storage.set(tailKey, INITIAL_VALUE, INITIAL_EXPIRE, INITIAL_FLAG);
-                        storage.set(genKey(key, INITIAL_VALUE), value, expire, DEFAULT_VALUE_FLAG);
+                        storage.setByKey(key, headKey, INITIAL_VALUE, INITIAL_EXPIRE, INITIAL_FLAG);
+                        storage.setByKey(key, tailKey, INITIAL_VALUE, INITIAL_EXPIRE, INITIAL_FLAG);
+                        storage.setByKey(key, genKey(key, INITIAL_VALUE), value, expire, DEFAULT_VALUE_FLAG);
                         return true;
                     }
 
                     try {
                         final long increment = Long.valueOf(result.getValue()).longValue() + 1L;
                         String incrementValue = Long.toString(increment);
-                        ReturnType rt = storage.cas(
+                        ReturnType rt = storage.casByKey(
+                            key,
                             tailKey,
                             incrementValue,
                             INITIAL_EXPIRE,
@@ -64,7 +65,8 @@ public class MemcachedQueue implements TpQueue {
                         if(!ReturnType.SUCCESS.equals(rt)){
                             continue;
                         }
-                        storage.set(
+                        storage.setByKey(
+                            key,
                             genKey(key, incrementValue),
                             value,
                             expire,
@@ -89,14 +91,14 @@ public class MemcachedQueue implements TpQueue {
             final MemcachedStorage storage = client.getStorage();
             
             final String tailKey = tailKey(key);
-            final String tailValue = storage.get(tailKey);
+            final String tailValue = storage.getByKey(key, tailKey);
             if(null == tailValue){
                 return null;
             }
 
             final String headKey = headKey(key);
             while(true){
-                final MemcachedResult head = storage.gets(headKey);
+                final MemcachedResult head = storage.getsByKey(key, headKey);
                 if(null == head){
                     return null;
                 }
@@ -104,7 +106,7 @@ public class MemcachedQueue implements TpQueue {
                 try {
                     final String headValue = head.getValue();
                     String valueKey = genKey(key, headValue);
-                    String result = storage.get(valueKey);
+                    String result = storage.getByKey(key, valueKey);
                     if(null == result){
                         return null;
                     }
@@ -112,7 +114,8 @@ public class MemcachedQueue implements TpQueue {
                     final long currentId = Long.valueOf(headValue).longValue();
                     final long increment = currentId + 1L;
                     
-                    ReturnType rt = storage.cas(
+                    ReturnType rt = storage.casByKey(
+                        key,
                         headKey,
                         Long.toString(increment),
                         INITIAL_EXPIRE,
@@ -122,7 +125,7 @@ public class MemcachedQueue implements TpQueue {
                     if(!ReturnType.SUCCESS.equals(rt)){
                         continue;
                     }
-                    storage.delete(valueKey, INITIAL_EXPIRE);
+                    storage.deleteByKey(key, valueKey, INITIAL_EXPIRE);
                     return result;
                 } finally {
                     head.free();

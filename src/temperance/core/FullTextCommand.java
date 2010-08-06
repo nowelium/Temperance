@@ -11,7 +11,6 @@ import temperance.exception.LockTimeoutException;
 import temperance.exception.MemcachedOperationException;
 import temperance.hash.Hash;
 import temperance.storage.TpFullText;
-import temperance.storage.TpList.TpListResult;
 import temperance.storage.impl.MemcachedFullText;
 import temperance.util.Lists;
 
@@ -132,19 +131,25 @@ public class FullTextCommand implements Command {
             this.value = value;
         }
         @Override
-        protected void perform(TpFullText ft, List<Hash> hashes) throws MemcachedOperationException, LockTimeoutException {
-            // FIXME: logic
-            for(Hash hash: hashes){
-                final long count = ft.valueCount(key, hash);
-                for(int i = 0; i < count; i += SPLIT){
-                    List<TpListResult> results = ft.getValuesByResult(key, hash, i, SPLIT);
-                    for(TpListResult result: results){
-                        if(!value.equals(result.getValue())){
-                            continue;
-                        }
-                        ft.deleteAtByHash(key, hash, result.getIndex(), expire);
-                    }
+        public Boolean apply() throws LockTimeoutException, MemcachedOperationException {
+            final TpFullText ft = new MemcachedFullText(pool);
+            final long hashCount = ft.hashCountByValue(key, value);
+            try {
+                for(long i = 0; i < hashCount; i += SPLIT){
+                    List<Hash> hashes = ft.getHashesByValue(key, value, i, SPLIT);
+                    perform(ft, hashes);
                 }
+                return Boolean.TRUE;
+            } catch(MemcachedOperationException e){
+                if(logger.isDebugEnabled()){
+                    logger.debug(DeleteAllValues.class, e);
+                }
+                return Boolean.FALSE;
+            } catch(LockTimeoutException e){
+                if(logger.isDebugEnabled()){
+                    logger.debug(DeleteAllValues.class, e);
+                }
+                return Boolean.FALSE;
             }
         }
     }

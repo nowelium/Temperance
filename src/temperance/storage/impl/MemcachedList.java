@@ -275,7 +275,7 @@ public class MemcachedList implements TpList {
         return nextId;
     }
     
-    protected boolean remove(final MemcachedStorage storage, final String key, long index, final int expire) throws MemcachedOperationException {
+    protected boolean remove(final MemcachedStorage storage, final String key, final long index, final int expire) throws MemcachedOperationException {
         final String indexKey = indexKey(key, index);
         final ReturnType rt = storage.deleteByKey(key, indexKey, expire);
         if(ReturnType.SUCCESS.equals(rt) || ReturnType.BUFFERED.equals(rt)){
@@ -363,7 +363,7 @@ public class MemcachedList implements TpList {
             try {
                 MemcachedResult result = storage.getsByKey(key, incrementKey);
                 if(null == result){
-                    // start value was 0
+                    // start value: 0
                     storage.setByKey(key, incrementKey, INITIAL_INCREMENT_VALUE, INCREMENT_VALUE_EXPIRE, INCREMENT_VALUE_FLAG);
                     return 0L;
                 }
