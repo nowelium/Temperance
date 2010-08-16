@@ -255,10 +255,11 @@ public class ConnectionPool implements LifeCycle {
                     MemcachedClient client = release.take();
                     
                     client.quit();
-                    pool.offer(ConnectionPool.this.clone());
                     
-                    // TODO: 3000 usec await when: libmemcached becomes segfault by excessive access
-                    TimeUnit.MICROSECONDS.sleep(3000);
+                    // TODO: 20000 usec await when: libmemcached becomes segfault by excessive access
+                    TimeUnit.MICROSECONDS.sleep(20000);
+                    
+                    pool.offer(ConnectionPool.this.clone());
                 }
             } catch(InterruptedException e){
                 // nop
