@@ -1,0 +1,28 @@
+package temperance.protobuf;
+
+option optimize_for = SPEED;
+
+message Request {
+    message Enqueue {
+        required string key = 1;
+        required string value = 2;
+        optional uint32 expire = 3 [default = 86400];
+    }
+    message Dequeue {
+        required string key = 1;
+        optional uint32 timeout = 2 [default = 10];
+    }
+}
+message Response {
+    message Enqueue {
+        required bool succeed = 1;
+    }
+    message Dequeue {
+        required string value = 1;
+    }
+}
+
+service QueueService {
+    rpc enqueue(Request.Enqueue) returns(Response.Enqueue);
+    rpc dequeue(Request.Dequeue) returns(Response.Dequeue);
+}

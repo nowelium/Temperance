@@ -9,6 +9,7 @@ import temperance.rpc.RpcList;
 import temperance.rpc.RpcMap;
 import temperance.rpc.RpcMecab;
 import temperance.rpc.RpcQuery;
+import temperance.rpc.RpcQueue;
 import temperance.rpc.RpcTemperance;
 import temperance.rpc.impl.RpcFullTextImpl;
 import temperance.rpc.impl.RpcGeoPointImpl;
@@ -16,6 +17,7 @@ import temperance.rpc.impl.RpcListImpl;
 import temperance.rpc.impl.RpcMapImpl;
 import temperance.rpc.impl.RpcMecabImpl;
 import temperance.rpc.impl.RpcQueryImpl;
+import temperance.rpc.impl.RpcQueueImpl;
 import temperance.rpc.impl.RpcTemperanceImpl;
 
 import com.sun.jna.Native;
@@ -119,6 +121,10 @@ public abstract class AbstractRpcServer extends AbstractDaemon {
     
     protected RpcQuery createRpcQuery(){
         return new RpcQueryImpl(configure, pooling);
+    }
+    
+    protected RpcQueue createRpcQueue(){
+        return new RpcQueueImpl(configure, pooling);
     }
     
     protected RpcTemperance createRpcTemperance(){

@@ -8,13 +8,14 @@ import libmemcached.wrapper.type.ReturnType;
 import temperance.core.ConnectionPool;
 import temperance.exception.MemcachedOperationException;
 import temperance.storage.TpQueue;
-import temperance.util.SoftReferenceMap;
 
 public class MemcachedQueue implements TpQueue {
     
-    protected static final SoftReferenceMap<String, String> headKeyCache = new SoftReferenceMap<String, String>();
+    // TODO: SoftReferenceMap::clean are locked threads
+    //protected static final SoftReferenceMap<String, String> headKeyCache = new SoftReferenceMap<String, String>();
     
-    protected static final SoftReferenceMap<String, String> tailKeyCache = new SoftReferenceMap<String, String>();
+    // TODO: SoftReferenceMap::clean are locked threads
+    //protected static final SoftReferenceMap<String, String> tailKeyCache = new SoftReferenceMap<String, String>();
     
     protected static final String DEFAULT_ROOT_KEY_PREFIX = TpQueue.class.getSimpleName();
     
@@ -148,6 +149,12 @@ public class MemcachedQueue implements TpQueue {
     }
     
     protected static String headKey(String key){
+        StringBuilder buf = new StringBuilder(DEFAULT_ROOT_KEY_PREFIX);
+        buf.append(KEY_SEPARATOR);
+        buf.append(key);
+        buf.append(HEAD_SUFFIX);
+        return buf.toString();
+        /* TODO: SoftReferenceMap::clean are locked threads
         synchronized(headKeyCache){
             String value = headKeyCache.get(key);
             if(null == value){
@@ -160,9 +167,16 @@ public class MemcachedQueue implements TpQueue {
             }
             return value;
         }
+        */
     }
     
     protected static String tailKey(String key){
+        StringBuilder buf = new StringBuilder(DEFAULT_ROOT_KEY_PREFIX);
+        buf.append(KEY_SEPARATOR);
+        buf.append(key);
+        buf.append(TAIL_SUFFIX);
+        return buf.toString();
+        /* TODO: SoftReferenceMap::clean are locked threads
         synchronized(tailKeyCache){
             String value = tailKeyCache.get(key);
             if(null == value){
@@ -175,6 +189,7 @@ public class MemcachedQueue implements TpQueue {
             }
             return value;
         }
+        */
     }
     
 }
