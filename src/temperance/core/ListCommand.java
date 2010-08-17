@@ -147,14 +147,14 @@ public class ListCommand implements Command {
                 
                 return Boolean.TRUE;
             } catch(MemcachedOperationException e){
-                if(logger.isDebugEnabled()){
-                    logger.debug(DeleteAllValues.class, e);
+                if(logger.isErrorEnabled()){
+                    logger.error(DeleteAllValues.class, e);
                 }
                 
                 return Boolean.FALSE;
             } catch(LockTimeoutException e){
-                if(logger.isDebugEnabled()){
-                    logger.debug(DeleteAllValues.class, e);
+                if(logger.isErrorEnabled()){
+                    logger.error(DeleteAllValues.class, e);
                 }
                 
                 return Boolean.FALSE;
@@ -178,8 +178,8 @@ public class ListCommand implements Command {
                 
                 return Boolean.TRUE;
             } catch(MemcachedOperationException e){
-                if(logger.isDebugEnabled()){
-                    logger.debug(Reindex.class, e);
+                if(logger.isErrorEnabled()){
+                    logger.error(Reindex.class, e);
                 }
                 
                 return Boolean.FALSE;

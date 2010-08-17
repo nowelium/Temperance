@@ -106,13 +106,13 @@ public class FullTextCommand implements Command {
                 }
                 return Boolean.TRUE;
             } catch(MemcachedOperationException e){
-                if(logger.isDebugEnabled()){
-                    logger.debug(DeleteAll.class, e);
+                if(logger.isErrorEnabled()){
+                    logger.error(DeleteAll.class, e);
                 }
                 return Boolean.FALSE;
             } catch(LockTimeoutException e){
-                if(logger.isDebugEnabled()){
-                    logger.debug(DeleteAll.class, e);
+                if(logger.isErrorEnabled()){
+                    logger.error(DeleteAll.class, e);
                 }
                 return Boolean.FALSE;
             }
@@ -141,13 +141,13 @@ public class FullTextCommand implements Command {
                 }
                 return Boolean.TRUE;
             } catch(MemcachedOperationException e){
-                if(logger.isDebugEnabled()){
-                    logger.debug(DeleteAllValues.class, e);
+                if(logger.isErrorEnabled()){
+                    logger.error(DeleteAllValues.class, e);
                 }
                 return Boolean.FALSE;
             } catch(LockTimeoutException e){
-                if(logger.isDebugEnabled()){
-                    logger.debug(DeleteAllValues.class, e);
+                if(logger.isErrorEnabled()){
+                    logger.error(DeleteAllValues.class, e);
                 }
                 return Boolean.FALSE;
             }
@@ -220,16 +220,14 @@ public class FullTextCommand implements Command {
                 
                 return Boolean.TRUE;
             } catch(MemcachedOperationException e){
-                if(logger.isDebugEnabled()){
-                    logger.debug(ReindexAllHashes.class, e);
+                if(logger.isErrorEnabled()){
+                    logger.error(ReindexAllHashes.class, e);
                 }
-                
                 return Boolean.FALSE;
             } catch(LockTimeoutException e){
-                if(logger.isDebugEnabled()){
-                    logger.debug(ReindexAllHashes.class, e);
+                if(logger.isErrorEnabled()){
+                    logger.error(ReindexAllHashes.class, e);
                 }
-                
                 return Boolean.FALSE;
             }
         }
