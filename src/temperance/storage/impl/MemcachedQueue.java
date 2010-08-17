@@ -126,6 +126,7 @@ public class MemcachedQueue implements TpQueue {
                     if(!ReturnType.SUCCESS.equals(rt)){
                         continue;
                     }
+                    
                     storage.deleteByKey(key, valueKey, INITIAL_EXPIRE);
                     return result;
                 } finally {

@@ -1,18 +1,13 @@
 package temperance.rpc.impl;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import temperance.core.Configure;
 import temperance.core.Pooling;
+import temperance.exception.MemcachedOperationException;
 import temperance.exception.RpcException;
 import temperance.rpc.RpcQueue;
 import temperance.storage.TpQueue;
@@ -47,45 +42,35 @@ public class RpcQueueImpl implements RpcQueue {
         final int timeout = request.timeout;
         final TimeUnit unit = request.unit;
         
-        final ExecutorService exec = Executors.newSingleThreadExecutor();
-        final Response.Dequeue response = Response.Dequeue.newInstance();
+        final TpQueue queue = new MemcachedQueue(pooling.getConnectionPool());
+        final long executionTimeout = System.currentTimeMillis() + unit.toMillis(timeout);
         try {
-            Future<String> future = exec.submit(new Dequeuer(key));
-            response.value = future.get(timeout, unit);
-        } catch(TimeoutException e){
-            response.value = null;
-        } catch (InterruptedException e) {
-            if(logger.isErrorEnabled()){
-                logger.error(e.getMessage(), e);
-            }
-            throw new RpcException(e);
-        } catch (ExecutionException e) {
-            if(logger.isErrorEnabled()){
-                logger.error(e.getMessage(), e);
-            }
-            throw new RpcException(e);
-        } finally {
-            exec.shutdownNow();
-        }
-        return response;
-    }
-    
-    protected class Dequeuer implements Callable<String> {
-        protected final String key;
-        protected final TpQueue queue = new MemcachedQueue(pooling.getConnectionPool());
-        protected Dequeuer(String key){
-            this.key = key;
-        }
-        public String call() throws Exception {
             while(true){
-                String value = queue.dequeue(key);
-                if(null != value){
-                    return value;
+                long current = System.currentTimeMillis();
+                if(executionTimeout < current){
+                    Response.Dequeue response = Response.Dequeue.newInstance();
+                    response.value = null;
+                    return response;
+                }
+                
+                String result = queue.dequeue(key);
+                if(null != result){
+                    Response.Dequeue response = Response.Dequeue.newInstance();
+                    response.value = result;
+                    return response;
                 }
                 
                 TimeUnit.MILLISECONDS.sleep(100);
             }
+        } catch(MemcachedOperationException e){
+            if(logger.isErrorEnabled()){
+                logger.error(e.getMessage(), e);
+            }
+            
+            throw new RpcException(e);
+        } catch(InterruptedException e){
+            throw new RpcException(e);
         }
     }
-
+    
 }

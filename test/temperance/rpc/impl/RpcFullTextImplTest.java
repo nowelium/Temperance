@@ -1,4 +1,4 @@
-package temperance;
+package temperance.rpc.impl;
 
 import java.util.HashMap;
 
@@ -16,10 +16,8 @@ import temperance.hash.Digest;
 import temperance.hashing.MecabHashing;
 import temperance.rpc.RpcFullText;
 import temperance.rpc.RpcQuery;
-import temperance.rpc.impl.RpcFullTextImpl;
-import temperance.rpc.impl.RpcQueryImpl;
 
-public class FullTextAdd_QuerySearchTest {
+public class RpcFullTextImplTest {
     
     private Configure configure;
     
@@ -101,5 +99,4 @@ public class FullTextAdd_QuerySearchTest {
             Assert.assertFalse(response.values.contains("67890"));
         }
     }
-
 }
