@@ -112,6 +112,7 @@ public class ConnectionPool implements LifeCycle {
         
         MemcachedBehavior behavior = client.getBehavior();
         behavior.setDistribution(DistributionType.CONSISTENT);
+        behavior.set(BehaviorType.CONNECT_TIMEOUT, configure.getMemcachedConnectionTimeout());
         
         Map<BehaviorType, Boolean> userBehaviorType = configure.getPoolBehaviors();
         Map<BehaviorType, Boolean> behaviorTypeOption = createBehaviorTypeOption(userBehaviorType);
@@ -132,7 +133,7 @@ public class ConnectionPool implements LifeCycle {
         logger.info(new StringBuilder("configure: max connection pool size: ").append(maxPoolSize));
         logger.info(new StringBuilder("configure: filling threshold: ").append(lock));
         logger.info(new StringBuilder("configure: pool keepalive time: ")
-            .append(1800L).append(" ").append(TimeUnit.SECONDS)
+            .append(keepAliveTime).append(" ").append(TimeUnit.MILLISECONDS)
         );
         
         // fill connections
@@ -253,7 +254,6 @@ public class ConnectionPool implements LifeCycle {
             try {
                 while(true){
                     MemcachedClient client = release.take();
-                    
                     client.quit();
                     
                     // TODO: 20000 usec await when: libmemcached becomes segfault by excessive access

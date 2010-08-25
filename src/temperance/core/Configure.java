@@ -34,6 +34,8 @@ public class Configure {
     
     private boolean verboseThread = false;
     
+    private long memcachedConnectionTimeout = 60000L;
+    
     public String getMemcached(){
         return memcached;
     }
@@ -128,6 +130,14 @@ public class Configure {
     
     public void setVerboseThread(boolean verboseThread){
         this.verboseThread = verboseThread;
+    }
+
+    public long getMemcachedConnectionTimeout() {
+        return memcachedConnectionTimeout;
+    }
+
+    public void setMemcachedConnectionTimeout(long memcachedConnectionTimeout) {
+        this.memcachedConnectionTimeout = memcachedConnectionTimeout;
     }
 
 }
