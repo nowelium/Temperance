@@ -11,6 +11,7 @@ import temperance.exception.LockTimeoutException;
 import temperance.exception.MemcachedOperationException;
 import temperance.hash.Hash;
 import temperance.storage.TpFullText;
+import temperance.storage.TpList.TpListResult;
 import temperance.storage.impl.MemcachedFullText;
 import temperance.util.Lists;
 
@@ -124,21 +125,30 @@ public class FullTextCommand implements Command {
         }
     }
     
-    protected static class DeleteAllValues extends DeleteAll {
-        private final String value;
+    protected static class DeleteAllValues extends SubCommand<Boolean> {
+        protected final ConnectionPool pool;
+        protected final String key;
+        protected final int expire;
+        protected final String value;
         protected DeleteAllValues(ConnectionPool pool, String key, int expire, String value) {
-            super(pool, key, expire);
+            this.pool = pool;
+            this.key = key;
+            this.expire = expire;
             this.value = value;
         }
-        @Override
         public Boolean apply() throws LockTimeoutException, MemcachedOperationException {
             final TpFullText ft = new MemcachedFullText(pool);
             final long hashCount = ft.hashCountByValue(key, value);
             try {
+                // first. delete hash by value
                 for(long i = 0; i < hashCount; i += SPLIT){
                     List<Hash> hashes = ft.getHashesByValue(key, value, i, SPLIT);
                     perform(ft, hashes);
                 }
+                // second. delete value
+                ft.deleteByValue(key, value, expire);
+                
+                // TODO: third. delete hash!! 
                 return Boolean.TRUE;
             } catch(MemcachedOperationException e){
                 if(logger.isErrorEnabled()){
@@ -150,6 +160,22 @@ public class FullTextCommand implements Command {
                     logger.error(DeleteAllValues.class, e);
                 }
                 return Boolean.FALSE;
+            }
+        }
+        protected void perform(TpFullText ft, List<Hash> hashes) throws MemcachedOperationException, LockTimeoutException {
+            for(Hash hash: hashes){
+                final long valueCount = ft.valueCount(key, hash);
+                for(long i = 0; i < valueCount; i += SPLIT){
+                    List<TpListResult> results = ft.getValuesByResult(key, hash, i, SPLIT);
+                    perform(ft, hash, results);
+                }
+            }
+        }
+        protected void perform(TpFullText ft, Hash hash, List<TpListResult> results) throws MemcachedOperationException, LockTimeoutException {
+            for(TpListResult result: results){
+                if(value.equals(result.getValue())){
+                    ft.deleteAtByHash(key, hash, result.getIndex(), expire);
+                }
             }
         }
     }

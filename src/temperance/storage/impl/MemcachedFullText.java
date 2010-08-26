@@ -60,9 +60,9 @@ public class MemcachedFullText implements TpFullText {
     
     protected long add(final MemcachedClient client, final String key, final Hash hash, final String value, final int expire) throws MemcachedOperationException, LockTimeoutException {
         final MemcachedStorage storage = client.getStorage();
-        final String hashValue = hash.hashValue();
         
         // add hash to key
+        final String hashValue = hash.hashValue();
         list.append(storage, key, hashValue, expire);
         
         // value hash to _key(key, hash(value))

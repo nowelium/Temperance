@@ -34,6 +34,8 @@ public interface TpFullText extends TpStorage {
     
     public boolean deleteByHash(String key, Hash hash, int expire) throws MemcachedOperationException, LockTimeoutException;
     
+    public boolean deleteByValue(String key, String value, int expire) throws MemcachedOperationException, LockTimeoutException;
+    
     public boolean deleteAtByHash(String key, Hash hash, long index, int expire) throws MemcachedOperationException, LockTimeoutException;
     
     // TODO: all hash reindex
