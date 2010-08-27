@@ -15,7 +15,7 @@
   <property name="build.complete" value="false" />
     
   <property name="temperance.name" value="temperance" />
-  <property name="temperance.version" value="0.06" />
+  <property name="temperance.version" value="0.07" />
   <property name="temperance.package.zip" value="${temperance.name}-${temperance.version}.zip" />
   <property name="temperance.package.zip.dependencies" value="${temperance.name}-${temperance.version}-dependencies.zip" />
   <property name="temperance.jar" value="${temperance.name}-${temperance.version}.jar" />
