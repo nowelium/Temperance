@@ -59,13 +59,15 @@ public class ConnectionPool implements LifeCycle {
     
     protected final BlockingQueue<MemcachedClient> release = new LinkedBlockingQueue<MemcachedClient>();
     
-    protected final AtomicBoolean fillPool = new AtomicBoolean(false);
+    protected final AtomicBoolean poolFilled = new AtomicBoolean(false);
     
     protected final AtomicLong lastAccess = new AtomicLong(0L);
     
     protected final long keepAliveTime = TimeUnit.SECONDS.toMillis(1800L);
     
     protected final CountDownLock lock;
+    
+    protected final CountDownLock fillNow = new CountDownLock(1);
     
     public ConnectionPool(Configure configure){
         this.configure = configure;
@@ -79,14 +81,6 @@ public class ConnectionPool implements LifeCycle {
         this.maxPoolSize = maxPoolSize;
         this.pool = new LinkedBlockingQueue<MemcachedClient>(maxPoolSize);
         this.lock = new CountDownLock((int) Math.round(maxPoolSize * 0.9));
-    }
-    
-    protected MemcachedClient cloneClient(){
-        try {
-            return client.clone();
-        } catch(CloneNotSupportedException e){
-            throw new RuntimeException(e);
-        }
     }
     
     protected static Map<BehaviorType, Boolean> createBehaviorTypeOption(Map<BehaviorType, Boolean> userValue){
@@ -145,9 +139,7 @@ public class ConnectionPool implements LifeCycle {
         logger.info(new StringBuilder("configure: initial connection pool size: ").append(initialPoolSize));
         logger.info(new StringBuilder("configure: max connection pool size: ").append(maxPoolSize));
         logger.info(new StringBuilder("configure: filling threshold: ").append(lock));
-        logger.info(new StringBuilder("configure: pool keepalive time: ")
-            .append(keepAliveTime).append(" ").append(TimeUnit.MILLISECONDS)
-        );
+        logger.info(new StringBuilder("configure: pool keepalive time: ").append(keepAliveTime).append(" ").append(TimeUnit.MILLISECONDS));
         
         // fill connections
         for(int i = 0; i < initialPoolSize; ++i){
@@ -164,6 +156,8 @@ public class ConnectionPool implements LifeCycle {
             release(client);
         }
         
+        // fill pool now: wait
+        executor.execute(new FillPoolNowTask());
         // fill pool: infinite
         executor.execute(new FillPoolTask());
         // release pool: infinite
@@ -172,11 +166,10 @@ public class ConnectionPool implements LifeCycle {
         schedules.add(executor.scheduleWithFixedDelay(new FreePoolTask(), 10, 10, TimeUnit.SECONDS));
         
         if(logger.isDebugEnabled()){
+            logger.debug(new StringBuilder("configure: scheduled: fill pool now"));
             logger.debug(new StringBuilder("configure: scheduled: fill pool"));
             logger.debug(new StringBuilder("configure: scheduled: release pool"));
-            logger.debug(new StringBuilder("configure: scheduled fixed delay: free pool: ")
-                .append(10).append(" ").append(TimeUnit.SECONDS)
-            );
+            logger.debug(new StringBuilder("configure: scheduled fixed delay: free pool: ").append(10).append(" ").append(TimeUnit.SECONDS));
         }
     }
     
@@ -194,12 +187,16 @@ public class ConnectionPool implements LifeCycle {
         lastAccess.set(System.currentTimeMillis());
         
         try {
-            lock.countDown();
+            lock.release();
             
             MemcachedClient connection = pool.poll(5, TimeUnit.MILLISECONDS);
             if(null != connection){
                 return connection;
             }
+            // fill pool now
+            poolFilled.set(false);
+            fillNow.release();
+            
             return pool.take();
         } catch(InterruptedException e){
             throw new RuntimeException(e);
@@ -210,15 +207,21 @@ public class ConnectionPool implements LifeCycle {
         release.offer(client);
     }
     
-    protected class FillPoolTask implements Runnable {
+    protected MemcachedClient cloneClient(){
+        try {
+            return client.clone();
+        } catch(CloneNotSupportedException e){
+            throw new RuntimeException(e);
+        }
+    }
+    
+    protected class FillPoolNowTask implements Runnable {
         public void run(){
             try {
-                // infinite loop
                 while(true){
-                    // rendezvous
-                    lock.await();
+                    fillNow.await();
                     
-                    if(fillPool.get()){
+                    if(poolFilled.get()){
                         continue;
                     }
 
@@ -233,7 +236,30 @@ public class ConnectionPool implements LifeCycle {
                             break;
                         }
                     }
-                    fillPool.set(true);
+                    
+                    poolFilled.set(true);
+                }
+            } catch(InterruptedException e){
+                //
+            }
+        }
+    }
+    
+    protected class FillPoolTask implements Runnable {
+        public void run(){
+            try {
+                // infinite loop
+                while(true){
+                    // rendezvous
+                    lock.await();
+                    
+                    if(poolFilled.get()){
+                        continue;
+                    }
+                    
+                    fillNow.release();
+
+                    poolFilled.set(true);
                 }
             } catch(InterruptedException e){
                 //
@@ -256,7 +282,8 @@ public class ConnectionPool implements LifeCycle {
                         client.quit();
                     }
                 }
-                fillPool.set(false);
+                
+                poolFilled.set(false);
                 lastAccess.set(System.currentTimeMillis());
             }
         }

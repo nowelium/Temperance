@@ -19,7 +19,9 @@ public class CountDownLock implements ConditionLock {
     public void await() throws InterruptedException {
         CountDownLatch latch = lock.get();
         latch.await();
-        lock.set(new CountDownLatch(initial));
+        synchronized(this){
+            lock.set(new CountDownLatch(initial));
+        }
     }
 
     public void release() {
@@ -33,7 +35,8 @@ public class CountDownLock implements ConditionLock {
     @Override
     public String toString(){
         StringBuilder buf = new StringBuilder();
-        buf.append("initial=").append(initial);
+        buf.append("initial=").append(initial).append(",");
+        buf.append("current=").append(lock.get().getCount());
         return buf.toString();
     }
 

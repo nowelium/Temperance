@@ -29,9 +29,10 @@ public class StartStop {
             CommandLine cli = parser.parse(options, args, true);
             
             String memcached = cli.getOptionValue("memc");
-            String memcachedPoolSize = cli.getOptionValue("memc_pool", "500");
-            String mecabrc = cli.getOptionValue("mecabrc", "/etc/mecabrc");
+            String memcachedIniPoolSize = cli.getOptionValue("memc_pool_ini", "100");
+            String memcachedMaxPoolSize = cli.getOptionValue("memc_pool_max", "500");
             
+            String mecabrc = cli.getOptionValue("mecabrc", "/etc/mecabrc");
             MecabNodeFilter nodeFilter = MecabHashing.Filter.Nouns;
             if(cli.hasOption("mecab_node_filter_nouns")){
                 nodeFilter = MecabHashing.Filter.Default;
@@ -58,7 +59,8 @@ public class StartStop {
             
             Configure configure = new Configure();
             configure.setMemcached(memcached);
-            configure.setMaxConnectionPoolSize(Integer.parseInt(memcachedPoolSize));
+            configure.setInitialConnectionPoolSize(Integer.parseInt(memcachedIniPoolSize));
+            configure.setMaxConnectionPoolSize(Integer.parseInt(memcachedMaxPoolSize));
             configure.setMecabrc(mecabrc);
             configure.setFullTextHashFunction(fullTextHashFunction);
             configure.setNodeFilter(nodeFilter);
@@ -109,8 +111,11 @@ public class StartStop {
         Option memcached = new Option("memc", "memcached", true, "memcached server string(ex. host01:11211,host02:11211)");
         memcached.setRequired(true);
         
-        Option memcachedPoolSize = new Option("memc_pool", "memcached_pool", true, "memcached connection poolsize(default: 500)");
-        memcachedPoolSize.setRequired(false);
+        Option memcachedIniPoolSize = new Option("memc_pool_ini", "memcached_pool_ini", true, "initial memcached connection poolsize(default: 100)");
+        memcachedIniPoolSize.setRequired(false);
+
+        Option memcachedMaxPoolSize = new Option("memc_pool_max", "memcached_pool_max", true, "maximum memcached connection poolsize(default: 500)");
+        memcachedMaxPoolSize.setRequired(false);
         
         Option mecabrc = new Option("mecabrc", "mecabrc", true, "mecabrc path(default /etc/mecabrc)");
         mecabrc.setRequired(false);
@@ -143,7 +148,8 @@ public class StartStop {
         
         Options options = new Options();
         options.addOption(memcached);
-        options.addOption(memcachedPoolSize);
+        options.addOption(memcachedIniPoolSize);
+        options.addOption(memcachedMaxPoolSize);
         options.addOption(mecabrc);
         options.addOptionGroup(mecabNodeFilter);
         options.addOptionGroup(hashFunction);

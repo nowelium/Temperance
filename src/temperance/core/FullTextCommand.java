@@ -153,7 +153,7 @@ public class FullTextCommand extends Command {
                     hashes.add(thpool.submit(new getHashesByValue(i)));
                 }
                 
-                final Queue<Future<List<Future<Boolean>>>> results = Lists.newLinkedList();
+                final Queue<Future<List<Future<Result>>>> results = Lists.newLinkedList();
                 while(!hashes.isEmpty()){
                     results.add(thpool.submit(new perform(hashes.poll())));
                 }
@@ -163,10 +163,10 @@ public class FullTextCommand extends Command {
                 //
                 try {
                     while(!results.isEmpty()){
-                        List<Future<Boolean>> deletes = results.poll().get();
+                        List<Future<Result>> deletes = results.poll().get();
                         
-                        for(Future<Boolean> deleted: deletes){
-                            Boolean succeed = deleted.get();
+                        for(Future<Result> deleted: deletes){
+                            Result result = deleted.get();
                             if(logger.isDebugEnabled()){
                                 logger.debug(new StringBuilder()
                                     .append("FullText deleteAllValues ")
@@ -175,8 +175,10 @@ public class FullTextCommand extends Command {
                                     .append("value: ").append(value).append(",")
                                     .append("expire: ").append(expire)
                                     .append("}")
-                                    .append(" succeed => ")
-                                    .append(succeed)
+                                    .append(" result => {")
+                                    .append("hash => ").append(result.hash.hashValue()).append(",")
+                                    .append("proceed => ").append(result.proceed)
+                                    .append("}")
                                 );
                             }
                         }
@@ -219,13 +221,13 @@ public class FullTextCommand extends Command {
                 return ft.getHashesByValue(key, value, index, SPLIT);
             }
         }
-        private class perform implements Callable<List<Future<Boolean>>> {
+        private class perform implements Callable<List<Future<Result>>> {
             private final Future<List<Hash>> future;
             private perform(Future<List<Hash>> future){
                 this.future = future;
             }
-            public List<Future<Boolean>> call() throws Exception {
-                final List<Future<Boolean>> deleted = Lists.newArrayList();
+            public List<Future<Result>> call() throws Exception {
+                final List<Future<Result>> deleted = Lists.newArrayList();
                 final List<Hash> hashes = future.get();
                 for(Hash hash: hashes){
                     final Queue<Future<List<TpListResult>>> queue = Lists.newLinkedList();
@@ -254,7 +256,15 @@ public class FullTextCommand extends Command {
                 return ft.getValuesByResult(key, hash, index, SPLIT);
             }
         }
-        private class deleteAtByHash extends SubCommand<Boolean> {
+        private static class Result {
+            protected final Hash hash;
+            protected final Boolean proceed;
+            private Result(Hash hash, Boolean proceed){
+                this.hash = hash;
+                this.proceed = proceed;
+            }
+        }
+        private class deleteAtByHash extends SubCommand<Result> {
             private final Hash hash;
             private final Future<List<TpListResult>> future;
             private deleteAtByHash(final Hash hash, Future<List<TpListResult>> future){
@@ -262,7 +272,7 @@ public class FullTextCommand extends Command {
                 this.future = future;
             }
             @Override
-            public Boolean apply() throws LockTimeoutException, MemcachedOperationException{
+            public Result apply() throws LockTimeoutException, MemcachedOperationException{
                 try {
                     List<TpListResult> results = future.get();
                     for(TpListResult result: results){
@@ -270,17 +280,17 @@ public class FullTextCommand extends Command {
                             ft.deleteAtByHash(key, hash, result.getIndex(), expire);
                         }
                     }
-                    return Boolean.TRUE;
+                    return new Result(hash, Boolean.TRUE);
                 } catch(InterruptedException e){
                     if(logger.isErrorEnabled()){
                         logger.error(deleteAtByHash.class, e);
                     }
-                    return Boolean.FALSE;
+                    return new Result(hash, Boolean.FALSE);
                 } catch(ExecutionException e){
                     if(logger.isErrorEnabled()){
                         logger.error(deleteAtByHash.class, e);
                     }
-                    return Boolean.FALSE;
+                    return new Result(hash, Boolean.FALSE);
                 }
             }
         }
