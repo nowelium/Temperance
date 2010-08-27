@@ -15,7 +15,7 @@ import temperance.storage.TpList.TpListResult;
 import temperance.storage.impl.MemcachedFullText;
 import temperance.util.Lists;
 
-public class FullTextCommand implements Command {
+public class FullTextCommand extends Command {
     
     protected static final Log logger = LogFactory.getLog(FullTextCommand.class);
     

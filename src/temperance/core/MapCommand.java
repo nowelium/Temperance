@@ -14,7 +14,7 @@ import temperance.storage.TpMap.TpMapResult;
 import temperance.storage.impl.MemcachedMap;
 import temperance.util.Lists;
 
-public class MapCommand implements Command {
+public class MapCommand extends Command {
     
     protected static final Log logger = LogFactory.getLog(MapCommand.class);
     

@@ -16,7 +16,7 @@ import temperance.storage.TpList.TpListResult;
 import temperance.storage.impl.MemcachedList;
 import temperance.util.Lists;
 
-public class ListCommand implements Command {
+public class ListCommand extends Command {
     
     protected static final Log logger = LogFactory.getLog(ListCommand.class);
     
