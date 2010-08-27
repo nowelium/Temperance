@@ -3,6 +3,7 @@ package temperance.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
@@ -19,6 +20,10 @@ public class Lists {
     
     public static <T> ArrayList<T> newArrayList(Collection<? extends T> collection){
         return new ArrayList<T>(collection);
+    }
+    
+    public static <T> LinkedList<T> newLinkedList(){
+        return new LinkedList<T>();
     }
     
     public static <T> IntersectalList<T> newIntersectList(){

@@ -1,7 +1,7 @@
 package temperance.core;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +29,19 @@ import temperance.lock.impl.CountDownLock;
 public class ConnectionPool implements LifeCycle {
     
     protected static final Log logger = LogFactory.getLog(ConnectionPool.class);
+    
+    protected static final long poolReleaseInterval;
+    
+    static {
+        String poolInterval = System.getProperty("temperance.memc.pool_release_interval", "20000");
+        long interval = 20000L;
+        try {
+            Long.parseLong(poolInterval);
+        } catch(NumberFormatException e){
+            // nop
+        }
+        poolReleaseInterval = interval;
+    }
 
     protected final Configure configure;
     
@@ -68,7 +81,7 @@ public class ConnectionPool implements LifeCycle {
         this.lock = new CountDownLock((int) Math.round(maxPoolSize * 0.9));
     }
     
-    protected MemcachedClient clone(){
+    protected MemcachedClient cloneClient(){
         try {
             return client.clone();
         } catch(CloneNotSupportedException e){
@@ -77,7 +90,7 @@ public class ConnectionPool implements LifeCycle {
     }
     
     protected static Map<BehaviorType, Boolean> createBehaviorTypeOption(Map<BehaviorType, Boolean> userValue){
-        Map<BehaviorType, Boolean> behaviors = new HashMap<BehaviorType, Boolean>(userValue);
+        Map<BehaviorType, Boolean> behaviors = new EnumMap<BehaviorType, Boolean>(userValue);
         // default values
         if(!behaviors.containsKey(BehaviorType.SUPPORT_CAS)){
             behaviors.put(BehaviorType.SUPPORT_CAS, Boolean.TRUE);
@@ -138,7 +151,7 @@ public class ConnectionPool implements LifeCycle {
         
         // fill connections
         for(int i = 0; i < initialPoolSize; ++i){
-            pool.offer(clone());
+            pool.offer(cloneClient());
         }
         
         MemcachedClient client = get();
@@ -216,7 +229,7 @@ public class ConnectionPool implements LifeCycle {
                     int capacity = pool.remainingCapacity();
                     int count = capacity - initialPoolSize;
                     for(int i = 0; i < count; ++i){
-                        if(!pool.offer(ConnectionPool.this.clone())){
+                        if(!pool.offer(cloneClient())){
                             break;
                         }
                     }
@@ -257,9 +270,9 @@ public class ConnectionPool implements LifeCycle {
                     client.quit();
                     
                     // TODO: 20000 usec await when: libmemcached becomes segfault by excessive access
-                    TimeUnit.MICROSECONDS.sleep(20000);
+                    TimeUnit.MICROSECONDS.sleep(poolReleaseInterval);
                     
-                    pool.offer(ConnectionPool.this.clone());
+                    pool.offer(cloneClient());
                 }
             } catch(InterruptedException e){
                 // nop

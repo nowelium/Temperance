@@ -1,7 +1,9 @@
 package temperance.core;
 
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.apache.commons.logging.Log;
@@ -41,7 +43,7 @@ public class FullTextCommand extends Command {
     }
     
     public Future<Boolean> deleteAllValues(final String key, final int expire, final String value) {
-        return submit(new DeleteAllValues(connection, key, expire, value));
+        return submit(new DeleteAllValues(thread, connection, key, expire, value));
     }
     
     public Future<List<Hash>> getHashes(final String key){
@@ -126,27 +128,63 @@ public class FullTextCommand extends Command {
     }
     
     protected static class DeleteAllValues extends SubCommand<Boolean> {
+        protected final ThreadPool thpool;
         protected final ConnectionPool pool;
         protected final String key;
         protected final int expire;
         protected final String value;
-        protected DeleteAllValues(ConnectionPool pool, String key, int expire, String value) {
+        protected final TpFullText ft;
+        protected DeleteAllValues(ThreadPool thpool, ConnectionPool pool, String key, int expire, String value) {
+            this.thpool = thpool;
             this.pool = pool;
             this.key = key;
             this.expire = expire;
             this.value = value;
+            this.ft = new MemcachedFullText(pool);
         }
         public Boolean apply() throws LockTimeoutException, MemcachedOperationException {
-            final TpFullText ft = new MemcachedFullText(pool);
-            final long hashCount = ft.hashCountByValue(key, value);
+            // FIXME: delete all performance improve
             try {
                 // first. delete hash by value
+                final long hashCount = ft.hashCountByValue(key, value);
+                
+                final Queue<Future<List<Hash>>> hashes = Lists.newLinkedList();
                 for(long i = 0; i < hashCount; i += SPLIT){
-                    List<Hash> hashes = ft.getHashesByValue(key, value, i, SPLIT);
-                    perform(ft, hashes);
+                    hashes.add(thpool.submit(new getHashesByValue(i)));
                 }
-                // second. delete value
-                ft.deleteByValue(key, value, expire);
+                
+                final Queue<Future<List<Future<Boolean>>>> results = Lists.newLinkedList();
+                while(!hashes.isEmpty()){
+                    results.add(thpool.submit(new perform(hashes.poll())));
+                }
+                
+                //
+                // wait all futures
+                //
+                try {
+                    while(!results.isEmpty()){
+                        List<Future<Boolean>> deletes = results.poll().get();
+                        
+                        for(Future<Boolean> deleted: deletes){
+                            Boolean succeed = deleted.get();
+                            if(logger.isDebugEnabled()){
+                                logger.debug(new StringBuilder()
+                                    .append("FullText deleteAllValues ")
+                                    .append("{")
+                                    .append("key: ").append(key).append(",")
+                                    .append("value: ").append(value).append(",")
+                                    .append("expire: ").append(expire)
+                                    .append("}")
+                                    .append(" succeed => ")
+                                    .append(succeed)
+                                );
+                            }
+                        }
+                    }
+                } finally {
+                    // second. delete value
+                    ft.deleteByValue(key, value, expire);
+                }
                 
                 // TODO: third. delete hash!! 
                 return Boolean.TRUE;
@@ -160,21 +198,89 @@ public class FullTextCommand extends Command {
                     logger.error(DeleteAllValues.class, e);
                 }
                 return Boolean.FALSE;
-            }
-        }
-        protected void perform(TpFullText ft, List<Hash> hashes) throws MemcachedOperationException, LockTimeoutException {
-            for(Hash hash: hashes){
-                final long valueCount = ft.valueCount(key, hash);
-                for(long i = 0; i < valueCount; i += SPLIT){
-                    List<TpListResult> results = ft.getValuesByResult(key, hash, i, SPLIT);
-                    perform(ft, hash, results);
+            } catch(ExecutionException e){
+                if(logger.isErrorEnabled()){
+                    logger.error(DeleteAllValues.class, e);
                 }
+                return Boolean.FALSE;
+            } catch(InterruptedException e){
+                if(logger.isErrorEnabled()){
+                    logger.error(DeleteAllValues.class, e);
+                }
+                return Boolean.FALSE;
             }
         }
-        protected void perform(TpFullText ft, Hash hash, List<TpListResult> results) throws MemcachedOperationException, LockTimeoutException {
-            for(TpListResult result: results){
-                if(value.equals(result.getValue())){
-                    ft.deleteAtByHash(key, hash, result.getIndex(), expire);
+        private class getHashesByValue implements Callable<List<Hash>> {
+            private final long index;
+            private getHashesByValue(long index){
+                this.index = index;
+            }
+            public List<Hash> call() throws Exception {
+                return ft.getHashesByValue(key, value, index, SPLIT);
+            }
+        }
+        private class perform implements Callable<List<Future<Boolean>>> {
+            private final Future<List<Hash>> future;
+            private perform(Future<List<Hash>> future){
+                this.future = future;
+            }
+            public List<Future<Boolean>> call() throws Exception {
+                final List<Future<Boolean>> deleted = Lists.newArrayList();
+                final List<Hash> hashes = future.get();
+                for(Hash hash: hashes){
+                    final Queue<Future<List<TpListResult>>> queue = Lists.newLinkedList();
+                    final long valueCount = ft.valueCount(key, hash);
+                    for(long i = 0; i < valueCount; i += SPLIT){
+                        queue.add(thpool.submit(new getValuesByResult(ft, hash, i)));
+                    }
+                    
+                    while(!queue.isEmpty()){
+                        deleted.add(thpool.submit(new deleteAtByHash(hash, queue.poll())));
+                    }
+                }
+                return deleted;
+            }
+        }
+        private class getValuesByResult implements Callable<List<TpListResult>> {
+            private final TpFullText ft;
+            private final Hash hash;
+            private final long index;
+            private getValuesByResult(TpFullText ft, Hash hash, long index){
+                this.ft = ft;
+                this.hash = hash;
+                this.index = index;
+            }
+            public List<TpListResult> call() throws Exception {
+                return ft.getValuesByResult(key, hash, index, SPLIT);
+            }
+        }
+        private class deleteAtByHash extends SubCommand<Boolean> {
+            private final Hash hash;
+            private final Future<List<TpListResult>> future;
+            private deleteAtByHash(final Hash hash, Future<List<TpListResult>> future){
+                this.hash = hash;
+                this.future = future;
+            }
+            @Override
+            public Boolean apply() throws LockTimeoutException, MemcachedOperationException{
+                try {
+                    List<TpListResult> results = future.get();
+                    for(TpListResult result: results){
+                        if(value.equals(result.getValue())){
+                            ft.deleteAtByHash(key, hash, result.getIndex(), expire);
+                        }
+                    }
+                    return Boolean.TRUE;
+                } catch(InterruptedException e){
+                    if(logger.isErrorEnabled()){
+                        logger.error(deleteAtByHash.class, e);
+                    }
+                    return Boolean.FALSE;
+                } catch(ExecutionException e){
+                    if(logger.isErrorEnabled()){
+                        logger.error(deleteAtByHash.class, e);
+                    }
+                    return Boolean.FALSE;
                 }
             }
         }
@@ -257,6 +363,5 @@ public class FullTextCommand extends Command {
                 return Boolean.FALSE;
             }
         }
-        
     }
 }
