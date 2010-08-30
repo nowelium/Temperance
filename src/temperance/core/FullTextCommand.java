@@ -203,13 +203,11 @@ public class FullTextCommand extends Command {
             } catch(MemcachedOperationException e){
                 if(logger.isErrorEnabled()){
                     logger.error(DeleteAllValues.class, e);
-                    logger.error(e.getMessage());
                 }
                 return Boolean.FALSE;
             } catch(LockTimeoutException e){
                 if(logger.isErrorEnabled()){
                     logger.error(DeleteAllValues.class, e);
-                    logger.error(e.getMessage());
                 }
                 return Boolean.FALSE;
             } catch(ExecutionException e){
@@ -232,8 +230,8 @@ public class FullTextCommand extends Command {
                 this.limit = limit;
             }
             public List<Hash> call() throws Exception {
-                final TpFullText ft = new MemcachedFullText(pool);
-                return ft.getHashesByValue(key, value, index, limit);
+                final TpFullText _ft = new MemcachedFullText(pool);
+                return _ft.getHashesByValue(key, value, index, limit);
             }
         }
         private class perform implements Callable<List<Future<Result>>> {
@@ -242,12 +240,12 @@ public class FullTextCommand extends Command {
                 this.future = future;
             }
             public List<Future<Result>> call() throws Exception {
-                final TpFullText ft = new MemcachedFullText(pool);
                 final List<Future<Result>> deleted = Lists.newArrayList();
                 final List<Hash> hashes = future.get();
+                final TpFullText _ft = new MemcachedFullText(pool);
                 for(Hash hash: hashes){
                     final Queue<Future<List<TpListResult>>> queue = Lists.newLinkedList();
-                    final long valueCount = ft.valueCount(key, hash);
+                    final long valueCount = _ft.valueCount(key, hash);
                     for(long i = 0; i < valueCount; i += SPLIT){
                         queue.add(thpool.submit(new getValuesByResult(hash, i)));
                     }
@@ -267,8 +265,8 @@ public class FullTextCommand extends Command {
                 this.index = index;
             }
             public List<TpListResult> call() throws Exception {
-                final TpFullText ft = new MemcachedFullText(pool);
-                return ft.getValuesByResult(key, hash, index, SPLIT);
+                final TpFullText _ft = new MemcachedFullText(pool);
+                return _ft.getValuesByResult(key, hash, index, SPLIT);
             }
         }
         private static class Result {
@@ -289,11 +287,11 @@ public class FullTextCommand extends Command {
             @Override
             public Result apply() throws LockTimeoutException, MemcachedOperationException {
                 try {
-                    final TpFullText ft = new MemcachedFullText(pool);
                     final List<TpListResult> results = future.get();
+                    final TpFullText _ft = new MemcachedFullText(pool);
                     for(TpListResult result: results){
                         if(value.equals(result.getValue())){
-                            ft.deleteAtByHash(key, hash, result.getIndex(), expire);
+                            _ft.deleteAtByHash(key, hash, result.getIndex(), expire);
                         }
                     }
                     return new Result(hash, Boolean.TRUE);

@@ -21,13 +21,11 @@ abstract class SubCommand<T> implements Callable<T> {
             } catch(LockTimeoutException e){
                 if(10 < i){
                     logger.error(getClass(), e);
-                    logger.error(e.getMessage());
                     throw e;
                 }
                 continue;
             } catch(MemcachedOperationException e){
                 logger.error(getClass(), e);
-                logger.error(e.getMessage());
                 throw e;
             }
         }

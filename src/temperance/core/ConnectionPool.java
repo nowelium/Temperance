@@ -237,6 +237,7 @@ public class ConnectionPool implements LifeCycle {
                         }
                     }
                     
+                    lastAccess.set(System.currentTimeMillis());
                     poolFilled.set(true);
                 }
             } catch(InterruptedException e){
