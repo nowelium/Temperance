@@ -50,7 +50,7 @@ public class MemcachedList implements TpList {
     protected static final int LOCK_VALUE_FLAG = 0;
     
     // TODO: hardcode, runtime parameter
-    protected static final long INCREMENT_LOCK_TIMEOUT = TimeUnit.SECONDS.toMillis(10);
+    protected static final long INCREMENT_LOCK_TIMEOUT = TimeUnit.SECONDS.toMillis(60);
     
     // TODO: hardcode, runtime parameter
     protected static final long KEY_LOCK_TIMEOUT = TimeUnit.SECONDS.toMillis(60);

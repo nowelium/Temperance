@@ -2,7 +2,6 @@ package temperance.core;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -166,9 +165,9 @@ public class FullTextCommand extends Command {
                 // wait all futures
                 //
                 try {
-                    logger.info("await all delete");
+                    logger.info("await all: delete");
                     for(Future<List<Future<Result>>> future: results){
-                        logger.info("await delete");
+                        logger.debug("await: delete");
                         List<Future<Result>> deletes = future.get();
                         for(Future<Result> deleted: deletes){
                             Result result = deleted.get();
@@ -187,8 +186,9 @@ public class FullTextCommand extends Command {
                                 );
                             }
                         }
+                        logger.debug("await: delete done");
                     }
-                    logger.info("await all delete: done");
+                    logger.info("await all: delete done");
                 } finally {
                     // second. delete value
                     logger.info("delete value");
@@ -244,14 +244,14 @@ public class FullTextCommand extends Command {
                 final List<Hash> hashes = future.get();
                 final TpFullText _ft = new MemcachedFullText(pool);
                 for(Hash hash: hashes){
-                    final Queue<Future<List<TpListResult>>> queue = Lists.newLinkedList();
+                    final LinkedList<Future<List<TpListResult>>> queue = Lists.newLinkedList();
                     final long valueCount = _ft.valueCount(key, hash);
                     for(long i = 0; i < valueCount; i += SPLIT){
                         queue.add(thpool.submit(new getValuesByResult(hash, i)));
                     }
                     
-                    while(!queue.isEmpty()){
-                        deleted.add(thpool.submit(new deleteAtByHash(hash, queue.poll())));
+                    for(Future<List<TpListResult>> future: queue){
+                        deleted.add(thpool.submit(new deleteAtByHash(hash, future)));
                     }
                 }
                 return deleted;
