@@ -321,16 +321,10 @@ public class ConnectionPool implements LifeCycle {
         
         protected final long entryTime;
         
-        protected final long duration;
-        
-        protected final TimeUnit unit;
-        
         protected final long expire;
         
         protected CreateRequest(long duration, TimeUnit unit){
             this.entryTime = System.nanoTime();
-            this.duration = duration;
-            this.unit = unit;
             this.expire = entryTime + unit.toNanos(duration);
         }
 

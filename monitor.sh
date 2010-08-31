@@ -4,7 +4,7 @@ JAVA_OPTIONS="-Dfile.encoding=UTF-8"
 
 TARGET_HOST="localhost"
 TARGET_PORT="17001"
-INTERVAL="1.0"
+INTERVAL="0.5"
 
 export JAVA_HOME=$JAVA_HOME
 export _JAVA_OPTIONS=$JAVA_OPTIONS
@@ -12,7 +12,7 @@ export _JAVA_OPTIONS=$JAVA_OPTIONS
 DIR=$(cd $(dirname $0);pwd)
 
 LIB=$DIR
-LIB=$LIB:"$DIR/dist/temperance-0.07.jar"
+LIB=$LIB:"$DIR/dist/temperance-0.08.jar"
 LIB=$LIB:"$DIR/resources"
 LIB=$LIB:"$DIR/lib/commons-cli-1.0.jar"
 LIB=$LIB:"$DIR/lib/protobuf/protobuf-java-2.2.0.jar"
