@@ -93,7 +93,7 @@ public class ConnectionPool implements LifeCycle {
         this.initialPoolSize = initialPoolSize;
         this.maxPoolSize = maxPoolSize;
         this.pool = new LinkedBlockingQueue<MemcachedClient>(maxPoolSize);
-        this.lock = new CountDownLock((int) Math.round(maxPoolSize * 0.9));
+        this.lock = new CountDownLock((int) Math.round(maxPoolSize * 0.8));
     }
     
     protected static Map<BehaviorType, Boolean> createBehaviorTypeOption(Map<BehaviorType, Boolean> userValue){
@@ -207,13 +207,13 @@ public class ConnectionPool implements LifeCycle {
         try {
             lock.release();
             
-            MemcachedClient connection = pool.poll(10, TimeUnit.MICROSECONDS);
+            MemcachedClient connection = pool.poll(5, TimeUnit.MILLISECONDS);
             if(null != connection){
                 return connection;
             }
             
             // create request: now!
-            fillRequestQueue.offer(new CreateRequest(0, TimeUnit.MICROSECONDS));
+            fillRequest(100, TimeUnit.MICROSECONDS);
             
             return pool.take();
         } catch(InterruptedException e){
@@ -234,6 +234,19 @@ public class ConnectionPool implements LifeCycle {
         }
     }
     
+    protected void fillRequest(long expire, TimeUnit unit){
+        if(poolFilled.get()){
+            return ;
+        }
+        
+        final int capacity = pool.remainingCapacity();
+        final int count = capacity - initialPoolSize;
+        final int requestSize = fillRequestQueue.size();
+        if(requestSize < capacity && requestSize < count && 0 < count){
+            fillRequestQueue.offer(new CreateRequest(expire, unit));
+        }
+    }
+    
     protected class CreatePoolTask implements Runnable {
         public void run(){
             try {
@@ -241,9 +254,10 @@ public class ConnectionPool implements LifeCycle {
                     fillRequestQueue.take();
                     
                     if(!pool.offer(cloneClient())){
+                        fillRequestQueue.clear();
+                        
                         if(logger.isDebugEnabled()){
                             logger.debug("pool max; clear fill requests");
-                            fillRequestQueue.clear();
                         }
                     }
                 }
@@ -269,7 +283,7 @@ public class ConnectionPool implements LifeCycle {
                     int count = capacity - initialPoolSize;
                     for(int i = 0; i < count; ++i){
                         // TODO: await: libmemcached becaomes "CONNECTION SOCKET CREATE FAILURE" by excessive access
-                        fillRequestQueue.offer(new CreateRequest(poolFillInterval, TimeUnit.MICROSECONDS));
+                        fillRequest(poolFillInterval, TimeUnit.MICROSECONDS);
                     }
 
                     poolFilled.set(true);
