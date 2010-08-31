@@ -34,7 +34,7 @@ export _JAVA_OPTIONS=$JAVA_OPTIONS
 DIR=$(cd $(dirname $0);pwd)
 
 LIB=$DIR
-LIB=$LIB:"$DIR/dist/temperance-0.09.jar"
+LIB=$LIB:"$DIR/dist/temperance-0.10.jar"
 LIB=$LIB:"$DIR/resources"
 LIB=$LIB:"$DIR/lib/libmecab-0.01.jar"
 LIB=$LIB:"$DIR/lib/libmemcached-0.01.jar"
