@@ -81,21 +81,46 @@ public class MemcachedList implements TpList {
     }
     
     public List<String> get(final String key, final long offset, final long limit) throws MemcachedOperationException {
-        final List<TpListResult> results = getByResult(key, offset, limit);
-        final List<String> values = Lists.newArrayList();
-        for(TpListResult result: results){
-            values.add(result.getValue());
+        synchronized(this){
+            final List<String> returnValue = Lists.newArrayList();
+            get(key, offset, limit, new StreamReader<String>(){
+                public void read(String value){
+                    returnValue.add(value);
+                }
+            });
+            return returnValue;
         }
-        return values;
+    }
+    
+    public void get(final String key, final long offset, final long limit, final StreamReader<String> reader) throws MemcachedOperationException {
+        synchronized(this){
+            getByResult(key, offset, limit, new StreamReader<TpListResult>(){
+                public void read(TpListResult result){
+                    reader.read(result.getValue());
+                }
+            });
+        }
     }
     
     public List<TpListResult> getByResult(final String key, final long offset, final long limit) throws MemcachedOperationException {
+        synchronized(this){
+            final List<TpListResult> returnValue = Lists.newArrayList();
+            getByResult(key, offset, limit, new StreamReader<TpListResult>(){
+                public void read(TpListResult result){
+                    returnValue.add(result);
+                }
+            });
+            return returnValue;
+        }
+    }
+    
+    public void getByResult(final String key, final long offset, final long limit, final StreamReader<TpListResult> reader) throws MemcachedOperationException {
         final MemcachedClient client = pool.get();
         try {
             final MemcachedStorage storage = client.getStorage();
             final long count = size(storage, key);
             if(count < 1){
-                return Lists.newArrayList();
+                return ;
             }
             
             final KeyList index = new KeyList();
@@ -103,15 +128,13 @@ public class MemcachedList implements TpList {
                 index.add(key, i);
             }
             
-            final List<TpListResult> returnValue = Lists.newArrayList();
             synchronized(storage){
                 storage.getMultiByKey(new Fetcher(){
                     public void fetch(SimpleResult result) {
                         final long idx = index.getIndex(result.getKey());
-                        returnValue.add(new TpListResult(key, idx, result.getValue()));
+                        reader.read(new TpListResult(key, idx, result.getValue()));
                     }
                 }, key, index.toKeys());
-                return returnValue;
             }
         } catch(LibMemcachedException e){
             throw new MemcachedOperationException(e);

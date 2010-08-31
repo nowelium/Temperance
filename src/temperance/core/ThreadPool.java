@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -151,7 +151,7 @@ public class ThreadPool implements LifeCycle {
     
     protected static class TrackingThreadPoolExecutor extends ThreadPoolExecutor {
         
-        protected final Map<Runnable, Boolean> inProgress = new ConcurrentHashMap<Runnable, Boolean>();
+        protected final Map<Runnable, Boolean> inProgress = Collections.synchronizedMap(new WeakHashMap<Runnable, Boolean>());
         
         protected final ThreadLocal<Long> startTime = new ThreadLocal<Long>();
         
@@ -196,7 +196,7 @@ public class ThreadPool implements LifeCycle {
             long elapsed = System.currentTimeMillis() - startTime.get().longValue();
             totalTime.addAndGet(elapsed);
             totalTasks.incrementAndGet();
-            
+
             inProgress.remove(command);
             super.afterExecute(command, t);
         }

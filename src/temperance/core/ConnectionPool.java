@@ -228,17 +228,15 @@ public class ConnectionPool implements LifeCycle {
     
     protected MemcachedClient cloneClient(){
         try {
-            return client.clone();
+            synchronized(client){
+                return client.clone();
+            }
         } catch(CloneNotSupportedException e){
             throw new RuntimeException(e);
         }
     }
     
     protected void fillRequest(long expire, TimeUnit unit){
-        if(poolFilled.get()){
-            return ;
-        }
-        
         final int capacity = pool.remainingCapacity();
         final int count = capacity - initialPoolSize;
         final int requestSize = fillRequestQueue.size();
@@ -254,6 +252,7 @@ public class ConnectionPool implements LifeCycle {
                     fillRequestQueue.take();
                     
                     if(!pool.offer(cloneClient())){
+                        poolFilled.set(true);
                         fillRequestQueue.clear();
                         
                         if(logger.isDebugEnabled()){
@@ -323,7 +322,7 @@ public class ConnectionPool implements LifeCycle {
                     ReleaseRequest req = releaseRequestQueue.take();
                     req.getClient().quit();
                     
-                    fillRequestQueue.offer(new CreateRequest(poolFillInterval, TimeUnit.MICROSECONDS));
+                    fillRequest(poolFillInterval, TimeUnit.MICROSECONDS);
                 }
             } catch(InterruptedException e){
                 // nop

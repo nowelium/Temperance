@@ -74,39 +74,106 @@ public class MemcachedFullText implements TpFullText {
     }
     
     public List<Hash> getHashes(final String key, final long offset, final long limit) throws MemcachedOperationException {
-        final List<TpListResult> hashResults = getHashesByResult(key, offset, limit);
-        final List<Hash> hashList = Lists.newArrayList();
-        for(TpListResult result: hashResults){
-            hashList.add(new StringHash(result.getValue()));
+        synchronized(this){
+            final List<Hash> returnValue = Lists.newArrayList();
+            getHashes(key, offset, limit, new StreamReader<Hash>(){
+                public void read(Hash hash){
+                    returnValue.add(hash);
+                }
+            });
+            return returnValue;
         }
-        return hashList;
     }
     
-    public List<Hash> getHashesByValue(final String key, final String value, final long offset, final long limit) throws MemcachedOperationException, LockTimeoutException {
-        final Hash valueHash = hashFunc.hash(value);
-        final List<TpListResult> results = list.getByResult(genValueKey(key, valueHash), offset, limit);
-        final List<Hash> hashList = Lists.newArrayList();
-        for(TpListResult result: results){
-            hashList.add(new StringHash(result.getValue()));
+    public void getHashes(final String key, final long offset, final long limit, final StreamReader<Hash> reader) throws MemcachedOperationException {
+        synchronized(this){
+            getHashesByResult(key, offset, limit, new StreamReader<TpListResult>(){
+                public void read(TpListResult result){
+                    reader.read(new StringHash(result.getValue()));
+                }
+            });
         }
-        return hashList;
+    }
+    
+    public List<Hash> getHashesByValue(final String key, final String value, final long offset, final long limit) throws MemcachedOperationException {
+        synchronized(this){
+            final List<Hash> returnValue = Lists.newArrayList();
+            getHashesByValue(key, value, offset, limit, new StreamReader<Hash>(){
+                public void read(Hash hash){
+                    returnValue.add(hash);
+                }
+            });
+            return returnValue;
+        }
+    }
+    
+    public void getHashesByValue(final String key, final String value, final long offset, final long limit, final StreamReader<Hash> reader) throws MemcachedOperationException {
+        synchronized(list){
+            final Hash valueHash = hashFunc.hash(value);
+            list.getByResult(genValueKey(key, valueHash), offset, limit, new StreamReader<TpListResult>(){
+                public void read(TpListResult result){
+                    reader.read(new StringHash(result.getValue()));
+                }
+            });
+        }
     }
     
     public List<TpListResult> getHashesByResult(final String key, final long offset, final long limit) throws MemcachedOperationException {
-        return list.getByResult(key, offset, limit);
+        synchronized(this){
+            final List<TpListResult> returnValue = Lists.newArrayList();
+            getHashesByResult(key, offset, limit, new StreamReader<TpListResult>(){
+                public void read(TpListResult result){
+                    returnValue.add(result);
+                }
+            });
+            return returnValue;
+        }
+    }
+    
+    public void getHashesByResult(String key, long offset, long limit, StreamReader<TpListResult> reader) throws MemcachedOperationException {
+        synchronized(list){
+            list.getByResult(key, offset, limit, reader);
+        }
     }
     
     public List<String> getValues(final String key, final Hash hash, final long offset, final long limit) throws MemcachedOperationException {
-        final List<TpListResult> valueResults = getValuesByResult(key, hash, offset, limit);
-        final List<String> valueList = Lists.newArrayList();
-        for(TpListResult result: valueResults){
-            valueList.add(result.getValue());
+        synchronized(this){
+            final List<String> returnValue = Lists.newArrayList();
+            getValues(key, hash, offset, limit, new StreamReader<String>(){
+                public void read(String value){
+                    returnValue.add(value);
+                }
+            });
+            return returnValue;
         }
-        return valueList;
+    }
+    
+    public void getValues(final String key, final Hash hash, final long offset, final long limit, final StreamReader<String> reader) throws MemcachedOperationException {
+        synchronized(this){
+            getValuesByResult(key, hash, offset, limit, new StreamReader<TpListResult>(){
+                public void read(TpListResult result){
+                    reader.read(result.getValue());
+                }
+            });
+        }
     }
     
     public List<TpListResult> getValuesByResult(final String key, final Hash hash, final long offset, final long limit) throws MemcachedOperationException {
-        return list.getByResult(genKey(key, hash), offset, limit);
+        synchronized(this){
+            final List<TpListResult> returnValue = Lists.newArrayList();
+            getValuesByResult(key, hash, offset, limit, new StreamReader<TpListResult>(){
+                public void read(TpListResult result){
+                    returnValue.add(result);
+                }
+            });
+            return returnValue;
+        }
+    }
+    
+    public void getValuesByResult(final String key, final Hash hash, final long offset, final long limit, final StreamReader<TpListResult> reader) throws MemcachedOperationException {
+        synchronized(list){
+            list.getByResult(genKey(key, hash), offset, limit, reader);
+        }
     }
     
     public long hashCount(final String key) throws MemcachedOperationException {

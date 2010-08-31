@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import temperance.exception.LockTimeoutException;
 import temperance.exception.MemcachedOperationException;
 import temperance.hash.Hash;
+import temperance.storage.TpStorage.StreamReader;
 import temperance.storage.TpFullText;
 import temperance.storage.TpList.TpListResult;
 import temperance.storage.impl.MemcachedFullText;
@@ -89,6 +90,7 @@ public class FullTextCommand extends Command {
     }
     
     protected static class DeleteAll extends SubCommand<Boolean> {
+        protected static final Log logger = LogFactory.getLog(FullTextCommand.class);
         protected final ConnectionPool pool;
         protected final String key;
         protected final int expire;
@@ -130,28 +132,24 @@ public class FullTextCommand extends Command {
         protected final String key;
         protected final int expire;
         protected final String value;
-        protected final TpFullText ft;
         protected DeleteAllValues(ConnectionPool pool, String key, int expire, String value) {
             this.pool = pool;
             this.key = key;
             this.expire = expire;
             this.value = value;
-            this.ft = new MemcachedFullText(pool);
         }
         public Boolean apply() throws LockTimeoutException, MemcachedOperationException {
-            // FIXME: delete all performance improve
+            final TpFullText ft = new MemcachedFullText(pool);
+            final long hashCount = ft.hashCountByValue(key, value);
             try {
-                
                 // first. delete hash by value
-                getHashesByValue();
-                
+                for(long i = 0; i < hashCount; i += SPLIT){
+                    ft.getHashesByValue(key, value, i, SPLIT, new performHash());
+                }
                 // second. delete value
                 ft.deleteByValue(key, value, expire);
                 
                 // TODO: third. delete hash!! 
-                //
-                //
-                
                 return Boolean.TRUE;
             } catch(MemcachedOperationException e){
                 if(logger.isErrorEnabled()){
@@ -165,33 +163,44 @@ public class FullTextCommand extends Command {
                 return Boolean.FALSE;
             }
         }
-        private void getHashesByValue() throws MemcachedOperationException, LockTimeoutException {
-            final long hashCount = ft.hashCountByValue(key, value);
-            for(long i = 0; i < hashCount; i += SPLIT){
-                List<Hash> hashes = ft.getHashesByValue(key, value, i, SPLIT);
-                for(Hash hash: hashes){
-                    getValuesByResult(hash);
-                    hash = null;
+        private class performHash implements StreamReader<Hash> {
+            private final Log logger = LogFactory.getLog(performHash.class);
+            public void read(Hash hash){
+                try {
+                    final TpFullText ft = new MemcachedFullText(pool);
+                    final long valueCount = ft.valueCount(key, hash);
+                    for(long i = 0; i < valueCount; i += SPLIT){
+                        ft.getValuesByResult(key, hash, i, SPLIT, new performValue(hash));
+                    }
+                } catch(MemcachedOperationException e){
+                    if(logger.isErrorEnabled()){
+                        logger.error(performHash.class, e);
+                    }
                 }
-                hashes = null;
             }
         }
-        private void getValuesByResult(Hash hash) throws MemcachedOperationException, LockTimeoutException {
-            final long valueCount = ft.valueCount(key, hash);
-            for(long i = 0; i < valueCount; i += SPLIT){
-                List<TpListResult> results = ft.getValuesByResult(key, hash, i, SPLIT);
-                deleteAtByHash(hash, results);
-                results = null;
+        private class performValue implements StreamReader<TpListResult> {
+            private final Log logger = LogFactory.getLog(performValue.class);
+            private final Hash hash;
+            private performValue(Hash hash){
+                this.hash = hash;
             }
-        }
-        private void deleteAtByHash(Hash hash, List<TpListResult> results) throws MemcachedOperationException, LockTimeoutException {
-            for(TpListResult result: results){
-                if(value.equals(result.getValue())){
-                    ft.deleteAtByHash(key, hash, result.getIndex(), expire);
+            public void read(TpListResult result){
+                try {
+                    if(value.equals(result.getValue())){
+                        final TpFullText ft = new MemcachedFullText(pool);
+                        ft.deleteAtByHash(key, hash, result.getIndex(), expire);
+                    }
+                } catch(MemcachedOperationException e){
+                    if(logger.isErrorEnabled()){
+                        logger.error(performValue.class, e);
+                    }
+                } catch(LockTimeoutException e){
+                    if(logger.isErrorEnabled()){
+                        logger.error(performValue.class, e);
+                    }
                 }
-                result = null;
             }
-            results = null;
         }
     }
     
@@ -272,5 +281,6 @@ public class FullTextCommand extends Command {
                 return Boolean.FALSE;
             }
         }
+        
     }
 }

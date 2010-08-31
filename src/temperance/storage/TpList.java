@@ -11,7 +11,11 @@ public interface TpList extends TpStorage {
     
     public List<String> get(String key, long offset, long limit) throws MemcachedOperationException;
     
+    public void get(String key, long offset, long limit, StreamReader<String> reader) throws MemcachedOperationException;
+    
     public List<TpListResult> getByResult(String key, long offset, long limit) throws MemcachedOperationException;
+    
+    public void getByResult(String key, long offset, long limit, StreamReader<TpListResult> reader) throws MemcachedOperationException;
 
     public String getAt(String key, long index) throws MemcachedOperationException;
     
