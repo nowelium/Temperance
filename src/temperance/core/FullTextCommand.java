@@ -142,9 +142,10 @@ public class FullTextCommand extends Command {
             final TpFullText ft = new MemcachedFullText(pool);
             final long hashCount = ft.hashCountByValue(key, value);
             try {
+                final performHash h = new performHash();
                 // first. delete hash by value
                 for(long i = 0; i < hashCount; i += SPLIT){
-                    ft.getHashesByValue(key, value, i, SPLIT, new performHash());
+                    ft.getHashesByValue(key, value, i, SPLIT, h);
                 }
                 // second. delete value
                 ft.deleteByValue(key, value, expire);
@@ -165,12 +166,13 @@ public class FullTextCommand extends Command {
         }
         private class performHash implements StreamReader<Hash> {
             private final Log logger = LogFactory.getLog(performHash.class);
+            private final TpFullText ft = new MemcachedFullText(pool);
             public void read(Hash hash){
                 try {
-                    final TpFullText ft = new MemcachedFullText(pool);
                     final long valueCount = ft.valueCount(key, hash);
+                    final performValue h = new performValue(hash);
                     for(long i = 0; i < valueCount; i += SPLIT){
-                        ft.getValuesByResult(key, hash, i, SPLIT, new performValue(hash));
+                        ft.getValuesByResult(key, hash, i, SPLIT, h);
                     }
                 } catch(MemcachedOperationException e){
                     if(logger.isErrorEnabled()){
@@ -182,13 +184,13 @@ public class FullTextCommand extends Command {
         private class performValue implements StreamReader<TpListResult> {
             private final Log logger = LogFactory.getLog(performValue.class);
             private final Hash hash;
+            private final TpFullText ft = new MemcachedFullText(pool);
             private performValue(Hash hash){
                 this.hash = hash;
             }
             public void read(TpListResult result){
                 try {
                     if(value.equals(result.getValue())){
-                        final TpFullText ft = new MemcachedFullText(pool);
                         ft.deleteAtByHash(key, hash, result.getIndex(), expire);
                     }
                 } catch(MemcachedOperationException e){

@@ -185,6 +185,7 @@ public class ThreadPool implements LifeCycle {
             super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
         }
         
+        @Override
         protected void beforeExecute(Thread th, Runnable command) {
             super.beforeExecute(th, command);
             
@@ -192,6 +193,7 @@ public class ThreadPool implements LifeCycle {
             startTime.set(Long.valueOf(System.currentTimeMillis()));
         }
         
+        @Override
         protected void afterExecute(Runnable command, Throwable t) {
             long elapsed = System.currentTimeMillis() - startTime.get().longValue();
             totalTime.addAndGet(elapsed);

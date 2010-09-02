@@ -15,7 +15,7 @@
   <property name="build.complete" value="false" />
     
   <property name="temperance.name" value="temperance" />
-  <property name="temperance.version" value="0.10" />
+  <property name="temperance.version" value="0.11" />
   <property name="temperance.package.zip" value="${temperance.name}-${temperance.version}.zip" />
   <property name="temperance.package.zip.dependencies" value="${temperance.name}-${temperance.version}-dependencies.zip" />
   <property name="temperance.jar" value="${temperance.name}-${temperance.version}.jar" />
@@ -39,7 +39,7 @@
   
   <path id="jar-libraries">
     <pathelement path="${library.dir}/libmecab-0.01.jar" />
-    <pathelement path="${library.dir}/libmemcached-0.01.jar" />
+    <pathelement path="${library.dir}/libmemcached-0.02.jar" />
     <pathelement path="${library.dir}/akuma-1.3.jar" />
     <pathelement path="${library.dir}/jna.jar" />
     <pathelement path="${library.dir}/commons-cli-1.0.jar" />

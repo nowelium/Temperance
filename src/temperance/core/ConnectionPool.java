@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import libmemcached.wrapper.MemcachedBehavior;
 import libmemcached.wrapper.MemcachedClient;
+import libmemcached.wrapper.MemcachedServerList;
 import libmemcached.wrapper.type.BehaviorType;
 import libmemcached.wrapper.type.DistributionType;
 import libmemcached.wrapper.type.ReturnType;
@@ -62,7 +63,7 @@ public class ConnectionPool implements LifeCycle {
     
     protected final int maxPoolSize;
     
-    protected final MemcachedClient client = new MemcachedClient();
+    protected final MemcachedClient rootClient = new MemcachedClient();
     
     protected final ScheduledExecutorService executor = Executors.newScheduledThreadPool(4);
     
@@ -125,12 +126,17 @@ public class ConnectionPool implements LifeCycle {
         
         logger.info(new StringBuilder("confiugre: memcached serverlist: ").append(configure.getMemcached()));
         
-        ReturnType pushed = client.getServerList().parse(configure.getMemcached()).push();
-        if(!ReturnType.SUCCESS.equals(pushed)){
-            throw new InitializationException("server list failure: " + configure.getMemcached() + " was " + pushed);
+        MemcachedServerList serverList = rootClient.getServerList().parse(configure.getMemcached());
+        try {
+            ReturnType pushed = serverList.push();
+            if(!ReturnType.SUCCESS.equals(pushed)){
+                throw new InitializationException("server list failure: " + configure.getMemcached() + " was " + pushed);
+            }
+        } finally {
+            serverList.free();
         }
         
-        MemcachedBehavior behavior = client.getBehavior();
+        MemcachedBehavior behavior = rootClient.getBehavior();
         behavior.setDistribution(DistributionType.CONSISTENT);
         behavior.set(BehaviorType.CONNECT_TIMEOUT, configure.getMemcachedConnectionTimeout());
         
@@ -197,6 +203,7 @@ public class ConnectionPool implements LifeCycle {
             schedule.cancel(false);
         }
         executor.shutdown();
+        rootClient.free();
         
         logger.info("pool destroyed");
     }
@@ -228,8 +235,8 @@ public class ConnectionPool implements LifeCycle {
     
     protected MemcachedClient cloneClient(){
         try {
-            synchronized(client){
-                return client.clone();
+            synchronized(rootClient){
+                return rootClient.clone();
             }
         } catch(CloneNotSupportedException e){
             throw new RuntimeException(e);
@@ -306,6 +313,7 @@ public class ConnectionPool implements LifeCycle {
                     MemcachedClient client = pool.poll();
                     if(null != client){
                         client.quit();
+                        client.free();
                     }
                 }
                 
@@ -320,7 +328,9 @@ public class ConnectionPool implements LifeCycle {
             try {
                 while(true){
                     ReleaseRequest req = releaseRequestQueue.take();
-                    req.getClient().quit();
+                    MemcachedClient client = req.getClient();
+                    client.quit();
+                    client.free();
                     
                     fillRequest(poolFillInterval, TimeUnit.MICROSECONDS);
                 }

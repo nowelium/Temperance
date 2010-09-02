@@ -274,22 +274,21 @@ public class MemcachedListTest {
     
     @Test
     public void reindex_large_index() throws MemcachedOperationException, LockTimeoutException {
-        for(int i = 0; i < 50000; ++i){
+        for(int i = 0; i < 5000; ++i){
             lst.add("key", Integer.toString(i), 0);
         }
         
-        Assert.assertEquals(lst.count("key"), 50000);
+        Assert.assertEquals(lst.count("key"), 5000);
         
         lst.deleteAt("key", 2, 0);
         lst.deleteAt("key", 20, 0);
         lst.deleteAt("key", 200, 0);
         lst.deleteAt("key", 2000, 0);
-        lst.deleteAt("key", 20000, 0);
         
-        Assert.assertEquals(lst.count("key"), 50000);
+        Assert.assertEquals(lst.count("key"), 5000);
         
         lst.reindex("key");
         
-        Assert.assertEquals(lst.count("key"), 49995);
+        Assert.assertEquals(lst.count("key"), 4996);
     }
 }
