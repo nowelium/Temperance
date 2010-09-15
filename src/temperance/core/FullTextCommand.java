@@ -103,9 +103,14 @@ public class FullTextCommand extends Command {
             final TpFullText ft = new MemcachedFullText(pool);
             final long hashCount = ft.hashCount(key);
             try {
+                final performHash performHash = new performHash();
                 for(long i = 0; i < hashCount; i += SPLIT){
-                    List<Hash> hashes = ft.getHashes(key, i, SPLIT);
-                    perform(ft, hashes);
+                    long limit = SPLIT;
+                    // getHashes(offset, limit) -> valueOf(SPLIT) not exceed valueOf(hashCount): thx messy
+                    if(hashCount <= (i + SPLIT)){
+                        limit = hashCount - i;
+                    }
+                    ft.getHashes(key, i, limit, performHash);
                 }
                 return Boolean.TRUE;
             } catch(MemcachedOperationException e){
@@ -113,16 +118,25 @@ public class FullTextCommand extends Command {
                     logger.error(DeleteAll.class, e);
                 }
                 return Boolean.FALSE;
-            } catch(LockTimeoutException e){
-                if(logger.isErrorEnabled()){
-                    logger.error(DeleteAll.class, e);
-                }
-                return Boolean.FALSE;
             }
         }
-        protected void perform(TpFullText ft, List<Hash> hashes) throws MemcachedOperationException, LockTimeoutException {
-            for(Hash hash: hashes){
-                ft.deleteByHash(key, hash, expire);
+        private class performHash implements StreamReader<Hash> {
+            private final Log logger = LogFactory.getLog(performHash.class);
+            private final TpFullText ft = new MemcachedFullText(pool);
+            
+            @Override
+            public void read(Hash hash) {
+                try {
+                    ft.deleteByHash(key, hash, expire);
+                } catch (MemcachedOperationException e) {
+                    if(logger.isErrorEnabled()){
+                        logger.error(performHash.class, e);
+                    }
+                } catch (LockTimeoutException e) {
+                    if(logger.isErrorEnabled()){
+                        logger.error(performHash.class, e);
+                    }
+                }
             }
         }
     }
@@ -142,10 +156,15 @@ public class FullTextCommand extends Command {
             final TpFullText ft = new MemcachedFullText(pool);
             final long hashCount = ft.hashCountByValue(key, value);
             try {
-                final performHash h = new performHash();
+                final performHash performHash = new performHash();
                 // first. delete hash by value
                 for(long i = 0; i < hashCount; i += SPLIT){
-                    ft.getHashesByValue(key, value, i, SPLIT, h);
+                    long limit = SPLIT;
+                    // get(offset, limit) -> valueOf(SPLIT) not exceed valueOf(hashCount): thx messy
+                    if(hashCount <= (i + SPLIT)){
+                        limit = hashCount - i;
+                    }
+                    ft.getHashesByValue(key, value, i, limit, performHash);
                 }
                 // second. delete value
                 ft.deleteByValue(key, value, expire);
@@ -170,9 +189,14 @@ public class FullTextCommand extends Command {
             public void read(Hash hash){
                 try {
                     final long valueCount = ft.valueCount(key, hash);
-                    final performValue h = new performValue(hash);
+                    final performValue performValue = new performValue(hash);
                     for(long i = 0; i < valueCount; i += SPLIT){
-                        ft.getValuesByResult(key, hash, i, SPLIT, h);
+                        long limit = SPLIT;
+                        // get(offset, limit) -> valueOf(SPLIT) not exceed valueOf(limit): thx messy
+                        if(valueCount <= (i + SPLIT)){
+                            limit = valueCount - i;
+                        }
+                        ft.getValuesByResult(key, hash, i, limit, performValue);
                     }
                 } catch(MemcachedOperationException e){
                     if(logger.isErrorEnabled()){
@@ -218,7 +242,12 @@ public class FullTextCommand extends Command {
             final List<Hash> returnValue = Lists.newArrayList();
             final long targetCount = ft.hashCount(key);
             for(long i = 0; i < targetCount; i += SPLIT){
-                List<Hash> results = ft.getHashes(key, i, SPLIT);
+                long limit = SPLIT;
+                // get(offset, limit) -> valueOf(SPLIT) not exceed valueOf(limit): thx messy
+                if(targetCount <= (i + SPLIT)){
+                    limit = targetCount - i;
+                }
+                List<Hash> results = ft.getHashes(key, i, limit);
                 returnValue.addAll(results);
             }
             return returnValue;
@@ -239,12 +268,13 @@ public class FullTextCommand extends Command {
             final List<String> returnValue = Lists.newArrayList();
             final long targetCount = ft.valueCount(key, hash);
             for(long i = 0; i < targetCount; i += SPLIT){
-                long splitLimit = SPLIT;
-                if(targetCount < SPLIT){
-                    splitLimit = targetCount;
+                long limit = SPLIT;
+                // get(offset, limit) -> valueOf(SPLIT) not exceed valueOf(limit): thx messy
+                if(targetCount <= (i + SPLIT)){
+                    limit = targetCount - i;
                 }
                 
-                List<String> results = ft.getValues(key, hash, i, splitLimit);
+                List<String> results = ft.getValues(key, hash, i, limit);
                 returnValue.addAll(results);
             }
             return returnValue;
@@ -264,7 +294,13 @@ public class FullTextCommand extends Command {
                 final TpFullText ft = new MemcachedFullText(pool);
                 final long hashCount = ft.hashCount(key);
                 for(long i = 0; i < hashCount; i += SPLIT){
-                    List<Hash> hashes = ft.getHashes(key, i, SPLIT);
+                    long limit = SPLIT;
+                    // get(offset, limit) -> valueOf(SPLIT) not exceed valueOf(limit): thx messy
+                    if(hashCount <= (i + SPLIT)){
+                        limit = hashCount - i;
+                    }
+                    
+                    List<Hash> hashes = ft.getHashes(key, i, limit);
                     for(Hash hash: hashes){
                         ft.reindexByHash(key, hash);
                     }

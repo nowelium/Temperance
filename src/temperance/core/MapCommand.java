@@ -45,7 +45,7 @@ public class MapCommand extends Command {
         return results;
     }
     
-    protected class GetValues extends SubCommand<List<TpMapResult>> {
+    protected static class GetValues extends SubCommand<List<TpMapResult>> {
         protected final ConnectionPool pool;
         protected final List<String> keys;
         protected GetValues(ConnectionPool pool, List<String> keys){

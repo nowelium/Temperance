@@ -13,6 +13,7 @@ import temperance.exception.LockTimeoutException;
 import temperance.exception.MemcachedOperationException;
 import temperance.storage.TpList;
 import temperance.storage.TpList.TpListResult;
+import temperance.storage.TpStorage.StreamReader;
 import temperance.storage.impl.MemcachedList;
 import temperance.util.Lists;
 
@@ -132,17 +133,18 @@ public class ListCommand extends Command {
         }
         public Boolean apply() throws LockTimeoutException, MemcachedOperationException {
             // TODO: logic
+            final TpList list = new MemcachedList(pool);
+            final long count = list.count(key);
             try {
-                final TpList list = new MemcachedList(pool);
-                final long count = list.count(key);
+                final performValues performValues = new performValues();
                 for(long i = 0; i < count; i += SPLIT){
-                    List<TpListResult> results = list.getByResult(key, i, SPLIT);
-                    for(TpListResult result: results){
-                        if(!value.equals(result.getValue())){
-                            continue;
-                        }
-                        list.deleteAt(key, result.getIndex(), expire);
+                    long limit = SPLIT;
+                    // get(offset, limit) -> valueOf(SPLIT) not exceed valueOf(limit): thx messy
+                    if(count <= (i + SPLIT)){
+                        limit = count - i;
                     }
+                    
+                    list.getByResult(key, i, limit, performValues);
                 }
                 
                 return Boolean.TRUE;
@@ -152,12 +154,29 @@ public class ListCommand extends Command {
                 }
                 
                 return Boolean.FALSE;
-            } catch(LockTimeoutException e){
-                if(logger.isErrorEnabled()){
-                    logger.error(DeleteAllValues.class, e);
+            }
+        }
+        private class performValues implements StreamReader<TpListResult> {
+            private final Log logger = LogFactory.getLog(performValues.class);
+            private final TpList list = new MemcachedList(pool);
+            
+            @Override
+            public void read(TpListResult result) {
+                if(!value.equals(result.getValue())){
+                    return;
                 }
                 
-                return Boolean.FALSE;
+                try {
+                    list.deleteAt(key, result.getIndex(), expire);
+                } catch (MemcachedOperationException e) {
+                    if(logger.isErrorEnabled()){
+                        logger.error(performValues.class, e);
+                    }
+                } catch (LockTimeoutException e) {
+                    if(logger.isErrorEnabled()){
+                        logger.error(performValues.class, e);
+                    }
+                }
             }
         }
     }
@@ -203,8 +222,9 @@ public class ListCommand extends Command {
             }
             for(long i = 0; i < count; i += SPLIT){
                 long limit = SPLIT;
-                if(count < SPLIT){
-                    limit = count;
+                // get(offset, limit) -> valueOf(SPLIT) not exceed valueOf(limit): thx messy
+                if(count <= (i + SPLIT)){
+                    limit = count - i;
                 }
                 
                 List<String> results = list.get(key, i, limit);
@@ -228,8 +248,9 @@ public class ListCommand extends Command {
             final long count = list.count(key);
             for(long i = 0; i < count; i += SPLIT){
                 long limit = SPLIT;
-                if(count < SPLIT){
-                    limit = count;
+                // get(offset, limit) -> valueOf(SPLIT) not exceed valueOf(limit): thx messy
+                if(count <= (i + SPLIT)){
+                    limit = count - i;
                 }
                 
                 List<String> results = list.get(key, i, limit);
@@ -263,9 +284,11 @@ public class ListCommand extends Command {
             final List<String> results = Lists.newArrayList();
             for(long i = 0; i < limit; i += SPLIT){
                 long splitLimit = SPLIT;
-                if(limit < SPLIT){
+                // get(offset, limit) -> valueOf(SPLIT) not exceed valueOf(limit): thx messy
+                if(limit <= (i + SPLIT)){
                     splitLimit = limit;
                 }
+                
                 results.addAll(list.get(key, offset + i, splitLimit));
             }
             return results;
