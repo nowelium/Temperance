@@ -39,7 +39,7 @@
   
   <path id="jar-libraries">
     <pathelement path="${library.dir}/libmecab-0.01.jar" />
-    <pathelement path="${library.dir}/libmemcached-0.02.jar" />
+    <pathelement path="${library.dir}/libmemcached-0.04.jar" />
     <pathelement path="${library.dir}/akuma-1.3.jar" />
     <pathelement path="${library.dir}/jna.jar" />
     <pathelement path="${library.dir}/commons-cli-1.0.jar" />
