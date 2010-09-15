@@ -17,6 +17,6 @@
 	<classpathentry kind="lib" path="lib/msgpack/msgpack-0.3.jar"/>
 	<classpathentry kind="lib" path="lib/msgpack/msgpack-rpc-0.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/msgpack/netty-3.2.0.CR1.jar"/>
-	<classpathentry kind="lib" path="lib/libmemcached-0.02.jar"/>
+	<classpathentry kind="lib" path="lib/libmemcached-0.04.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

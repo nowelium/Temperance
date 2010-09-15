@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project name="temperance" default="usage" basedir=".">
-  
+
   <property environment="env" />
   
   <property name="src.dir" value="${basedir}/src" />
@@ -15,7 +15,7 @@
   <property name="build.complete" value="false" />
     
   <property name="temperance.name" value="temperance" />
-  <property name="temperance.version" value="0.11" />
+  <property name="temperance.version" value="0.12" />
   <property name="temperance.package.zip" value="${temperance.name}-${temperance.version}.zip" />
   <property name="temperance.package.zip.dependencies" value="${temperance.name}-${temperance.version}-dependencies.zip" />
   <property name="temperance.jar" value="${temperance.name}-${temperance.version}.jar" />
