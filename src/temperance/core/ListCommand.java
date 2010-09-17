@@ -285,7 +285,7 @@ public class ListCommand extends Command {
             for(long i = 0; i < limit; i += SPLIT){
                 long splitLimit = SPLIT;
                 // get(offset, limit) -> valueOf(SPLIT) not exceed valueOf(limit): thx messy
-                if(limit <= (i + SPLIT)){
+                if(limit < SPLIT){
                     splitLimit = limit;
                 }
                 
