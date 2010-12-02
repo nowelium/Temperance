@@ -11,12 +11,6 @@ import temperance.storage.TpQueue;
 
 public class MemcachedQueue implements TpQueue {
     
-    // TODO: SoftReferenceMap::clean are locked threads
-    //protected static final SoftReferenceMap<String, String> headKeyCache = new SoftReferenceMap<String, String>();
-    
-    // TODO: SoftReferenceMap::clean are locked threads
-    //protected static final SoftReferenceMap<String, String> tailKeyCache = new SoftReferenceMap<String, String>();
-    
     protected static final String DEFAULT_ROOT_KEY_PREFIX = TpQueue.class.getSimpleName();
     
     protected static final String INITIAL_VALUE = "0";
@@ -42,9 +36,9 @@ public class MemcachedQueue implements TpQueue {
             final String headKey = headKey(key);
             final String tailKey = tailKey(key);
             
-            while(true){
-                try {
-                    MemcachedResult result = storage.getsByKey(key, tailKey);
+            try {
+                while(true){
+                    final MemcachedResult result = storage.getsByKey(key, tailKey);
                     if(null == result){
                         storage.setByKey(key, headKey, INITIAL_VALUE, INITIAL_EXPIRE, INITIAL_FLAG);
                         storage.setByKey(key, tailKey, INITIAL_VALUE, INITIAL_EXPIRE, INITIAL_FLAG);
@@ -77,9 +71,9 @@ public class MemcachedQueue implements TpQueue {
                     } finally {
                         result.free();
                     }
-                } catch(LibMemcachedException e){
-                    return false;
                 }
+            } catch(LibMemcachedException e){
+                return false;
             }
         } finally {
             pool.release(client);
@@ -155,20 +149,6 @@ public class MemcachedQueue implements TpQueue {
         buf.append(key);
         buf.append(HEAD_SUFFIX);
         return buf.toString();
-        /* TODO: SoftReferenceMap::clean are locked threads
-        synchronized(headKeyCache){
-            String value = headKeyCache.get(key);
-            if(null == value){
-                StringBuilder buf = new StringBuilder(DEFAULT_ROOT_KEY_PREFIX);
-                buf.append(KEY_SEPARATOR);
-                buf.append(key);
-                buf.append(HEAD_SUFFIX);
-                value = buf.toString();
-                headKeyCache.put(key, value);
-            }
-            return value;
-        }
-        */
     }
     
     protected static String tailKey(String key){
@@ -177,20 +157,6 @@ public class MemcachedQueue implements TpQueue {
         buf.append(key);
         buf.append(TAIL_SUFFIX);
         return buf.toString();
-        /* TODO: SoftReferenceMap::clean are locked threads
-        synchronized(tailKeyCache){
-            String value = tailKeyCache.get(key);
-            if(null == value){
-                StringBuilder buf = new StringBuilder(DEFAULT_ROOT_KEY_PREFIX);
-                buf.append(KEY_SEPARATOR);
-                buf.append(key);
-                buf.append(TAIL_SUFFIX);
-                value = buf.toString();
-                tailKeyCache.put(key, value);
-            }
-            return value;
-        }
-        */
     }
     
 }

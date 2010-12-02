@@ -1,18 +1,23 @@
 package temperance.storage.impl;
 
 import java.util.Arrays;
-import junit.framework.Assert;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import libmemcached.wrapper.type.BehaviorType;
-import temperance.core.Configure;
-import temperance.core.ConnectionPool;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Assert;
+
+import temperance.core.Configure;
+import temperance.core.ConnectionPool;
 import temperance.exception.MemcachedOperationException;
 
 /**
@@ -74,6 +79,64 @@ public class MemcachedQueueTest {
         
         Assert.assertTrue(queue.enqueue("key", "baz", 0));
         Assert.assertEquals(queue.dequeue("key"), "baz");
+    }
+    
+    @Test
+    public void enqueue_qps() throws MemcachedOperationException {
+        final int time = 5;
+        final AtomicInteger inc = new AtomicInteger(0);
+        final AtomicBoolean stop = new AtomicBoolean(false);
+        final String key = System.currentTimeMillis() + "_qps";
+        Thread th = new Thread() {
+            public void run(){
+                while(!stop.get()){
+                    queue.enqueue(key, "test", 0);
+                    inc.incrementAndGet();
+                }
+            }
+        };
+        th.start();
+        
+        try {
+            TimeUnit.SECONDS.sleep(time);
+            stop.set(true);
+        } catch(InterruptedException e){
+        }
+        
+        System.out.println("enqueue = " + (inc.get() / time) + " qps");
+    }
+    
+    @Test
+    public void dequeue_qps() throws MemcachedOperationException {
+        final int time = 5;
+        final AtomicInteger inc = new AtomicInteger(0);
+        final AtomicBoolean stop = new AtomicBoolean(false);
+        final String key = System.currentTimeMillis() + "_qps";
+        
+        for(int i = 0; i < 1000; ++i){
+            queue.enqueue(key, "test", 0);
+        }
+        
+        Thread th = new Thread() {
+            public void run(){
+                while(!stop.get()){
+                    try {
+                        queue.dequeue(key);
+                        inc.incrementAndGet();
+                    } catch(MemcachedOperationException e){
+                    }
+                }
+            }
+        };
+        th.start();
+        
+        try {
+            TimeUnit.SECONDS.sleep(time);
+            stop.set(true);
+        } catch(InterruptedException e){
+        }
+        
+        System.out.println("dequeue = " + (inc.get() / time) + " qps");
     }
     
     @Test

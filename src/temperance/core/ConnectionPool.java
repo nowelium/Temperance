@@ -1,19 +1,15 @@
 package temperance.core;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.DelayQueue;
-import java.util.concurrent.Delayed;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import libmemcached.wrapper.MemcachedBehavior;
@@ -27,61 +23,35 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import temperance.exception.InitializationException;
-import temperance.lock.impl.CountDownLock;
+import temperance.lock.impl.RendezvousLock;
 
 public class ConnectionPool implements LifeCycle {
     
     protected static final Log logger = LogFactory.getLog(ConnectionPool.class);
     
-    protected static final long poolFillInterval;
-    
-    protected static final long poolReleaseInterval;
-    
-    static {
-        String fillInterval = System.getProperty("temperance.memc.pool_fill_interval", "500");
-        long fill = 500L;
-        try {
-            fill = Long.parseLong(fillInterval);
-        } catch(NumberFormatException e){
-            // nop
-        }
-        poolFillInterval = fill;
-        
-        String releaseInterval = System.getProperty("temperance.memc.pool_release_interval", "500");
-        long release = 500L;
-        try {
-            release = Long.parseLong(releaseInterval);
-        } catch(NumberFormatException e){
-            // nop
-        }
-        poolReleaseInterval = release;
-    }
-
     protected final Configure configure;
     
     protected final int initialPoolSize;
     
     protected final int maxPoolSize;
     
+    protected final BlockingQueue<MemcachedClient> pool;
+    
     protected final MemcachedClient rootClient = new MemcachedClient();
+    
+    protected final AtomicInteger getConnections = new AtomicInteger(0);
+    
+    protected final RendezvousLock fillRequest = new RendezvousLock();
     
     protected final ScheduledExecutorService executor = Executors.newScheduledThreadPool(4);
     
-    protected final List<ScheduledFuture<?>> schedules = new ArrayList<ScheduledFuture<?>>();
-    
-    protected final BlockingQueue<MemcachedClient> pool;
-    
-    protected final DelayQueue<ReleaseRequest> releaseRequestQueue = new DelayQueue<ReleaseRequest>();
-    
-    protected final DelayQueue<CreateRequest> fillRequestQueue = new DelayQueue<CreateRequest>();
-    
-    protected final AtomicBoolean poolFilled = new AtomicBoolean(false);
+    protected final AtomicBoolean filledPool = new AtomicBoolean(false);
     
     protected final AtomicLong lastAccess = new AtomicLong(0L);
     
     protected final long keepAliveTime = TimeUnit.SECONDS.toMillis(1800L);
     
-    protected final CountDownLock lock;
+    protected final int fillingThreshold;
     
     public ConnectionPool(Configure configure){
         this.configure = configure;
@@ -93,8 +63,8 @@ public class ConnectionPool implements LifeCycle {
         
         this.initialPoolSize = initialPoolSize;
         this.maxPoolSize = maxPoolSize;
-        this.pool = new LinkedBlockingQueue<MemcachedClient>(maxPoolSize);
-        this.lock = new CountDownLock((int) Math.round(maxPoolSize * 0.8));
+        this.pool = new ArrayBlockingQueue<MemcachedClient>(maxPoolSize);
+        this.fillingThreshold = (int) Math.round(maxPoolSize * 0.8);
     }
     
     protected static Map<BehaviorType, Boolean> createBehaviorTypeOption(Map<BehaviorType, Boolean> userValue){
@@ -121,12 +91,10 @@ public class ConnectionPool implements LifeCycle {
         return behaviors;
     }
     
-    public void init(){
-        logger.info("init connection pool");
-        
+    protected void setupMemcachedClient(MemcachedClient client){
         logger.info(new StringBuilder("confiugre: memcached serverlist: ").append(configure.getMemcached()));
         
-        MemcachedServerList serverList = rootClient.getServerList().parse(configure.getMemcached());
+        MemcachedServerList serverList = client.getServerList().parse(configure.getMemcached());
         try {
             ReturnType pushed = serverList.push();
             if(!ReturnType.SUCCESS.equals(pushed)){
@@ -136,7 +104,7 @@ public class ConnectionPool implements LifeCycle {
             serverList.free();
         }
         
-        MemcachedBehavior behavior = rootClient.getBehavior();
+        MemcachedBehavior behavior = client.getBehavior();
         behavior.setDistribution(DistributionType.CONSISTENT);
         behavior.set(BehaviorType.CONNECT_TIMEOUT, configure.getMemcachedConnectionTimeout());
         
@@ -154,23 +122,25 @@ public class ConnectionPool implements LifeCycle {
             }
             logger.info(new StringBuilder("configure: memcached behavior: ").append(key).append(":").append(value));
         }
+    }
+    
+    public void init(){
+        logger.info("init connection pool");
+        
+        setupMemcachedClient(rootClient);
         
         // size
         logger.info(new StringBuilder("configure: initial connection pool size: ").append(initialPoolSize));
         logger.info(new StringBuilder("configure: max connection pool size: ").append(maxPoolSize));
-        logger.info(new StringBuilder("configure: filling threshold: ").append(lock));
+        logger.info(new StringBuilder("configure: filling threshold: ").append(fillingThreshold));
         logger.info(new StringBuilder("configure: pool keepalive time: ").append(keepAliveTime).append(" ").append(TimeUnit.MILLISECONDS));
-        
-        // intervals
-        logger.info(new StringBuilder("configure: pool fill interval: ").append(poolFillInterval).append(" ").append(TimeUnit.MICROSECONDS));
-        logger.info(new StringBuilder("configure: pool release interval: ").append(poolReleaseInterval).append(" ").append(TimeUnit.MICROSECONDS));
         
         // fill connections
         for(int i = 0; i < initialPoolSize; ++i){
             pool.offer(cloneClient());
         }
         
-        MemcachedClient client = get();
+        final MemcachedClient client = get();
         try {
             ReturnType rt = client.version();
             if(!ReturnType.SUCCESS.equals(rt)){
@@ -180,30 +150,33 @@ public class ConnectionPool implements LifeCycle {
             release(client);
         }
         
-        // fill pool now: wait
-        executor.execute(new CreatePoolTask());
         // fill pool: infinite
         executor.execute(new FillPoolTask());
-        // release pool: infinite
-        executor.execute(new ReleasePoolTask());
         // free pool: every 10 sec
-        schedules.add(executor.scheduleWithFixedDelay(new FreePoolTask(), 10, 10, TimeUnit.SECONDS));
+        executor.scheduleWithFixedDelay(new FreePoolTask(), 10, 10, TimeUnit.SECONDS);
         
         if(logger.isDebugEnabled()){
-            logger.debug(new StringBuilder("configure: scheduled: fill pool now"));
             logger.debug(new StringBuilder("configure: scheduled: fill pool"));
-            logger.debug(new StringBuilder("configure: scheduled: release pool"));
             logger.debug(new StringBuilder("configure: scheduled fixed delay: free pool: ").append(10).append(" ").append(TimeUnit.SECONDS));
         }
     }
     
     public void destroy(){
         logger.info("destroy pool");
-        for(ScheduledFuture<?> schedule: schedules){
-            schedule.cancel(false);
-        }
         executor.shutdown();
-        rootClient.free();
+        executor.shutdownNow();
+        
+        synchronized(rootClient){
+            rootClient.free();
+        }
+        while(0 < pool.size()){
+            MemcachedClient client = pool.poll();
+            if(null != client){
+                synchronized(client){
+                    client.free();
+                }
+            }
+        }
         
         logger.info("pool destroyed");
     }
@@ -211,17 +184,19 @@ public class ConnectionPool implements LifeCycle {
     public MemcachedClient get(){
         lastAccess.set(System.currentTimeMillis());
         
-        try {
-            lock.release();
-            
-            MemcachedClient connection = pool.poll(5, TimeUnit.MILLISECONDS);
-            if(null != connection){
-                return connection;
+        final int getConnectionCount = getConnections.incrementAndGet();
+        if(fillingThreshold <= getConnectionCount || initialPoolSize <= getConnectionCount){
+            final boolean filled = filledPool.get();
+            if(!filled){
+                fillRequest.release();
             }
-            
-            // create request: now!
-            fillRequest(100, TimeUnit.MICROSECONDS);
-            
+        }
+        
+        try {
+            final MemcachedClient client = pool.poll(5, TimeUnit.MILLISECONDS);
+            if(null != client){
+                return client;
+            }
             return pool.take();
         } catch(InterruptedException e){
             throw new RuntimeException(e);
@@ -229,8 +204,13 @@ public class ConnectionPool implements LifeCycle {
     }
     
     public void release(MemcachedClient client){
-        // TODO: 20000 usec await when: libmemcached becomes segfault by excessive access
-        releaseRequestQueue.offer(new ReleaseRequest(client, poolReleaseInterval, TimeUnit.MICROSECONDS));
+        getConnections.decrementAndGet();
+        
+        synchronized(client){
+            client.quit();
+            client.free();
+        }
+        pool.offer(cloneClient());
     }
     
     protected MemcachedClient cloneClient(){
@@ -243,144 +223,50 @@ public class ConnectionPool implements LifeCycle {
         }
     }
     
-    protected void fillRequest(long expire, TimeUnit unit){
-        final int capacity = pool.remainingCapacity();
-        final int count = capacity - initialPoolSize;
-        final int requestSize = fillRequestQueue.size();
-        if(requestSize < capacity && requestSize < count && 0 < count){
-            fillRequestQueue.offer(new CreateRequest(expire, unit));
-        }
-    }
-    
-    protected class CreatePoolTask implements Runnable {
-        public void run(){
-            try {
-                while(true){
-                    fillRequestQueue.take();
-                    
-                    if(!pool.offer(cloneClient())){
-                        poolFilled.set(true);
-                        fillRequestQueue.clear();
-                        
-                        if(logger.isDebugEnabled()){
-                            logger.debug("pool max; clear fill requests");
-                        }
-                    }
-                }
-            } catch(InterruptedException e){
-                //
-            }
-        }
-    }
-    
     protected class FillPoolTask implements Runnable {
-        public void run(){
-            try {
-                // infinite loop
-                while(true){
-                    // rendezvous
-                    lock.await();
+        @Override
+        public void run() {
+            while(true){
+                try {
+                    fillRequest.await();
                     
-                    if(poolFilled.get()){
-                        continue;
+                    for(int i = initialPoolSize; i < maxPoolSize; ++i){
+                        pool.offer(cloneClient());
                     }
                     
-                    int capacity = pool.remainingCapacity();
-                    int count = capacity - initialPoolSize;
-                    for(int i = 0; i < count; ++i){
-                        // TODO: await: libmemcached becaomes "CONNECTION SOCKET CREATE FAILURE" by excessive access
-                        fillRequest(poolFillInterval, TimeUnit.MICROSECONDS);
-                    }
-
-                    poolFilled.set(true);
+                    filledPool.set(true);
+                } catch (InterruptedException e) {
+                    // nop
                 }
-            } catch(InterruptedException e){
-                //
             }
         }
     }
     
     protected class FreePoolTask implements Runnable {
-        public void run(){
-            final long current = System.currentTimeMillis();
-            final long last = lastAccess.get();
-            if(keepAliveTime < (current - last)){
+        @Override
+        public void run() {
+            final long currentTimestamp = System.currentTimeMillis();
+            final long lastAccessTimestamp = lastAccess.get();
+            
+            final long diff = currentTimestamp - lastAccessTimestamp;
+            if(keepAliveTime < diff){
                 if(logger.isDebugEnabled()){
                     logger.debug("freeing connection pool");
                 }
                 
-                while(initialPoolSize < pool.size()){
+                for(int i = initialPoolSize; i < maxPoolSize; ++i){
                     MemcachedClient client = pool.poll();
                     if(null != client){
-                        client.quit();
-                        client.free();
+                        synchronized(client){
+                            client.quit();
+                            client.free();
+                        }
                     }
                 }
                 
-                poolFilled.set(false);
+                filledPool.set(false);
                 lastAccess.set(System.currentTimeMillis());
             }
-        }
-    }
-
-    protected class ReleasePoolTask implements Runnable {
-        public void run(){
-            try {
-                while(true){
-                    ReleaseRequest req = releaseRequestQueue.take();
-                    MemcachedClient client = req.getClient();
-                    client.quit();
-                    client.free();
-                    
-                    fillRequest(poolFillInterval, TimeUnit.MICROSECONDS);
-                }
-            } catch(InterruptedException e){
-                // nop
-            }
-        }
-    }
-    
-    protected static class CreateRequest implements Delayed {
-        
-        protected final long entryTime;
-        
-        protected final long expire;
-        
-        protected CreateRequest(long duration, TimeUnit unit){
-            this.entryTime = System.nanoTime();
-            this.expire = entryTime + unit.toNanos(duration);
-        }
-
-        public long getDelay(TimeUnit unit) {
-            final long now = System.nanoTime();
-            // expiredの時間から経過時間を引き、残り時間を算出
-            return unit.convert(expire - now, TimeUnit.NANOSECONDS);
-        }
-
-        public int compareTo(Delayed o) {
-            CreateRequest target = (CreateRequest) o;
-            final long e = expire;
-            final long t = target.expire;
-            if(e < t){
-                return -1;
-            }
-            if(e > t){
-                return 1;
-            }
-            return 0;
-        }
-    }
-    
-    protected static class ReleaseRequest extends CreateRequest {
-        
-        protected final MemcachedClient client;
-
-        protected ReleaseRequest(MemcachedClient client, long duration, TimeUnit unit) {
-            super(duration, unit);
-            this.client = client;
-        }
-        public MemcachedClient getClient(){
-            return client;
         }
     }
 }
