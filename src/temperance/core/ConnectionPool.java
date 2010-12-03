@@ -254,14 +254,20 @@ public class ConnectionPool implements LifeCycle {
                     logger.debug("freeing connection pool");
                 }
                 
+                
                 for(int i = initialPoolSize; i < maxPoolSize; ++i){
                     MemcachedClient client = pool.poll();
                     if(null != client){
+                        getConnections.decrementAndGet();
                         synchronized(client){
                             client.quit();
                             client.free();
                         }
                     }
+                }
+                
+                if(getConnections.get() < 1){
+                    getConnections.set(initialPoolSize);
                 }
                 
                 filledPool.set(false);
