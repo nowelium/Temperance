@@ -9,10 +9,10 @@ import libmemcached.wrapper.MemcachedClient;
 import libmemcached.wrapper.type.BehaviorType;
 
 import org.junit.Test;
+import org.junit.Assert;
 
 import temperance.hash.Digest;
 import temperance.hashing.MecabHashing;
-
 
 public class ConnectionPoolTest {
     
@@ -167,6 +167,111 @@ public class ConnectionPoolTest {
         }
         
         pooling.destroy();
+    }
+    
+    @Test
+    public void fillpool() {
+        Configure configure = new Configure();
+        configure.setFullTextHashFunction(Digest.MD5);
+        configure.setMemcached("localhost:11211");
+        configure.setNodeFilter(MecabHashing.Filter.Nouns);
+        configure.setPoolBehaviors(new HashMap<BehaviorType, Boolean>(){
+            private static final long serialVersionUID = 1L;
+            {
+                put(BehaviorType.BUFFER_REQUESTS, Boolean.FALSE);
+            }
+        });
+        configure.setInitialConnectionPoolSize(10);
+        configure.setMaxConnectionPoolSize(20);
+        
+        Pooling pooling = new Pooling(configure);
+        pooling.init();
+        
+        final ConnectionPool pool = pooling.getConnectionPool();
+        Assert.assertEquals(pool.pool.size(), pool.initialPoolSize);
+        
+        for(int i = 0; i < pool.fillingThreshold; ++i){
+            System.out.println("get:" + i);
+            pool.get();
+        }
+        try {
+            System.out.println("wait FillPoolTask");
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+        }
+        
+        System.out.println(pool.pool.size());
+        Assert.assertEquals(pool.pool.size(), (pool.maxPoolSize - pool.fillingThreshold));
+        
+        try {
+            System.out.println("wait FreePoolTask");
+            ConnectionPool.FREE_POOL_TASK_DELAY_UNIT.sleep(ConnectionPool.FREE_POOL_TASK_DELAY);
+        } catch(InterruptedException e){
+        }
+        
+        for(int i = pool.fillingThreshold; i < pool.maxPoolSize; ++i){
+            System.out.println("get:" + i);
+            pool.get();
+        }
+        Assert.assertEquals(pool.pool.size(), 0);
+    }
+    
+    @Test
+    public void freePool() {
+        Configure configure = new Configure();
+        configure.setFullTextHashFunction(Digest.MD5);
+        configure.setMemcached("localhost:11211");
+        configure.setNodeFilter(MecabHashing.Filter.Nouns);
+        configure.setPoolBehaviors(new HashMap<BehaviorType, Boolean>(){
+            private static final long serialVersionUID = 1L;
+            {
+                put(BehaviorType.BUFFER_REQUESTS, Boolean.FALSE);
+            }
+        });
+        configure.setInitialConnectionPoolSize(10);
+        configure.setMaxConnectionPoolSize(20);
+        
+        Pooling pooling = new Pooling(configure);
+        pooling.init();
+        
+        final ConnectionPool pool = pooling.getConnectionPool();
+        pool.keepAliveTime.set(1);
+        Assert.assertEquals(pool.pool.size(), pool.initialPoolSize);
+        
+        List<MemcachedClient> connections = new ArrayList<MemcachedClient>();
+        for(int i = 0; i < pool.fillingThreshold; ++i){
+            System.out.println("get:" + i);
+            connections.add(pool.get());
+        }
+        try {
+            System.out.println("wait FillPoolTask");
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+        }
+        
+        System.out.println(pool.pool.size());
+        Assert.assertEquals(pool.pool.size(), (pool.maxPoolSize - pool.fillingThreshold));
+        
+        for(MemcachedClient c: connections){
+            pool.release(c);
+        }
+        
+        System.out.println(pool.pool.size());
+        Assert.assertEquals(pool.pool.size(), pool.maxPoolSize);
+        
+        try {
+            System.out.println("wait FreePoolTask");
+            ConnectionPool.FREE_POOL_TASK_DELAY_UNIT.sleep(ConnectionPool.FREE_POOL_TASK_DELAY + 1);
+        } catch(InterruptedException e){
+        }
+        
+        System.out.println(pool.pool.size());
+        Assert.assertEquals(pool.pool.size(), pool.initialPoolSize);
+        
+        for(int i = 0; i < pool.fillingThreshold; ++i){
+            System.out.println("get:" + i);
+            pool.get(); // non-block
+        }
     }
 
 }

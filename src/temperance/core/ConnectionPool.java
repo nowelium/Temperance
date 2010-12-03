@@ -29,6 +29,10 @@ public class ConnectionPool implements LifeCycle {
     
     protected static final Log logger = LogFactory.getLog(ConnectionPool.class);
     
+    protected static final int FREE_POOL_TASK_DELAY = 10;
+    
+    protected static final TimeUnit FREE_POOL_TASK_DELAY_UNIT = TimeUnit.SECONDS;
+    
     protected final Configure configure;
     
     protected final int initialPoolSize;
@@ -49,7 +53,7 @@ public class ConnectionPool implements LifeCycle {
     
     protected final AtomicLong lastAccess = new AtomicLong(0L);
     
-    protected final long keepAliveTime = TimeUnit.SECONDS.toMillis(1800L);
+    protected final AtomicLong keepAliveTime = new AtomicLong(TimeUnit.SECONDS.toMillis(1800L));
     
     protected final int fillingThreshold;
     
@@ -153,7 +157,7 @@ public class ConnectionPool implements LifeCycle {
         // fill pool: infinite
         executor.execute(new FillPoolTask());
         // free pool: every 10 sec
-        executor.scheduleWithFixedDelay(new FreePoolTask(), 10, 10, TimeUnit.SECONDS);
+        executor.scheduleWithFixedDelay(new FreePoolTask(), FREE_POOL_TASK_DELAY, FREE_POOL_TASK_DELAY, FREE_POOL_TASK_DELAY_UNIT);
         
         if(logger.isDebugEnabled()){
             logger.debug(new StringBuilder("configure: scheduled: fill pool"));
@@ -204,6 +208,7 @@ public class ConnectionPool implements LifeCycle {
     }
     
     public void release(MemcachedClient client){
+        lastAccess.set(System.currentTimeMillis());
         getConnections.decrementAndGet();
         
         synchronized(client){
@@ -249,25 +254,19 @@ public class ConnectionPool implements LifeCycle {
             final long lastAccessTimestamp = lastAccess.get();
             
             final long diff = currentTimestamp - lastAccessTimestamp;
-            if(keepAliveTime < diff){
+            if(keepAliveTime.get() < diff){
                 if(logger.isDebugEnabled()){
                     logger.debug("freeing connection pool");
                 }
                 
-                
-                for(int i = initialPoolSize; i < maxPoolSize; ++i){
+                while(initialPoolSize < pool.size()){
                     MemcachedClient client = pool.poll();
                     if(null != client){
-                        getConnections.decrementAndGet();
                         synchronized(client){
                             client.quit();
                             client.free();
                         }
                     }
-                }
-                
-                if(getConnections.get() < 1){
-                    getConnections.set(initialPoolSize);
                 }
                 
                 filledPool.set(false);
